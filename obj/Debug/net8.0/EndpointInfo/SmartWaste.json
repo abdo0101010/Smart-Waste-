@@ -1,0 +1,782 @@
+{
+  "openapi": "3.0.4",
+  "info": {
+    "title": "SmartWaste",
+    "version": "1.0"
+  },
+  "paths": {
+    "/api/admin/total-recyclers": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/total-recycling-active": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/total-pickup-requests": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/Total-Earing": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/recycler-details": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/recycler-with-total-trip": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/total-users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/total-active-users": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/total-requesting-items": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/total-wallet-points": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/users-by-filter": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "KeyofFilter",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/admin/Show-Support-Ticket": {
+      "get": {
+        "tags": [
+          "Admin"
+        ],
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/User": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "put": {
+        "tags": [
+          "User"
+        ],
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/User/{id}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/User/by-email/{email}": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "parameters": [
+          {
+            "name": "email",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/api/User/GetallbyDto": {
+      "get": {
+        "tags": [
+          "User"
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Feedback": {
+        "required": [
+          "feedbackId",
+          "request",
+          "requestId"
+        ],
+        "type": "object",
+        "properties": {
+          "feedbackId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requestId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 1,
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "comment": {
+            "maxLength": 500,
+            "minLength": 0,
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "request": {
+            "$ref": "#/components/schemas/PickupRequest"
+          }
+        },
+        "additionalProperties": false
+      },
+      "HubStaff": {
+        "required": [
+          "fullName",
+          "role",
+          "staffId"
+        ],
+        "type": "object",
+        "properties": {
+          "staffId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "maxLength": 30,
+            "minLength": 5,
+            "pattern": "[a-zA-Z]{30}",
+            "type": "string"
+          },
+          "role": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "pickupRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickupRequest"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PickupRequest": {
+        "required": [
+          "estimatedPoints",
+          "finalPoints",
+          "qrcode",
+          "requestId",
+          "status",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "requestId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "recyclerId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "hubStaffId": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          },
+          "requestDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "pickupDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "verificationDate": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "status": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "qrcode": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "estimatedPoints": {
+            "maximum": 1000,
+            "minimum": 10,
+            "type": "number",
+            "format": "double"
+          },
+          "finalPoints": {
+            "maximum": 1000,
+            "minimum": 10,
+            "type": "number",
+            "format": "double"
+          },
+          "feedbacks": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Feedback"
+            },
+            "nullable": true
+          },
+          "hubStaff": {
+            "$ref": "#/components/schemas/HubStaff"
+          },
+          "recycler": {
+            "$ref": "#/components/schemas/Recycler"
+          },
+          "requestItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestItem"
+            },
+            "nullable": true
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Recycler": {
+        "required": [
+          "fullName",
+          "recyclerId"
+        ],
+        "type": "object",
+        "properties": {
+          "recyclerId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "maxLength": 50,
+            "minLength": 5,
+            "type": "string"
+          },
+          "phone": {
+            "pattern": "^01[0125]\\d{8}$",
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleInfo": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "maximum": 5,
+            "minimum": 0,
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "pickupRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickupRequest"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequestItem": {
+        "required": [
+          "categoryId",
+          "itemId",
+          "quantity",
+          "requestId",
+          "source"
+        ],
+        "type": "object",
+        "properties": {
+          "itemId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "requestId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantity": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "source": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "category": {
+            "$ref": "#/components/schemas/WasteCategory"
+          },
+          "request": {
+            "$ref": "#/components/schemas/PickupRequest"
+          }
+        },
+        "additionalProperties": false
+      },
+      "Reward": {
+        "required": [
+          "costPoints",
+          "description",
+          "rewardId",
+          "stockQuantity",
+          "title"
+        ],
+        "type": "object",
+        "properties": {
+          "rewardId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "title": {
+            "maxLength": 30,
+            "minLength": 3,
+            "type": "string"
+          },
+          "description": {
+            "maxLength": 150,
+            "minLength": 10,
+            "type": "string"
+          },
+          "costPoints": {
+            "maximum": 10000,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "stockQuantity": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userRedemptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRedemption"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "User": {
+        "required": [
+          "address",
+          "createdAt",
+          "email",
+          "fullName",
+          "passwordHash",
+          "status",
+          "userId",
+          "walletPoints"
+        ],
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "maxLength": 50,
+            "minLength": 5,
+            "pattern": "^[a-zA-Z\\s]+$",
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "type": "string",
+            "format": "email"
+          },
+          "passwordHash": {
+            "minLength": 1,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "type": "string",
+            "format": "password"
+          },
+          "address": {
+            "maxLength": 100,
+            "minLength": 30,
+            "type": "string"
+          },
+          "status": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "walletPoints": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "pickupRequests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PickupRequest"
+            },
+            "nullable": true
+          },
+          "userRedemptions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/UserRedemption"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserRedemption": {
+        "required": [
+          "redemptionId",
+          "rewardId",
+          "userId"
+        ],
+        "type": "object",
+        "properties": {
+          "redemptionId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rewardId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "redeemedAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true
+          },
+          "voucherCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "reward": {
+            "$ref": "#/components/schemas/Reward"
+          },
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        },
+        "additionalProperties": false
+      },
+      "WasteCategory": {
+        "required": [
+          "categoryId",
+          "categoryName",
+          "pointsPerUnit"
+        ],
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "pointsPerUnit": {
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "unitType": {
+            "type": "string",
+            "nullable": true
+          },
+          "requestItems": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestItem"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}

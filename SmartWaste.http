@@ -1,0 +1,6 @@
+@SmartWaste_HostAddress = http://localhost:5191
+
+GET {{SmartWaste_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
