@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\patch-pes13\\projects-mvc\\smartwaste\\repositories\\hubstaffrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:repositories\\hubstaffrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\patch-pes13\\projects-mvc\\smartwaste\\dto\\hubstaffdtos\\hubstaffcreationsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:dto\\hubstaffdtos\\hubstaffcreationsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -33,10 +37,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\patch-pes13\\projects-mvc\\smartwaste\\services\\hubstaffservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:services\\hubstaffservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\patch-pes13\\projects-mvc\\smartwaste\\repositories\\hubstaffrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:repositories\\hubstaffrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\patch-pes13\\projects-mvc\\smartwaste\\repositories\\ihubstaffrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -189,16 +189,16 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 31,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 1,
               "Title": "HubstaffCreationsDto.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\DTO\\HubStaffDTOS\\HubstaffCreationsDto.cs",
               "RelativeDocumentMoniker": "DTO\\HubStaffDTOS\\HubstaffCreationsDto.cs",
-              "ToolTip": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\DTO\\HubStaffDTOS\\HubstaffCreationsDto.cs*",
-              "RelativeToolTip": "DTO\\HubStaffDTOS\\HubstaffCreationsDto.cs*",
+              "ToolTip": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\DTO\\HubStaffDTOS\\HubstaffCreationsDto.cs",
+              "RelativeToolTip": "DTO\\HubStaffDTOS\\HubstaffCreationsDto.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAADZAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-24T22:45:49.223Z",
@@ -206,7 +206,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 8,
               "Title": "HubStaffService.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Services\\HubStaffService.cs",
               "RelativeDocumentMoniker": "Services\\HubStaffService.cs",
@@ -336,7 +336,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
@@ -362,7 +362,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "User.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Models\\User.cs",
               "RelativeDocumentMoniker": "Models\\User.cs",
@@ -388,7 +388,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 7,
               "Title": "AccountController.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "Controllers\\AccountController.cs",
@@ -453,7 +453,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "HubStaff.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Models\\HubStaff.cs",
               "RelativeDocumentMoniker": "Models\\HubStaff.cs",
@@ -588,13 +588,13 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 0,
               "Title": "HubStaffRepository.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Repositories\\HubStaffRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\HubStaffRepository.cs",
               "ToolTip": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Repositories\\HubStaffRepository.cs",
               "RelativeToolTip": "Repositories\\HubStaffRepository.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAUAAAAvAAAAAAAAAA==",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAUAAAAvAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-22T18:01:37.576Z",
               "EditorCaption": ""
@@ -732,7 +732,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "SupportTickets.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Models\\SupportTickets.cs",
               "RelativeDocumentMoniker": "Models\\SupportTickets.cs",
@@ -745,7 +745,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "Feedback.cs",
               "DocumentMoniker": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\Models\\Feedback.cs",
               "RelativeDocumentMoniker": "Models\\Feedback.cs",

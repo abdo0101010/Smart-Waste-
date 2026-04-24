@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\patch-pes13\\projects-mvc\\SmartWaste\\SmartWaste.csproj": {}
+    "D:\\رواد 2\\جزءيه\\SmartWaste\\SmartWaste.csproj": {}
   },
   "projects": {
-    "D:\\patch-pes13\\projects-mvc\\SmartWaste\\SmartWaste.csproj": {
+    "D:\\رواد 2\\جزءيه\\SmartWaste\\SmartWaste.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\SmartWaste.csproj",
+        "projectUniqueName": "D:\\رواد 2\\جزءيه\\SmartWaste\\SmartWaste.csproj",
         "projectName": "SmartWaste",
-        "projectPath": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\SmartWaste.csproj",
+        "projectPath": "D:\\رواد 2\\جزءيه\\SmartWaste\\SmartWaste.csproj",
         "packagesPath": "C:\\Users\\Abdo\\.nuget\\packages\\",
-        "outputPath": "D:\\patch-pes13\\projects-mvc\\SmartWaste\\obj\\",
+        "outputPath": "D:\\رواد 2\\جزءيه\\SmartWaste\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
