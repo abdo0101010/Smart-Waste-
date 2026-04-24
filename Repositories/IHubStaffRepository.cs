@@ -1,10 +1,11 @@
-﻿using SmartWaste.Models;
+﻿using SmartWaste.DTO.HubStaffDTOS;
+using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
 {
     public interface IHubStaffRepository
     {
-        public void AddHubStaff(HubStaff hubStaff);
+        public void AddHubStaff(HubstaffCreationsDto hubStaff);
         public HubStaff GetHubStaffById(int id);
         public void UpdateHubStaff(HubStaff hubStaff);
         public void DeleteHubStaff(int id);

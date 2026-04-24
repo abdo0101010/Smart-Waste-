@@ -1,15 +1,10 @@
 ﻿using SmartWaste.Models;
+using SmartWaste.Repositories;
 
 namespace SmartWaste.Services
 {
-    public interface IHubStaffService
+    public interface IHubStaffService: IHubStaffRepository
     {
-        public void AddHubStaff(HubStaff hubStaff);
-        public HubStaff GetHubStaffById(int id);
-        public void UpdateHubStaff(HubStaff hubStaff);
-        public void DeleteHubStaff(int id);
-        public IEnumerable<HubStaff> GetAllHubStaff();
-        public List<HubStaff> GetAllHubStaffWithPickupRequests();
-        public void SaveChanges();
+       
     }
 }

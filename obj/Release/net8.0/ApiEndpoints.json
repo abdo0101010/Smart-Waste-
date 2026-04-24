@@ -30,6 +30,93 @@
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "CreateHubbStaff",
+    "RelativePath": "api/admin/create-hub-staff",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hubStaff",
+        "Type": "SmartWaste.DTO.HubStaffDTOS.HubstaffCreationsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "CreateRecycler",
+    "RelativePath": "api/admin/create-recycler",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recyclerCreationDTO",
+        "Type": "SmartWaste.DTO.RecuclerDTOS.RecyclerCreationDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "CreateUser",
+    "RelativePath": "api/admin/create-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "userCreationDTO",
+        "Type": "SmartWaste.DTO.UserDTOS.UserCreationDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
     "Method": "GetRecyclerDetails",
     "RelativePath": "api/admin/recycler-details",
     "HttpMethod": "GET",

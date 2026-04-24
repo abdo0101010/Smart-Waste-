@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartWaste.DTO.HubStaffDTOS;
 using SmartWaste.DTO.RecuclerDTOS;
 using SmartWaste.DTO.TicketSDTOS;
 using SmartWaste.DTO.UserDTOS;
@@ -13,9 +14,9 @@ namespace SmartWaste.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
-        [Produces("application/json")]
-        [Consumes("application/json")]
+    //[Authorize(Roles = "Admin")]
+    [Produces("application/json")]
+    [Consumes("application/json")]
     [SwaggerTag("Endpoints for administrative functions and management of recyclers, users, pickup requests, and support tickets")]
     public class AdminController : ControllerBase
     {
@@ -24,15 +25,17 @@ namespace SmartWaste.Controllers
         IUserService _userService;
         IRequestItemService _requestingService;
         ISupportTicketsServices _supportTicketsServices;
+        IHubStaffService _hubStaffService;
 
-        public AdminController(IPickupRequestService pickupRequestService, IRecyclerService recyclerService, IUserService userService, IRequestItemService requestingService, ISupportTicketsServices supportTicketsServices)
+        public AdminController(IPickupRequestService pickupRequestService, IRecyclerService recyclerService, IUserService userService, IRequestItemService requestingService, ISupportTicketsServices supportTicketsServices, IHubStaffService hubStaffService      )
         {
             _pickupRequestService = pickupRequestService;
             _recyclerService = recyclerService;
             _userService = userService;
             _requestingService = requestingService;
             _supportTicketsServices = supportTicketsServices;
-           
+            _hubStaffService = hubStaffService;
+
         }
 
 
@@ -44,8 +47,8 @@ OperationId = "GetTotalRecyclers",
 Tags = new[] { "Admin", "Recyclers  " }
 
 )]
-        [SwaggerResponse(  200, Description = "Total number of recyclers retrieved successfully", Type = typeof(int))]
-        [SwaggerResponse(  401, Description = "Unauthorized access - admin privileges required")]
+        [SwaggerResponse(200, Description = "Total number of recyclers retrieved successfully", Type = typeof(int))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
         public IActionResult GetTotalRecycler()
         {
             var totalRecyclers = _recyclerService.GetTotalRecyclers();
@@ -53,7 +56,7 @@ Tags = new[] { "Admin", "Recyclers  " }
         }
 
         [HttpGet("/api/admin/total-recycling-active")]
-            [SwaggerOperation(
+        [SwaggerOperation(
             Summary = "Gets the total number of active recyclers",
             Description = "Requires admin privileges",
             OperationId = "GetTotalRecyclingActive",
@@ -70,7 +73,7 @@ Tags = new[] { "Admin", "Recyclers  " }
         [SwaggerOperation(
                 Summary = "Gets the total number of pickup requests",
                 Description = "Requires admin privileges",
-                OperationId ="GetTotalPickupRequests",
+                OperationId = "GetTotalPickupRequests",
     Tags = new[] { "Admin", "Pickup Requests" })]
         [SwaggerResponse(200, Description = "Total number of pickup requests retrieved successfully", Type = typeof(int))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
@@ -81,7 +84,7 @@ Tags = new[] { "Admin", "Recyclers  " }
 
         }
         [HttpGet("/api/admin/Total-Earing")]
-            [SwaggerOperation(
+        [SwaggerOperation(
                     Summary = "Gets the total earnings from pickup requests",
                     Description = "Requires admin privileges",
             OperationId = "GetTotalEaring",
@@ -94,7 +97,7 @@ Tags = new[] { "Admin", "Recyclers  " }
             return Ok(totalearing);
         }
         [HttpGet("/api/admin/recycler-details")]
-            [SwaggerOperation(
+        [SwaggerOperation(
                         Summary = "Gets detailed information about recyclers",
                         Description = "Requires admin privileges",
                             OperationId = "GetRecyclerDetails",
@@ -107,7 +110,7 @@ Tags = new[] { "Admin", "Recyclers  " }
             return Ok(recyclerDetails);
         }
         [HttpGet("/api/admin/recycler-with-total-trip")]
-            [SwaggerOperation(
+        [SwaggerOperation(
                             Summary = "Gets recyclers sorted by rating with total trips",
                             Description = "Requires admin privileges",
                             OperationId = "GetRecyclerWithTotalTrip",
@@ -122,7 +125,7 @@ Tags = new[] { "Admin", "Recyclers  " }
         [HttpGet("/api/admin/total-users")]
         [SwaggerOperation(
                                 Summary = "Gets the total number of users",
-                                Description = "Requires admin privileges",  
+                                Description = "Requires admin privileges",
                                 OperationId = "GetTotalUsers",
 Tags = new[] { "Admin", "Users" })]
         [SwaggerResponse(200, Description = "Total number of users retrieved successfully", Type = typeof(int))]
@@ -140,7 +143,7 @@ Tags = new[] { "Admin", "Users" })]
                                         OperationId = "GetTotalActiveUsers",
 
                                             Tags = new[] { "Admin", "Users" })]
-        [SwaggerResponse(200, Description = "Total number of active users retrieved successfully", Type=typeof(int))]
+        [SwaggerResponse(200, Description = "Total number of active users retrieved successfully", Type = typeof(int))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
 
         public IActionResult GetTotalActiveUsers()
@@ -155,7 +158,7 @@ Tags = new[] { "Admin", "Users" })]
                                         OperationId = "GetTotalRequestingItems",
                                         Tags = new[] { "Admin", "Requests" })]
         [SwaggerResponse(200, Description = "Total number of requesting items retrieved successfully", Type = typeof(int))]
-        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required"   )]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
         public IActionResult GetTotalBottels()
         {
             var totalRequestingItems = _requestingService.GetTotalBottelsForAllUsers();
@@ -200,6 +203,59 @@ Tags = new[] { "Admin", "Users" })]
         {
             var supportTickets = _supportTicketsServices.ShowSupportTicket(status, search);
             return Ok(supportTickets);
+        }
+        [HttpPost("/api/admin/create-user")]
+        [SwaggerOperation(
+                                        Summary = "Creates a new user",
+                                        Description = "Requires admin privileges",
+                                        OperationId = "CreateUser",
+                                        Tags = new[] { "Admin", "Users" })]
+        [SwaggerResponse(200, Description = "User created successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult CreateUser(UserCreationDTO userCreationDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            _userService.CreateUser(userCreationDTO);
+            return Ok(new { Message = "User created successfully" });
+        }
+        [HttpPost("/api/admin/create-recycler")]
+        [SwaggerOperation(
+                                        Summary = "Creates a new recycler",
+                                        Description = "Requires admin privileges",
+                                        OperationId = "CreateRecycler",
+                                        Tags = new[] { "Admin", "Recyclers" })]
+        [SwaggerResponse(200, Description = "Recycler created successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+
+        public IActionResult CreateRecycler(RecyclerCreationDTO recyclerCreationDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            _recyclerService.CreateRecycler(recyclerCreationDTO);
+            return Ok(new { Message = "Recycler created successfully" });
+        }
+        [HttpPost("/api/admin/create-hub-staff")]
+        [SwaggerOperation(
+                                        Summary = "Creates a new hub staff member",
+                                        Description = "Requires admin privileges",
+                                        OperationId = "CreateHubStaff",
+                                        Tags = new[] { "Admin", "Hub Staff" })]
+        [SwaggerResponse(200, Description = "Hub staff created successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult CreateHubbStaff(HubstaffCreationsDto hubStaff)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            _hubStaffService.AddHubStaff(hubStaff);
+
+            return Ok(new { Message = "Hub staff created successfully" });
         }
     }
 }

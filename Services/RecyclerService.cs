@@ -86,5 +86,29 @@ namespace SmartWaste.Services
         {
             return _RecyclerRepository.GetSortingRecyclersByRating();
         }
+        public void UpdateRecyclerStatus(int recyclerId, string newStatus)
+        {
+            _RecyclerRepository.UpdateRecyclerStatus(recyclerId, newStatus);
+        }
+        public Recycler GetRecyclerByName(string Name)
+        {
+            if (!string.IsNullOrEmpty(Name))
+            {
+                return _RecyclerRepository.GetRecyclerByName(Name);
+            }
+            return null;
+        }
+        public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO)
+        {
+            if (recyclerCreationDTO != null)
+            {
+
+                _RecyclerRepository.CreateRecycler(recyclerCreationDTO);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(recyclerCreationDTO), "RecyclerCreationDTO cannot be null.");
+            }
+        }
     }
 }

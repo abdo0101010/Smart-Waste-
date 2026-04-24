@@ -408,6 +408,105 @@
         }
       }
     },
+    "/api/admin/create-user": {
+      "post": {
+        "tags": [
+          "Admin",
+          "Users"
+        ],
+        "summary": "Creates a new user",
+        "description": "Requires admin privileges",
+        "operationId": "CreateUser",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserCreationDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/create-recycler": {
+      "post": {
+        "tags": [
+          "Admin",
+          "Recyclers"
+        ],
+        "summary": "Creates a new recycler",
+        "description": "Requires admin privileges",
+        "operationId": "CreateRecycler",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecyclerCreationDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recycler created successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/create-hub-staff": {
+      "post": {
+        "tags": [
+          "Admin",
+          "Hub Staff"
+        ],
+        "summary": "Creates a new hub staff member",
+        "description": "Requires admin privileges",
+        "operationId": "CreateHubStaff",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HubstaffCreationsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hub staff created successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
     "/api/User": {
       "get": {
         "tags": [
@@ -629,7 +728,9 @@
           },
           "passwordHash": {
             "minLength": 1,
-            "type": "string"
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "type": "string",
+            "format": "password"
           },
           "role": {
             "type": "string",
@@ -641,6 +742,28 @@
               "$ref": "#/components/schemas/PickupRequest"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HubstaffCreationsDto": {
+        "required": [
+          "fullName",
+          "passwordHash"
+        ],
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "maxLength": 30,
+            "minLength": 5,
+            "pattern": "^[a-zA-Z\\s]+$",
+            "type": "string"
+          },
+          "passwordHash": {
+            "minLength": 1,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "type": "string",
+            "format": "password"
           }
         },
         "additionalProperties": false
@@ -785,6 +908,32 @@
               "$ref": "#/components/schemas/PickupRequest"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecyclerCreationDTO": {
+        "required": [
+          "fullName",
+          "passwordHash",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "maxLength": 50,
+            "minLength": 5,
+            "type": "string"
+          },
+          "phone": {
+            "minLength": 1,
+            "pattern": "^01[0125]\\d{8}$",
+            "type": "string"
+          },
+          "passwordHash": {
+            "minLength": 1,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "type": "string"
           }
         },
         "additionalProperties": false
@@ -1015,8 +1164,8 @@
           },
           "email": {
             "minLength": 1,
-            "type": "string",
-            "format": "email"
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            "type": "string"
           },
           "passwordHash": {
             "minLength": 1,
@@ -1060,6 +1209,38 @@
               "$ref": "#/components/schemas/UserRedemption"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserCreationDTO": {
+        "required": [
+          "address",
+          "email",
+          "fullName",
+          "password"
+        ],
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "maxLength": 50,
+            "minLength": 5,
+            "pattern": "^[a-zA-Z\\s]+$",
+            "type": "string"
+          },
+          "email": {
+            "minLength": 1,
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            "type": "string"
+          },
+          "password": {
+            "minLength": 1,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "type": "string"
+          },
+          "address": {
+            "minLength": 30,
+            "type": "string"
           }
         },
         "additionalProperties": false

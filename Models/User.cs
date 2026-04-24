@@ -22,7 +22,8 @@ public partial class User
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "FullName must contain only letters and spaces")]
     public string FullName { get; set; } = null!;
     [Required]
-    [EmailAddress(ErrorMessage = "Invalid email address format.")]
+    [RegularExpression(@"^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$",
+    ErrorMessage = "Please enter a valid email address (e.g. user@example.com)")]
     [UniqueEmail]
     public string Email { get; set; } = null!;
     [Required]

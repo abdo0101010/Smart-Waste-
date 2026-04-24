@@ -159,9 +159,20 @@ namespace SmartWaste.Repositories
             return filteredUsers;
         }
 
-        
-        
-         public void SaveChanges()
+        public void CreateUser(UserCreationDTO userCreationDTO)
+        {
+            User user = new User
+            {
+                FullName = userCreationDTO.FullName,
+                Email = userCreationDTO.Email,
+                PasswordHash = userCreationDTO.Password,
+                Address = userCreationDTO.Address
+            };
+            _context.Users.Add(user);
+            SaveChanges();
+        }
+
+        public void SaveChanges()
         {
             _context.SaveChanges();
         }

@@ -1,4 +1,5 @@
-﻿using SmartWaste.Models;
+﻿using SmartWaste.DTO.HubStaffDTOS;
+using SmartWaste.Models;
 using SmartWaste.Repositories;
 
 namespace SmartWaste.Services
@@ -10,7 +11,7 @@ namespace SmartWaste.Services
         {
             _hubStaffRepository = hubStaffRepository;
         }
-        public void AddHubStaff(HubStaff hubStaff)
+        public void AddHubStaff(HubstaffCreationsDto hubStaff)
         {
             if (hubStaff != null)
             {
@@ -18,7 +19,19 @@ namespace SmartWaste.Services
                
 
             }
-            
+            else           {
+                throw new ArgumentNullException(nameof(hubStaff), "HubStaff cannot be null.");
+            }
+
+
+        }
+public HubStaff GetHubStaffByName(string name)
+        {
+            if (!string.IsNullOrEmpty(name))
+            {
+                return _hubStaffRepository.GetHubStaffByName(name);
+            }
+            return null;
         }
 
         public void DeleteHubStaff(int id)

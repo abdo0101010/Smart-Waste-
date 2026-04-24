@@ -16,6 +16,9 @@ public partial class HubStaff
     [RegularExpression(@"^[a-zA-Z\s]+$", ErrorMessage = "full name must contain only letters and spaces")]
     public string FullName { get; set; } = null!;
     [Required]
+    [DataType(DataType.Password)]
+    [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one digit, and one special character.")]
+  
     public string PasswordHash { get; set; } = null!; 
     public string? Role { get; set; }= "HubStaff";
 

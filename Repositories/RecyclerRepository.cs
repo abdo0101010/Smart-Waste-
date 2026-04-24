@@ -87,5 +87,26 @@ namespace SmartWaste.Repositories
                 Rating = r.Rating
             }).ToList();
         }
+        public void UpdateRecyclerStatus(int recyclerId, string newStatus)
+        {
+            var recycler = _context.Recyclers.Find(recyclerId);
+            if (recycler != null)
+            {
+                recycler.Status = newStatus;
+                _context.Recyclers.Update(recycler);
+                SaveChanges();
+            }
+        }
+        public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO)
+        {
+            var recycler = new Recycler
+            {
+                FullName = recyclerCreationDTO.FullName,
+                Phone = recyclerCreationDTO.Phone,
+                PasswordHash = recyclerCreationDTO.PasswordHash
+            };
+            _context.Recyclers.Add(recycler);
+            SaveChanges();
+        }
     }
 }

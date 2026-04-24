@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartWaste.DTO.HubStaffDTOS;
 using SmartWaste.Models;
 namespace SmartWaste.Repositories
 {
@@ -9,9 +10,15 @@ namespace SmartWaste.Repositories
         {
             _context = context;
         }
-        public void AddHubStaff(HubStaff hubStaff)
+        public void AddHubStaff(HubstaffCreationsDto hubStaff)
         {
-            _context.HubStaffs.Add(hubStaff);
+                HubStaff newHubStaff = new HubStaff
+                {
+                    FullName = hubStaff.FullName,
+                    PasswordHash = hubStaff.PasswordHash
+
+                };
+            _context.HubStaffs.Add(newHubStaff);
             SaveChanges();
         }
         public HubStaff GetHubStaffById(int id)

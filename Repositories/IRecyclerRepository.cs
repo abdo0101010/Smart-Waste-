@@ -27,7 +27,8 @@ namespace SmartWaste.Repositories
         public int GetTotalRecyclingActive();
                 public List<ReyclerDetailsAdimDto> GetReyclerDetails();
         public List<RecyclerWithTotaltripDTO> GetSortingRecyclersByRating();
-
+        public void UpdateRecyclerStatus(int recyclerId, string newStatus);
+        public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO);
 
     }
 }
