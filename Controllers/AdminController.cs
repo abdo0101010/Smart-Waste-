@@ -295,5 +295,18 @@ Tags = new[] { "Admin", "Users" })]
             _wasteCategoryService.UpdateWasteCategory(wasteCategoryCreationDTO);
             return Ok(new { Message = "Waste category updated successfully" });
         }
+        [HttpPut("/api/admin/update-recycler-status")]
+        [SwaggerOperation(
+                                        Summary = "Updates the status of a recycler",
+                                        Description = "Requires admin privileges",
+            OperationId = " UpdateRecyclerStatus",
+                                        Tags = new[] { "Admin", "Recyclers" })]
+        [SwaggerResponse(200, Description = "Recycler status updated successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult UpdateRecyclerStatus(int recyclerId, string newStatus)
+        {
+            _recyclerService.UpdateRecyclerStatus(recyclerId, newStatus);
+            return Ok(new { Message = "Recycler status updated successfully" });
+        }
     }
 }
