@@ -1,4 +1,5 @@
-﻿using SmartWaste.Models;
+﻿using SmartWaste.DTO.WasteCategoryDTOS;
+using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
 {
@@ -10,9 +11,16 @@ namespace SmartWaste.Repositories
             _context = context;
         }
 
-        public void AddWasteCategory(WasteCategory wasteCategory)
+        public void AddWasteCategory(WasteCategoryCreationsDTO wasteCategory)
         {
-            _context.WasteCategories.Add(wasteCategory);
+            var newWasteCategory = new WasteCategory
+            {
+              
+                CategoryName = wasteCategory.CategoryName,
+                PointsPerUnit = wasteCategory.PointsPerUnit,
+                UnitType = wasteCategory.UnitType
+            };
+            _context.WasteCategories.Add(newWasteCategory);
             SaveChanges();
         }
 
@@ -21,10 +29,20 @@ namespace SmartWaste.Repositories
             return _context.WasteCategories.Find(id);
         }
 
-        public void UpdateWasteCategory(WasteCategory wasteCategory)
+        public void UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategory)
         {
-            _context.WasteCategories.Update(wasteCategory);
-            SaveChanges();
+
+            var existingCategory = _context.WasteCategories.Find(wasteCategory.CategoryId);
+            if (existingCategory != null)
+            {
+                existingCategory.CategoryName = wasteCategory.CategoryName;
+                existingCategory.PointsPerUnit = wasteCategory.PointsPerUnit;
+                existingCategory.UnitType = wasteCategory.UnitType;
+                SaveChanges();
+            }
+            else {
+                throw new Exception($"Waste category with ID {wasteCategory.CategoryId} not found.");
+            }
         }
 
         public void DeleteWasteCategory(int id)

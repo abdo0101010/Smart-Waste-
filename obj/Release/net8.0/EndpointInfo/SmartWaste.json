@@ -507,6 +507,72 @@
         }
       }
     },
+    "/api/admin/create-waste-category": {
+      "post": {
+        "tags": [
+          "Admin",
+          "Waste Categories"
+        ],
+        "summary": "Creates a new waste category",
+        "description": "Requires admin privileges",
+        "operationId": "CreateWasteCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WasteCategoryCreationsDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Waste category created successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/update-waste-category": {
+      "put": {
+        "tags": [
+          "Admin",
+          "Waste Categories"
+        ],
+        "summary": "Updates an existing waste category",
+        "description": "Requires admin privileges",
+        "operationId": "UpdateWasteCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WasteCategoryCreationsDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Waste category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
     "/api/User": {
       "get": {
         "tags": [
@@ -1352,7 +1418,8 @@
         "required": [
           "categoryId",
           "categoryName",
-          "pointsPerUnit"
+          "pointsPerUnit",
+          "unitType"
         ],
         "type": "object",
         "properties": {
@@ -1372,8 +1439,9 @@
             "format": "double"
           },
           "unitType": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
           },
           "requestItems": {
             "type": "array",
@@ -1381,6 +1449,37 @@
               "$ref": "#/components/schemas/RequestItem"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "WasteCategoryCreationsDTO": {
+        "required": [
+          "categoryId",
+          "categoryName",
+          "pointsPerUnit",
+          "unitType"
+        ],
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "pointsPerUnit": {
+            "maximum": 1.7976931348623157E+308,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "unitType": {
+            "minLength": 1,
+            "type": "string"
           }
         },
         "additionalProperties": false

@@ -5,6 +5,7 @@ using SmartWaste.DTO.HubStaffDTOS;
 using SmartWaste.DTO.RecuclerDTOS;
 using SmartWaste.DTO.TicketSDTOS;
 using SmartWaste.DTO.UserDTOS;
+using SmartWaste.DTO.WasteCategoryDTOS;
 using SmartWaste.Models;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
@@ -26,8 +27,9 @@ namespace SmartWaste.Controllers
         IRequestItemService _requestingService;
         ISupportTicketsServices _supportTicketsServices;
         IHubStaffService _hubStaffService;
+        IWasteCategoryService _wasteCategoryService;
 
-        public AdminController(IPickupRequestService pickupRequestService, IRecyclerService recyclerService, IUserService userService, IRequestItemService requestingService, ISupportTicketsServices supportTicketsServices, IHubStaffService hubStaffService      )
+        public AdminController(IPickupRequestService pickupRequestService, IRecyclerService recyclerService, IUserService userService, IRequestItemService requestingService, ISupportTicketsServices supportTicketsServices, IHubStaffService hubStaffService, IWasteCategoryService wasteCategoryService)
         {
             _pickupRequestService = pickupRequestService;
             _recyclerService = recyclerService;
@@ -35,6 +37,7 @@ namespace SmartWaste.Controllers
             _requestingService = requestingService;
             _supportTicketsServices = supportTicketsServices;
             _hubStaffService = hubStaffService;
+            _wasteCategoryService = wasteCategoryService;
 
         }
 
@@ -256,6 +259,41 @@ Tags = new[] { "Admin", "Users" })]
             _hubStaffService.AddHubStaff(hubStaff);
 
             return Ok(new { Message = "Hub staff created successfully" });
+        }
+        [HttpPost("/api/admin/create-waste-category")]
+        [SwaggerOperation(
+                                        Summary = "Creates a new waste category",
+                                        Description = "Requires admin privileges",
+                                       OperationId = "CreateWasteCategory",
+                                        Tags = new[] { "Admin", "Waste Categories" })]
+        [SwaggerResponse(200, Description = "Waste category created successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+
+        public IActionResult CreateWasteCategory(WasteCategoryCreationsDTO wasteCategoryCreationDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            _wasteCategoryService.AddWasteCategory(wasteCategoryCreationDTO);
+            return Ok(new { Message = "Waste category created successfully" });
+        }
+        [HttpPut("/api/admin/update-waste-category")]
+        [SwaggerOperation(
+                                        Summary = "Updates an existing waste category",
+                                        Description = "Requires admin privileges",
+            OperationId = "UpdateWasteCategory",
+                                        Tags = new[] { "Admin", "Waste Categories" })]
+        [SwaggerResponse(200, Description = "Waste category updated successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategoryCreationDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+            _wasteCategoryService.UpdateWasteCategory(wasteCategoryCreationDTO);
+            return Ok(new { Message = "Waste category updated successfully" });
         }
     }
 }

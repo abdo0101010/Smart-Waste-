@@ -117,6 +117,35 @@
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "CreateWasteCategory",
+    "RelativePath": "api/admin/create-waste-category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "wasteCategoryCreationDTO",
+        "Type": "SmartWaste.DTO.WasteCategoryDTOS.WasteCategoryCreationsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
     "Method": "GetRecyclerDetails",
     "RelativePath": "api/admin/recycler-details",
     "HttpMethod": "GET",
@@ -367,6 +396,35 @@
     "ReturnTypes": [
       {
         "Type": "System.Decimal",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "UpdateWasteCategory",
+    "RelativePath": "api/admin/update-waste-category",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "wasteCategoryCreationDTO",
+        "Type": "SmartWaste.DTO.WasteCategoryDTOS.WasteCategoryCreationsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
         "MediaTypes": [
           "application/json"
         ],

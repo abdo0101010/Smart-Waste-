@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("SmartWaste")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Release")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+93cafa48d84f2405815e098662e46656e2bf4830")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3cccbeee649e671854d775b5c60dc8a9c9615ba0")]
 [assembly: System.Reflection.AssemblyProductAttribute("SmartWaste")]
 [assembly: System.Reflection.AssemblyTitleAttribute("SmartWaste")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

@@ -18,7 +18,10 @@ public partial class WasteCategory
 
     public decimal PointsPerUnit { get; set; }
 
-    
+    [Required]
+        [Display(Name = "Unit Type")]
+        [StringLength(50, ErrorMessage = "Unit type cannot exceed 50 characters.")]
+
     public string? UnitType { get; set; }
 
     public virtual ICollection<RequestItem> RequestItems { get; set; } = new List<RequestItem>();

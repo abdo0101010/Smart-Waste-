@@ -1,4 +1,5 @@
-﻿using SmartWaste.Models;
+﻿using SmartWaste.DTO.WasteCategoryDTOS;
+using SmartWaste.Models;
 using SmartWaste.Repositories;
 
 namespace SmartWaste.Services
@@ -10,7 +11,7 @@ namespace SmartWaste.Services
         {
             _WasteCategoryRepository = wasteCategoryRepository;
         }
-        public void AddWasteCategory(WasteCategory wasteCategory)
+        public void AddWasteCategory(WasteCategoryCreationsDTO wasteCategory)
         {
             if (wasteCategory != null)
             {
@@ -45,7 +46,7 @@ namespace SmartWaste.Services
             _WasteCategoryRepository.SaveChanges();
         }
 
-        public void UpdateWasteCategory(WasteCategory wasteCategory)
+        public void UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategory)
         {
             if (wasteCategory != null)
             {

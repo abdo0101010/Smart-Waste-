@@ -1,14 +1,10 @@
 ﻿using SmartWaste.Models;
+using SmartWaste.Repositories;
 
 namespace SmartWaste.Services
 {
-    public interface IWasteCategoryService
+    public interface IWasteCategoryService:IWasteCategoryRepository
     {
-        public void AddWasteCategory(WasteCategory wasteCategory);
-        public WasteCategory GetWasteCategoryById(int id);
-        public void UpdateWasteCategory(WasteCategory wasteCategory);
-        public void DeleteWasteCategory(int id);
-        public IEnumerable<WasteCategory> GetAllWasteCategories();
-        public void SaveChanges();
+        
     }
 }
