@@ -3,8 +3,44 @@
   "WorkspaceRootPath": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\repositories\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:repositories\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:controllers\\usercontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\dto\\userdtos\\usercreationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:dto\\userdtos\\usercreationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\repositories\\recyclerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -13,10 +49,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\services\\recyclerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:services\\recyclerservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:services\\userservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\dto\\wastecategorydtos\\wastecategorycreationsdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -35,10 +67,6 @@
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:services\\wastecategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:controllers\\accountcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\services\\iwastecategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:services\\iwastecategoryservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -47,32 +75,12 @@
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:models\\wastecategory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\repositories\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:repositories\\iuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\models\\supporttickets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:models\\supporttickets.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\enums\\ticketstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:enums\\ticketstatus.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:repositories\\userrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\dto\\userdtos\\usercreationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:dto\\userdtos\\usercreationdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:models\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\validations\\uniqueemailattribute.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -91,8 +99,8 @@
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:repositories\\adminrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\migrations\\20260430173251_v2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:migrations\\20260430173251_v2.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -102,11 +110,11 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 20,
+          "SelectedChildIndex": 21,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 19,
+              "DocumentIndex": 21,
               "Title": "Feedback.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Models\\Feedback.cs",
               "RelativeDocumentMoniker": "Models\\Feedback.cs",
@@ -119,33 +127,55 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 6,
+              "Title": "UserController.cs",
+              "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\UserController.cs",
+              "RelativeDocumentMoniker": "Controllers\\UserController.cs",
+              "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\UserController.cs",
+              "RelativeToolTip": "Controllers\\UserController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T17:38:11.363Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 24,
+              "Title": "20260430173251_v2.cs",
+              "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Migrations\\20260430173251_v2.cs",
+              "RelativeDocumentMoniker": "Migrations\\20260430173251_v2.cs",
+              "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Migrations\\20260430173251_v2.cs",
+              "RelativeToolTip": "Migrations\\20260430173251_v2.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-04-30T17:32:51.58Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
               "Title": "RecyclerRepository.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\RecyclerRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\RecyclerRepository.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\RecyclerRepository.cs",
               "RelativeToolTip": "Repositories\\RecyclerRepository.cs",
-              "ViewState": "AgIAAEgAAAAAAAAAAAAAAFkAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAEYAAAAAAAAAAABBwFkAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T22:39:18.021Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T22:39:18.021Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 11,
               "Title": "RecyclerService.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Services\\RecyclerService.cs",
               "RelativeDocumentMoniker": "Services\\RecyclerService.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Services\\RecyclerService.cs",
               "RelativeToolTip": "Services\\RecyclerService.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAEMAAAAAAAAAAABBwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T22:39:09.434Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T22:39:09.434Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 16,
               "Title": "IWasteCategoryService.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Services\\IWasteCategoryService.cs",
               "RelativeDocumentMoniker": "Services\\IWasteCategoryService.cs",
@@ -157,19 +187,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 15,
               "Title": "WasteCategoryService.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Services\\WasteCategoryService.cs",
               "RelativeDocumentMoniker": "Services\\WasteCategoryService.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Services\\WasteCategoryService.cs",
               "RelativeToolTip": "Services\\WasteCategoryService.cs",
-              "ViewState": "AgIAAA8AAAAAAAAAAAAAADAAAAAoAAAAAAAAAA==",
+              "ViewState": "AgIAAA0AAAAAAAAAAABBwDAAAAAoAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-25T21:59:21.672Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 14,
               "Title": "IWasteCategoryRepository.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\IWasteCategoryRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\IWasteCategoryRepository.cs",
@@ -181,7 +211,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 12,
               "Title": "WasteCategoryCreationsDTO.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\DTO\\WasteCategoryDTOS\\WasteCategoryCreationsDTO.cs",
               "RelativeDocumentMoniker": "DTO\\WasteCategoryDTOS\\WasteCategoryCreationsDTO.cs",
@@ -189,24 +219,23 @@
               "RelativeToolTip": "DTO\\WasteCategoryDTOS\\WasteCategoryCreationsDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T21:52:06.651Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T21:52:06.651Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 13,
               "Title": "WasteCategoryRepository.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\WasteCategoryRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\WasteCategoryRepository.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\WasteCategoryRepository.cs",
               "RelativeToolTip": "Repositories\\WasteCategoryRepository.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAABQAAAAxAAAAAAAAAA==",
+              "ViewState": "AgIAAAQAAAAAAAAAAABBwBQAAAAxAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-25T21:50:36.864Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 17,
               "Title": "WasteCategory.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Models\\WasteCategory.cs",
               "RelativeDocumentMoniker": "Models\\WasteCategory.cs",
@@ -218,19 +247,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 18,
               "Title": "SupportTickets.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Models\\SupportTickets.cs",
               "RelativeDocumentMoniker": "Models\\SupportTickets.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Models\\SupportTickets.cs",
               "RelativeToolTip": "Models\\SupportTickets.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABIAAAAIAAAAAAAAAA==",
+              "ViewState": "AgIAAAcAAAAAAAAAAABBwBIAAAAIAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-25T13:06:44.399Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
+              "DocumentIndex": 19,
               "Title": "TicketStatus.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Enums\\TicketStatus.cs",
               "RelativeDocumentMoniker": "Enums\\TicketStatus.cs",
@@ -242,31 +271,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 7,
               "Title": "UserCreationDTO.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\DTO\\UserDTOS\\UserCreationDTO.cs",
               "RelativeDocumentMoniker": "DTO\\UserDTOS\\UserCreationDTO.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\DTO\\UserDTOS\\UserCreationDTO.cs",
               "RelativeToolTip": "DTO\\UserDTOS\\UserCreationDTO.cs",
-              "ViewState": "AgIAAAkAAAAAAAAAAAAAABUAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAIAAAAAAAAAAAAwwB4AAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-25T13:00:53.896Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 8,
               "Title": "User.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Models\\User.cs",
               "RelativeDocumentMoniker": "Models\\User.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Models\\User.cs",
               "RelativeToolTip": "Models\\User.cs",
-              "ViewState": "AgIAABgAAAAAAAAAAAAAAC4AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABgAAAAAAAAAAAAAAC4AAAATAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-25T12:56:55.057Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
+              "DocumentIndex": 20,
               "Title": "UniqueEmailAttribute.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Validations\\UniqueEmailAttribute.cs",
               "RelativeDocumentMoniker": "Validations\\UniqueEmailAttribute.cs",
@@ -278,20 +307,20 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "UserService.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Services\\UserService.cs",
               "RelativeDocumentMoniker": "Services\\UserService.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Services\\UserService.cs",
               "RelativeToolTip": "Services\\UserService.cs",
-              "ViewState": "AgIAAD8AAAAAAAAAAAAAABMAAAANAAAAAAAAAA==",
+              "ViewState": "AgIAAEgAAAAAAAAAAAAAAFcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-25T12:49:24.233Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 20,
+              "DocumentIndex": 22,
               "Title": "IUserService.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Services\\IUserService.cs",
               "RelativeDocumentMoniker": "Services\\IUserService.cs",
@@ -303,31 +332,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 5,
               "Title": "IUserRepository.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\IUserRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\IUserRepository.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\IUserRepository.cs",
               "RelativeToolTip": "Repositories\\IUserRepository.cs",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAABsAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:46:40.08Z"
+              "WhenOpened": "2026-04-25T12:46:40.08Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 15,
+              "DocumentIndex": 1,
               "Title": "UserRepository.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\UserRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\UserRepository.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\UserRepository.cs",
               "RelativeToolTip": "Repositories\\UserRepository.cs",
-              "ViewState": "AgIAAJgAAAAAAAAAAAAUwKoAAAAjAAAAAAAAAA==",
+              "ViewState": "AgIAAJYAAAAAAAAAAAAAAKUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:45:45.084Z"
+              "WhenOpened": "2026-04-25T12:45:45.084Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 21,
+              "DocumentIndex": 23,
               "Title": "AdminRepository.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\AdminRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\AdminRepository.cs",
@@ -339,32 +370,33 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 0,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Program.cs",
               "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAE4AAAAAAAAAAAAAAGQAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAFwAAAAAAAAAAAAAAG0AAAAjAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:43:42.343Z"
+              "WhenOpened": "2026-04-25T12:43:42.343Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
               "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\AdminController.cs",
               "RelativeToolTip": "Controllers\\AdminController.cs",
-              "ViewState": "AgIAABoBAAAAAAAAAAAiwC8BAABoAAAAAAAAAA==",
+              "ViewState": "AgIAAPEAAAAAAAAAAAAhwPEAAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-25T12:39:56.237Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 3,
               "Title": "AccountController.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "Controllers\\AccountController.cs",
@@ -372,11 +404,12 @@
               "RelativeToolTip": "Controllers\\AccountController.cs",
               "ViewState": "AgIAADYAAAAAAAAAAAAAAEMAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:39:51.765Z"
+              "WhenOpened": "2026-04-25T12:39:51.765Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 9,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\appsettings.json",
               "RelativeDocumentMoniker": "appsettings.json",

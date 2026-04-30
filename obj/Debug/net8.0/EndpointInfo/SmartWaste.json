@@ -1,18 +1,72 @@
 {
   "openapi": "3.0.4",
   "info": {
-    "title": "SmartWaste",
-    "version": "1.0"
+    "title": "SmartWaste System - V1",
+    "description": "A sample API to demo SmartWaste System",
+    "contact": {
+      "name": "AbdElrhman Mahmoud , Aya Hossam",
+      "url": "https://www.linkedin.com/in/abdelrahmanalashmouni",
+      "email": "abdelrhmanmahmoud0106@gmail.com"
+    },
+    "version": "v1"
   },
   "paths": {
+    "/api/Account/Login": {
+      "post": {
+        "tags": [
+          "Account",
+          "Authentication"
+        ],
+        "summary": "Login endpoint for user authentication",
+        "description": "Authenticates a user and returns a JWT token if successful",
+        "operationId": "Login",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/UserData"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Returns a JWT token and user information upon successful authentication",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Returns if the authentication fails due to invalid credentials"
+          }
+        }
+      }
+    },
     "/api/admin/total-recyclers": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Recyclers  "
         ],
+        "summary": "Gets the total number of recyclers",
+        "description": "Requires admin privileges",
+        "operationId": "GetTotalRecyclers",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total number of recyclers retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -20,11 +74,26 @@
     "/api/admin/total-recycling-active": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Recyclers"
         ],
+        "summary": "Gets the total number of active recyclers",
+        "description": "Requires admin privileges",
+        "operationId": "GetTotalRecyclingActive",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total number of active recyclers retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -32,11 +101,26 @@
     "/api/admin/total-pickup-requests": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Pickup Requests"
         ],
+        "summary": "Gets the total number of pickup requests",
+        "description": "Requires admin privileges",
+        "operationId": "GetTotalPickupRequests",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total number of pickup requests retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -44,11 +128,26 @@
     "/api/admin/Total-Earing": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Earnings"
         ],
+        "summary": "Gets the total earnings from pickup requests",
+        "description": "Requires admin privileges",
+        "operationId": "GetTotalEaring",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total earnings retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -56,11 +155,28 @@
     "/api/admin/recycler-details": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Recyclers"
         ],
+        "summary": "Gets detailed information about recyclers",
+        "description": "Requires admin privileges",
+        "operationId": "GetRecyclerDetails",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Recycler details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/ReyclerDetailsAdimDto"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -68,11 +184,28 @@
     "/api/admin/recycler-with-total-trip": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Recyclers"
         ],
+        "summary": "Gets recyclers sorted by rating with total trips",
+        "description": "Requires admin privileges",
+        "operationId": "GetRecyclerWithTotalTrip",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Recyclers with total trips retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/RecyclerWithTotaltripDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -80,11 +213,26 @@
     "/api/admin/total-users": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Users"
         ],
+        "summary": "Gets the total number of users",
+        "description": "Requires admin privileges",
+        "operationId": "GetTotalUsers",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total number of users retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -92,11 +240,26 @@
     "/api/admin/total-active-users": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Users"
         ],
+        "summary": "Gets the total number of active users",
+        "description": "Requires admin privileges",
+        "operationId": "GetTotalActiveUsers",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total number of active users retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -104,11 +267,26 @@
     "/api/admin/total-requesting-items": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Requests"
         ],
+        "summary": "Gets the total number of requesting items",
+        "description": "Requires admin privileges",
+        "operationId": "GetTotalRequestingItems",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total number of requesting items retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "integer",
+                  "format": "int32"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -116,11 +294,26 @@
     "/api/admin/total-wallet-points": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Users"
         ],
+        "summary": "Gets the total wallet points across all users",
+        "description": "Requires admin privileges",
+        "operationId": "GetTotalWalletPoints",
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Total wallet points retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "number",
+                  "format": "double"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -128,8 +321,12 @@
     "/api/admin/users-by-filter": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Users"
         ],
+        "summary": "Gets users based on filter criteria",
+        "description": "Requires admin privileges",
+        "operationId": "GetUsersByFilter",
         "parameters": [
           {
             "name": "KeyofFilter",
@@ -148,7 +345,20 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Users retrieved successfully based on filter criteria",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UserFilterAdminDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -156,8 +366,12 @@
     "/api/admin/Show-Support-Ticket": {
       "get": {
         "tags": [
-          "Admin"
+          "Admin",
+          "Support Tickets"
         ],
+        "summary": "Gets support tickets based on status and search criteria",
+        "description": "Requires admin privileges",
+        "operationId": "ShowSupportTicket",
         "parameters": [
           {
             "name": "status",
@@ -176,7 +390,327 @@
         ],
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Support tickets retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TicketDTO"
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/create-user": {
+      "post": {
+        "tags": [
+          "Admin",
+          "Users"
+        ],
+        "summary": "Creates a new user",
+        "description": "Requires admin privileges",
+        "operationId": "CreateUser",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Address",
+                  "Email",
+                  "FullName",
+                  "Password",
+                  "ProfilePictureUrl"
+                ],
+                "type": "object",
+                "properties": {
+                  "FullName": {
+                    "maxLength": 50,
+                    "minLength": 5,
+                    "pattern": "^[a-zA-Z\\s]+$",
+                    "type": "string"
+                  },
+                  "Email": {
+                    "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                    "type": "string"
+                  },
+                  "Password": {
+                    "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+                    "type": "string"
+                  },
+                  "Address": {
+                    "minLength": 30,
+                    "type": "string"
+                  },
+                  "ProfilePictureUrl": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "FullName": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Password": {
+                  "style": "form"
+                },
+                "Address": {
+                  "style": "form"
+                },
+                "ProfilePictureUrl": {
+                  "style": "form"
+                }
+              }
+            },
+            "application/json": {
+              "schema": {
+                "required": [
+                  "Address",
+                  "Email",
+                  "FullName",
+                  "Password",
+                  "ProfilePictureUrl"
+                ],
+                "type": "object",
+                "properties": {
+                  "FullName": {
+                    "maxLength": 50,
+                    "minLength": 5,
+                    "pattern": "^[a-zA-Z\\s]+$",
+                    "type": "string"
+                  },
+                  "Email": {
+                    "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                    "type": "string"
+                  },
+                  "Password": {
+                    "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+                    "type": "string"
+                  },
+                  "Address": {
+                    "minLength": 30,
+                    "type": "string"
+                  },
+                  "ProfilePictureUrl": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "FullName": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Password": {
+                  "style": "form"
+                },
+                "Address": {
+                  "style": "form"
+                },
+                "ProfilePictureUrl": {
+                  "style": "form"
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "User created successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/create-recycler": {
+      "post": {
+        "tags": [
+          "Admin",
+          "Recyclers"
+        ],
+        "summary": "Creates a new recycler",
+        "description": "Requires admin privileges",
+        "operationId": "CreateRecycler",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecyclerCreationDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Recycler created successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/create-hub-staff": {
+      "post": {
+        "tags": [
+          "Admin",
+          "Hub Staff"
+        ],
+        "summary": "Creates a new hub staff member",
+        "description": "Requires admin privileges",
+        "operationId": "CreateHubStaff",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/HubstaffCreationsDto"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Hub staff created successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/create-waste-category": {
+      "post": {
+        "tags": [
+          "Admin",
+          "Waste Categories"
+        ],
+        "summary": "Creates a new waste category",
+        "description": "Requires admin privileges",
+        "operationId": "CreateWasteCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WasteCategoryCreationsDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Waste category created successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/update-waste-category": {
+      "put": {
+        "tags": [
+          "Admin",
+          "Waste Categories"
+        ],
+        "summary": "Updates an existing waste category",
+        "description": "Requires admin privileges",
+        "operationId": "UpdateWasteCategory",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WasteCategoryCreationsDTO"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Waste category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/update-recycler-status": {
+      "put": {
+        "tags": [
+          "Admin",
+          "Recyclers"
+        ],
+        "summary": "Updates the status of a recycler",
+        "description": "Requires admin privileges",
+        "operationId": " UpdateRecyclerStatus",
+        "parameters": [
+          {
+            "name": "recyclerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "newStatus",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recycler status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
           }
         }
       }
@@ -385,7 +919,7 @@
       "HubStaff": {
         "required": [
           "fullName",
-          "role",
+          "passwordHash",
           "staffId"
         ],
         "type": "object",
@@ -397,12 +931,18 @@
           "fullName": {
             "maxLength": 30,
             "minLength": 5,
-            "pattern": "[a-zA-Z]{30}",
+            "pattern": "^[a-zA-Z\\s]+$",
             "type": "string"
           },
-          "role": {
+          "passwordHash": {
             "minLength": 1,
-            "type": "string"
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "type": "string",
+            "format": "password"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
           },
           "pickupRequests": {
             "type": "array",
@@ -410,6 +950,28 @@
               "$ref": "#/components/schemas/PickupRequest"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "HubstaffCreationsDto": {
+        "required": [
+          "fullName",
+          "passwordHash"
+        ],
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "maxLength": 30,
+            "minLength": 5,
+            "pattern": "^[a-zA-Z\\s]+$",
+            "type": "string"
+          },
+          "passwordHash": {
+            "minLength": 1,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "type": "string",
+            "format": "password"
           }
         },
         "additionalProperties": false
@@ -525,6 +1087,10 @@
             "type": "string",
             "nullable": true
           },
+          "passwordHash": {
+            "type": "string",
+            "nullable": true
+          },
           "vehicleInfo": {
             "type": "string",
             "nullable": true
@@ -540,11 +1106,64 @@
             "format": "double",
             "nullable": true
           },
+          "role": {
+            "type": "string",
+            "nullable": true
+          },
           "pickupRequests": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/PickupRequest"
             },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecyclerCreationDTO": {
+        "required": [
+          "fullName",
+          "passwordHash",
+          "phone"
+        ],
+        "type": "object",
+        "properties": {
+          "fullName": {
+            "maxLength": 50,
+            "minLength": 5,
+            "type": "string"
+          },
+          "phone": {
+            "minLength": 1,
+            "pattern": "^01[0125]\\d{8}$",
+            "type": "string"
+          },
+          "passwordHash": {
+            "minLength": 1,
+            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RecyclerWithTotaltripDTO": {
+        "type": "object",
+        "properties": {
+          "recyclerID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "totalTrips": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "rating": {
+            "type": "number",
+            "format": "double",
             "nullable": true
           }
         },
@@ -573,6 +1192,7 @@
             "format": "int32"
           },
           "quantity": {
+            "maximum": 1.7976931348623157E+308,
             "minimum": 0,
             "type": "number",
             "format": "double"
@@ -586,6 +1206,21 @@
           },
           "request": {
             "$ref": "#/components/schemas/PickupRequest"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RequestItemQuantityDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
           }
         },
         "additionalProperties": false
@@ -634,6 +1269,84 @@
         },
         "additionalProperties": false
       },
+      "ReyclerDetailsAdimDto": {
+        "type": "object",
+        "properties": {
+          "recyclerID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "fullName": {
+            "type": "string",
+            "nullable": true
+          },
+          "phone": {
+            "type": "string",
+            "nullable": true
+          },
+          "vehicleInfo": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalTripsCompleted": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "TicketDTO": {
+        "type": "object",
+        "properties": {
+          "ticketID": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "subject": {
+            "type": "string",
+            "nullable": true
+          },
+          "description": {
+            "type": "string",
+            "nullable": true
+          },
+          "status": {
+            "type": "string",
+            "nullable": true
+          },
+          "priority": {
+            "type": "string",
+            "nullable": true
+          },
+          "createdAt": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "citizenName": {
+            "type": "string",
+            "nullable": true
+          },
+          "driverName": {
+            "type": "string",
+            "nullable": true
+          },
+          "rating": {
+            "type": "integer",
+            "format": "int32",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
       "User": {
         "required": [
           "address",
@@ -641,6 +1354,7 @@
           "email",
           "fullName",
           "passwordHash",
+          "profilePictureUrl",
           "status",
           "userId",
           "walletPoints"
@@ -659,8 +1373,8 @@
           },
           "email": {
             "minLength": 1,
-            "type": "string",
-            "format": "email"
+            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+            "type": "string"
           },
           "passwordHash": {
             "minLength": 1,
@@ -678,6 +1392,7 @@
             "type": "string"
           },
           "walletPoints": {
+            "maximum": 1.7976931348623157E+308,
             "minimum": 0,
             "type": "number",
             "format": "double"
@@ -685,6 +1400,14 @@
           "createdAt": {
             "type": "string",
             "format": "date-time"
+          },
+          "profilePictureUrl": {
+            "minLength": 1,
+            "type": "string"
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
           },
           "pickupRequests": {
             "type": "array",
@@ -699,6 +1422,71 @@
               "$ref": "#/components/schemas/UserRedemption"
             },
             "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserData": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "password": {
+            "type": "string",
+            "nullable": true
+          },
+          "role": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "UserFilterAdminDTO": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "name": {
+            "type": "string",
+            "nullable": true
+          },
+          "email": {
+            "type": "string",
+            "nullable": true
+          },
+          "phoneNumber": {
+            "type": "string",
+            "nullable": true
+          },
+          "address": {
+            "type": "string",
+            "nullable": true
+          },
+          "isActive": {
+            "type": "string",
+            "nullable": true
+          },
+          "walletPoints": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalRecycledQuantity": {
+            "$ref": "#/components/schemas/RequestItemQuantityDTO"
+          },
+          "quantity": {
+            "type": "number",
+            "format": "double",
+            "nullable": true
+          },
+          "totalRequests": {
+            "type": "integer",
+            "format": "int32"
           }
         },
         "additionalProperties": false
@@ -745,7 +1533,8 @@
         "required": [
           "categoryId",
           "categoryName",
-          "pointsPerUnit"
+          "pointsPerUnit",
+          "unitType"
         ],
         "type": "object",
         "properties": {
@@ -759,13 +1548,15 @@
             "type": "string"
           },
           "pointsPerUnit": {
+            "maximum": 1.7976931348623157E+308,
             "minimum": 0,
             "type": "number",
             "format": "double"
           },
           "unitType": {
-            "type": "string",
-            "nullable": true
+            "maxLength": 50,
+            "minLength": 0,
+            "type": "string"
           },
           "requestItems": {
             "type": "array",
@@ -776,7 +1567,51 @@
           }
         },
         "additionalProperties": false
+      },
+      "WasteCategoryCreationsDTO": {
+        "required": [
+          "categoryId",
+          "categoryName",
+          "pointsPerUnit",
+          "unitType"
+        ],
+        "type": "object",
+        "properties": {
+          "categoryId": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "categoryName": {
+            "maxLength": 100,
+            "minLength": 0,
+            "type": "string"
+          },
+          "pointsPerUnit": {
+            "maximum": 1.7976931348623157E+308,
+            "minimum": 0,
+            "type": "number",
+            "format": "double"
+          },
+          "unitType": {
+            "minLength": 1,
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Account",
+      "description": "Endpoints for user authentication and account management"
+    },
+    {
+      "name": "Admin",
+      "description": "Endpoints for administrative functions and management of recyclers, users, pickup requests, and support tickets"
+    },
+    {
+      "name": "User"
+    }
+  ]
 }

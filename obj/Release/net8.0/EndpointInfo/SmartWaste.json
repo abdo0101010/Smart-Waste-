@@ -419,9 +419,110 @@
         "operationId": "CreateUser",
         "requestBody": {
           "content": {
+            "multipart/form-data": {
+              "schema": {
+                "required": [
+                  "Address",
+                  "Email",
+                  "FullName",
+                  "Password",
+                  "ProfilePictureUrl"
+                ],
+                "type": "object",
+                "properties": {
+                  "FullName": {
+                    "maxLength": 50,
+                    "minLength": 5,
+                    "pattern": "^[a-zA-Z\\s]+$",
+                    "type": "string"
+                  },
+                  "Email": {
+                    "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                    "type": "string"
+                  },
+                  "Password": {
+                    "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+                    "type": "string"
+                  },
+                  "Address": {
+                    "minLength": 30,
+                    "type": "string"
+                  },
+                  "ProfilePictureUrl": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "FullName": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Password": {
+                  "style": "form"
+                },
+                "Address": {
+                  "style": "form"
+                },
+                "ProfilePictureUrl": {
+                  "style": "form"
+                }
+              }
+            },
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/UserCreationDTO"
+                "required": [
+                  "Address",
+                  "Email",
+                  "FullName",
+                  "Password",
+                  "ProfilePictureUrl"
+                ],
+                "type": "object",
+                "properties": {
+                  "FullName": {
+                    "maxLength": 50,
+                    "minLength": 5,
+                    "pattern": "^[a-zA-Z\\s]+$",
+                    "type": "string"
+                  },
+                  "Email": {
+                    "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+                    "type": "string"
+                  },
+                  "Password": {
+                    "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
+                    "type": "string"
+                  },
+                  "Address": {
+                    "minLength": 30,
+                    "type": "string"
+                  },
+                  "ProfilePictureUrl": {
+                    "type": "string",
+                    "format": "binary"
+                  }
+                }
+              },
+              "encoding": {
+                "FullName": {
+                  "style": "form"
+                },
+                "Email": {
+                  "style": "form"
+                },
+                "Password": {
+                  "style": "form"
+                },
+                "Address": {
+                  "style": "form"
+                },
+                "ProfilePictureUrl": {
+                  "style": "form"
+                }
               }
             }
           }
@@ -561,6 +662,47 @@
         "responses": {
           "200": {
             "description": "Waste category updated successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/update-recycler-status": {
+      "put": {
+        "tags": [
+          "Admin",
+          "Recyclers"
+        ],
+        "summary": "Updates the status of a recycler",
+        "description": "Requires admin privileges",
+        "operationId": " UpdateRecyclerStatus",
+        "parameters": [
+          {
+            "name": "recyclerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "newStatus",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recycler status updated successfully",
             "content": {
               "application/json": {
                 "schema": { }
@@ -1212,6 +1354,7 @@
           "email",
           "fullName",
           "passwordHash",
+          "profilePictureUrl",
           "status",
           "userId",
           "walletPoints"
@@ -1258,6 +1401,10 @@
             "type": "string",
             "format": "date-time"
           },
+          "profilePictureUrl": {
+            "minLength": 1,
+            "type": "string"
+          },
           "role": {
             "type": "string",
             "nullable": true
@@ -1275,38 +1422,6 @@
               "$ref": "#/components/schemas/UserRedemption"
             },
             "nullable": true
-          }
-        },
-        "additionalProperties": false
-      },
-      "UserCreationDTO": {
-        "required": [
-          "address",
-          "email",
-          "fullName",
-          "password"
-        ],
-        "type": "object",
-        "properties": {
-          "fullName": {
-            "maxLength": 50,
-            "minLength": 5,
-            "pattern": "^[a-zA-Z\\s]+$",
-            "type": "string"
-          },
-          "email": {
-            "minLength": 1,
-            "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
-            "type": "string"
-          },
-          "password": {
-            "minLength": 1,
-            "pattern": "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&])[A-Za-z\\d@$!%*?&]{8,}$",
-            "type": "string"
-          },
-          "address": {
-            "minLength": 30,
-            "type": "string"
           }
         },
         "additionalProperties": false

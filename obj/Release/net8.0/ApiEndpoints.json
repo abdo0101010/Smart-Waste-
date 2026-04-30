@@ -95,9 +95,29 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "userCreationDTO",
-        "Type": "SmartWaste.DTO.UserDTOS.UserCreationDTO",
-        "IsRequired": true
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Password",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ProfilePictureUrl",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": [
@@ -396,6 +416,40 @@
     "ReturnTypes": [
       {
         "Type": "System.Decimal",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "UpdateRecyclerStatus",
+    "RelativePath": "api/admin/update-recycler-status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recyclerId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "newStatus",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
         "MediaTypes": [
           "application/json"
         ],

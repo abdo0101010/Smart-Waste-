@@ -82,6 +82,11 @@ namespace SmartWaste
                 );
             });
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAll", b => b.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
+            });
+
 
             builder.Services.AddEndpointsApiExplorer();
 
@@ -101,12 +106,12 @@ namespace SmartWaste
 
             app.UseHttpsRedirection();
 
+            app.UseStaticFiles();
             app.UseAuthorization();
 
-
+            app.UseCors("AllowAll");
             app.MapControllers();
-
-                        //app.MapUserEndpoints();
+            //app.MapUserEndpoints();
 
             app.Run();
         }

@@ -25,8 +25,7 @@ namespace SmartWaste.Repositories
         public User GetUserByName(string name);
 
         public void SaveChanges();
-        public void CreateUser(UserCreationDTO userCreationDTO);
-
+        public  Task CreateUser(UserCreationDTO userCreationDTO);
         public int GetTotalUsers();
         public int GetTotalActiveUsers();
         public List<UserDTo> GetAllUserDtos();

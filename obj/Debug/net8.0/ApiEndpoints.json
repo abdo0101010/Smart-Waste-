@@ -1,5 +1,170 @@
 [
   {
+    "ContainingType": "SmartWaste.Controllers.AccountController",
+    "Method": "Login",
+    "RelativePath": "api/Account/Login",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "data",
+        "Type": "SmartWaste.DTO.AccountDTOS.UserData",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "CreateHubbStaff",
+    "RelativePath": "api/admin/create-hub-staff",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "hubStaff",
+        "Type": "SmartWaste.DTO.HubStaffDTOS.HubstaffCreationsDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "CreateRecycler",
+    "RelativePath": "api/admin/create-recycler",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recyclerCreationDTO",
+        "Type": "SmartWaste.DTO.RecuclerDTOS.RecyclerCreationDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "CreateUser",
+    "RelativePath": "api/admin/create-user",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "FullName",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Email",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Password",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "Address",
+        "Type": "System.String",
+        "IsRequired": false
+      },
+      {
+        "Name": "ProfilePictureUrl",
+        "Type": "Microsoft.AspNetCore.Http.IFormFile",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "CreateWasteCategory",
+    "RelativePath": "api/admin/create-waste-category",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "wasteCategoryCreationDTO",
+        "Type": "SmartWaste.DTO.WasteCategoryDTOS.WasteCategoryCreationsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
     "ContainingType": "SmartWaste.Controllers.AdminController",
     "Method": "GetRecyclerDetails",
     "RelativePath": "api/admin/recycler-details",
@@ -7,7 +172,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SmartWaste.DTO.RecuclerDTOS.ReyclerDetailsAdimDto, SmartWaste, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -17,7 +195,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SmartWaste.DTO.RecuclerDTOS.RecyclerWithTotaltripDTO, SmartWaste, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -38,7 +229,20 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SmartWaste.DTO.TicketSDTOS.TicketDTO, SmartWaste, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -48,7 +252,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -58,7 +275,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Decimal",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -68,7 +298,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -78,7 +321,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -88,7 +344,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -98,7 +367,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -108,7 +390,20 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Int32",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -118,7 +413,83 @@
     "IsController": true,
     "Order": 0,
     "Parameters": [],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Decimal",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "UpdateRecyclerStatus",
+    "RelativePath": "api/admin/update-recycler-status",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "recyclerId",
+        "Type": "System.Int32",
+        "IsRequired": false
+      },
+      {
+        "Name": "newStatus",
+        "Type": "System.String",
+        "IsRequired": false
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
+  },
+  {
+    "ContainingType": "SmartWaste.Controllers.AdminController",
+    "Method": "UpdateWasteCategory",
+    "RelativePath": "api/admin/update-waste-category",
+    "HttpMethod": "PUT",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "wasteCategoryCreationDTO",
+        "Type": "SmartWaste.DTO.WasteCategoryDTOS.WasteCategoryCreationsDTO",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": [
+      {
+        "Type": "System.Object",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.AdminController",
@@ -139,7 +510,20 @@
         "IsRequired": false
       }
     ],
-    "ReturnTypes": []
+    "ReturnTypes": [
+      {
+        "Type": "System.Collections.Generic.List\u00601[[SmartWaste.DTO.UserDTOS.UserFilterAdminDTO, SmartWaste, Version=1.0.0.0, Culture=neutral, PublicKeyToken=null]]",
+        "MediaTypes": [
+          "application/json"
+        ],
+        "StatusCode": 200
+      },
+      {
+        "Type": "System.Void",
+        "MediaTypes": [],
+        "StatusCode": 401
+      }
+    ]
   },
   {
     "ContainingType": "SmartWaste.Controllers.UserController",
