@@ -85,12 +85,12 @@ namespace SmartWaste.Services
             }
             return null;
         }
-        public void CreateUser(UserCreationDTO userCreationDTO)
+        public async Task CreateUser(UserCreationDTO userCreationDTO)
         {
             if (userCreationDTO != null)
             {
               
-                _UserRepository.CreateUser(userCreationDTO);
+                await _UserRepository.CreateUser(userCreationDTO);
             }
         }
 

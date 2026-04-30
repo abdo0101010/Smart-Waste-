@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.HttpResults;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.DTO.RequestItemDTOS;
@@ -13,11 +15,14 @@ namespace SmartWaste.Repositories
     public class UserRepository: IUserRepository
     {
          smartwasteContext _context;
+        private readonly IWebHostEnvironment _webHostEnvironment;
 
-        public UserRepository(smartwasteContext context)
+        public UserRepository(smartwasteContext context, IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
+
 
         public void AddUser(User user)
         {
@@ -158,18 +163,43 @@ namespace SmartWaste.Repositories
 
             return filteredUsers;
         }
-
-        public void CreateUser(UserCreationDTO userCreationDTO)
+        public async Task CreateUser(UserCreationDTO userCreationDTO)
         {
+            string? imagePath = null;
+
+            if (userCreationDTO.ProfilePictureUrl != null && userCreationDTO.ProfilePictureUrl.Length > 0)
+            {
+                // ✅ التعديل هنا: لو الـ WebRootPath بـ null، بنستخدم مسار المشروع الحالي
+                var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+                string uploadsFolder = Path.Combine(rootPath, "images", "users");
+
+                // التأكد إن الفولدرات موجودة (بيكريت السلسلة كلها لو مش موجودة)
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + userCreationDTO.ProfilePictureUrl.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await userCreationDTO.ProfilePictureUrl.CopyToAsync(fileStream);
+                }
+
+                imagePath = "/images/users/" + uniqueFileName;
+            }
+
             User user = new User
             {
                 FullName = userCreationDTO.FullName,
                 Email = userCreationDTO.Email,
-                PasswordHash = userCreationDTO.Password,
-                Address = userCreationDTO.Address
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userCreationDTO.Password),
+                Address = userCreationDTO.Address,
+                ProfilePictureUrl = imagePath
             };
+
             _context.Users.Add(user);
-            SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         public void SaveChanges()

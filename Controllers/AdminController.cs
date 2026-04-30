@@ -215,14 +215,24 @@ Tags = new[] { "Admin", "Users" })]
                                         Tags = new[] { "Admin", "Users" })]
         [SwaggerResponse(200, Description = "User created successfully", Type = typeof(object))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
-        public IActionResult CreateUser(UserCreationDTO userCreationDTO)
+        [Consumes("multipart/form-data")]
+        public async Task<IActionResult> CreateUser([FromForm] UserCreationDTO userCreationDTO)
         {
-            if (!ModelState.IsValid)
+            try
             {
-                return BadRequest(ModelState);
+                await _userService.CreateUser(userCreationDTO);
+                return Ok("تم الحفظ بنجاح");
             }
-            _userService.CreateUser(userCreationDTO);
-            return Ok(new { Message = "User created successfully" });
+            catch (Exception ex)
+            {
+                // السطر ده هيخلي الـ API يرجع لك سبب القفلة بالظبط بدل ما يقفل
+                return BadRequest(new
+                {
+                    Error = ex.Message,
+                    Inner = ex.InnerException?.Message,
+                    StackTrace = ex.StackTrace
+                });
+            }
         }
         [HttpPost("/api/admin/create-recycler")]
         [SwaggerOperation(
