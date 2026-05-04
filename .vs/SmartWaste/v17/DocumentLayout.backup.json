@@ -315,8 +315,7 @@
               "RelativeToolTip": "Services\\UserService.cs",
               "ViewState": "AgIAAEgAAAAAAAAAAAAAAFcAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:49:24.233Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T12:49:24.233Z"
             },
             {
               "$type": "Document",
@@ -340,8 +339,7 @@
               "RelativeToolTip": "Repositories\\IUserRepository.cs",
               "ViewState": "AgIAAAkAAAAAAAAAAAAAABsAAAAPAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:46:40.08Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T12:46:40.08Z"
             },
             {
               "$type": "Document",
@@ -353,8 +351,7 @@
               "RelativeToolTip": "Repositories\\UserRepository.cs",
               "ViewState": "AgIAAJYAAAAAAAAAAAAAAKUAAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:45:45.084Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T12:45:45.084Z"
             },
             {
               "$type": "Document",
@@ -374,9 +371,9 @@
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
-              "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Program.cs",
-              "RelativeToolTip": "Program.cs",
-              "ViewState": "AgIAAFwAAAAAAAAAAAAAAG0AAAAjAAAAAAAAAA==",
+              "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Program.cs*",
+              "RelativeToolTip": "Program.cs*",
+              "ViewState": "AgIAAFUAAAAAAAAAAAASwF4AAAAMAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-04-25T12:43:42.343Z",
               "EditorCaption": ""
@@ -391,8 +388,7 @@
               "RelativeToolTip": "Controllers\\AdminController.cs",
               "ViewState": "AgIAAPEAAAAAAAAAAAAhwPEAAABOAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:39:56.237Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T12:39:56.237Z"
             },
             {
               "$type": "Document",
@@ -404,8 +400,7 @@
               "RelativeToolTip": "Controllers\\AccountController.cs",
               "ViewState": "AgIAADYAAAAAAAAAAAAAAEMAAAANAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-04-25T12:39:51.765Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-04-25T12:39:51.765Z"
             },
             {
               "$type": "Document",
