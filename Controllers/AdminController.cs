@@ -66,11 +66,15 @@ Tags = new[] { "Admin", "Recyclers  " }
             Tags = new[] { "Admin", "Recyclers" })]
         [SwaggerResponse(200, Description = "Total number of active recyclers retrieved successfully", Type = typeof(int))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
-
+         
         public IActionResult GetTotalRecyclingActive()
         {
-            var totalRecyclingActive = _recyclerService.GetTotalRecyclingActive();
-            return Ok(totalRecyclingActive);
+            if (ModelState.IsValid)
+            {
+                var totalRecyclingActive = _recyclerService.GetTotalRecyclingActive();
+                return Ok(totalRecyclingActive);
+            }
+            return BadRequest(ModelState);
         }
         [HttpGet("/api/admin/total-pickup-requests")]
         [SwaggerOperation(
