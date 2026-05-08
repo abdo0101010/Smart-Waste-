@@ -66,7 +66,7 @@ Tags = new[] { "Admin", "Recyclers  " }
             Tags = new[] { "Admin", "Recyclers" })]
         [SwaggerResponse(200, Description = "Total number of active recyclers retrieved successfully", Type = typeof(int))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
-         
+
         public IActionResult GetTotalRecyclingActive()
         {
             if (ModelState.IsValid)
@@ -321,6 +321,58 @@ Tags = new[] { "Admin", "Users" })]
         {
             _recyclerService.UpdateRecyclerStatus(recyclerId, newStatus);
             return Ok(new { Message = "Recycler status updated successfully" });
+        }
+        [HttpDelete("/api/admin/delete-user")]
+        [SwaggerOperation(
+                                        Summary = "Deletes a user",
+                                        Description = "Requires admin privileges",
+            OperationId = "DeleteUser",
+                                        Tags = new[] { "Admin", "Users" })]
+        [SwaggerResponse(200, Description = "User deleted successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult DeleteUser(int userId)
+        {
+            _userService.DeleteUser(userId);
+            return Ok(new { Message = "User deleted successfully" });
+        }
+        [HttpDelete("/api/admin/delete-recycler")]
+        [SwaggerOperation(
+                                    Summary = "Deletes a recycler",
+                                    Description = "Requires admin privileges",
+        OperationId = "DeleteRecycler",
+                                    Tags = new[] { "Admin", "Recyclers" })]
+        [SwaggerResponse(200, Description = "Recycler deleted successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult DeleteRecycler(int recyclerId)
+        {
+            _recyclerService.DeleteRecycler(recyclerId);
+            return Ok(new { Message = "Recycler deleted successfully" });
+        }
+        [HttpDelete("/api/admin/delete-hub-staff")]
+        [SwaggerOperation(
+                                        Summary = "Deletes a hub staff member",
+                                        Description = "Requires admin privileges",
+            Tags = new[] { "Admin", "Hub Staff" },
+            OperationId = "DeleteHubStaff")]
+        [SwaggerResponse(200, Description = "Hub staff deleted successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult DeleteHubStaff(int hubStaffId)
+        {
+            _hubStaffService.DeleteHubStaff(hubStaffId);
+            return Ok(new { Message = "Hub staff deleted successfully" });
+        }
+        [HttpDelete("/api/admin/delete-waste-category")] 
+        [SwaggerOperation(
+                                        Summary = "Deletes a waste category",
+                                        Description = "Requires admin privileges",
+            Tags = new[] {"Admin", "Waste Categories" },    
+            OperationId = "DeleteWasteCategory")]
+        [SwaggerResponse(200, Description = "Waste category deleted successfully", Type = typeof(object))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult DeleteWasteCategory(int wasteCategoryId)
+        {
+            _wasteCategoryService.DeleteWasteCategory(wasteCategoryId);
+            return Ok(new { Message = "Waste category deleted successfully" });
         }
     }
 }
