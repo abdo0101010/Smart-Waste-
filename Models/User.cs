@@ -43,7 +43,7 @@ public partial class User
     [DataType(DataType.DateTime)]
 
     public DateTime? CreatedAt { get; set; } = DateTime.Now;
-    [Required]
+    //[Required]
     public string? ProfilePictureUrl { get; set; }
     public string Role { get; set; } = "User";
     public virtual ICollection<PickupRequest>? PickupRequests { get; set; } = new List<PickupRequest>();

@@ -23,8 +23,8 @@ namespace SmartWaste.DTO.UserDTOS
         [Required]
         [MinLength(30, ErrorMessage = "address must be more than 30 digit")]
         public string Address { get; set; } = null!;
-        [Required]
-        public IFormFile ProfilePictureUrl { get; set; }
+        
+        public IFormFile ?ProfilePictureUrl { get; set; }
     }
 }
 

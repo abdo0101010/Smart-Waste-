@@ -7,6 +7,10 @@
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:controllers\\admincontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
+      "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\models\\admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:models\\admin.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|d:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\smartwaste\\repositories\\recyclerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6AEB60A3-5E08-43DB-95E6-BC1A5F821355}|SmartWaste.csproj|solutionrelative:repositories\\recyclerrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -34,24 +38,37 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 0,
+          "SelectedChildIndex": 1,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Admin.cs",
+              "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Models\\Admin.cs",
+              "RelativeDocumentMoniker": "Models\\Admin.cs",
+              "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Models\\Admin.cs",
+              "RelativeToolTip": "Models\\Admin.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAIAAAAEAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-05-10T17:17:58.83Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "AdminController.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\AdminController.cs",
               "RelativeDocumentMoniker": "Controllers\\AdminController.cs",
-              "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\AdminController.cs",
-              "RelativeToolTip": "Controllers\\AdminController.cs",
-              "ViewState": "AgIAAEUAAAAAAAAAAAAAAEwAAAAoAAAAAAAAAA==",
+              "ToolTip": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\AdminController.cs*",
+              "RelativeToolTip": "Controllers\\AdminController.cs*",
+              "ViewState": "AgIAAFcAAAAAAAAAAAAAABEAAAAgAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-05-09T17:15:51.841Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "UserController.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\UserController.cs",
               "RelativeDocumentMoniker": "Controllers\\UserController.cs",
@@ -59,12 +76,11 @@
               "RelativeToolTip": "Controllers\\UserController.cs",
               "ViewState": "AgIAAAgAAAAAAAAAAAAAACUAAAAaAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-09T17:13:39.315Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-09T17:13:39.315Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "RecyclerRepository.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Repositories\\RecyclerRepository.cs",
               "RelativeDocumentMoniker": "Repositories\\RecyclerRepository.cs",
@@ -72,12 +88,11 @@
               "RelativeToolTip": "Repositories\\RecyclerRepository.cs",
               "ViewState": "AgIAADMAAAAAAAAAAAAAAD0AAAAqAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-09T17:10:08.391Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-09T17:10:08.391Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -85,12 +100,11 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAGkAAAAAAAAAAAAAAHAAAAAhAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-08T17:38:36.427Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-08T17:38:36.427Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 5,
               "Title": "README.md",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\README.md",
               "RelativeDocumentMoniker": "README.md",
@@ -98,12 +112,11 @@
               "RelativeToolTip": "README.md",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001818|",
-              "WhenOpened": "2026-05-08T17:38:39.223Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-08T17:38:39.223Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 4,
               "Title": "AccountController.cs",
               "DocumentMoniker": "D:\\\u0631\u0648\u0627\u062F 2\\\u062C\u0632\u0621\u064A\u0647\\SmartWaste\\Controllers\\AccountController.cs",
               "RelativeDocumentMoniker": "Controllers\\AccountController.cs",
@@ -111,8 +124,7 @@
               "RelativeToolTip": "Controllers\\AccountController.cs",
               "ViewState": "AgIAAD4AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-05-08T17:26:08.772Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-05-08T17:26:08.772Z"
             }
           ]
         }
