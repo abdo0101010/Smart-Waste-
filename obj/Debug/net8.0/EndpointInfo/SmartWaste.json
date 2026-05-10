@@ -715,6 +715,142 @@
         }
       }
     },
+    "/api/admin/delete-user": {
+      "delete": {
+        "tags": [
+          "Admin",
+          "Users"
+        ],
+        "summary": "Deletes a user",
+        "description": "Requires admin privileges",
+        "operationId": "DeleteUser",
+        "parameters": [
+          {
+            "name": "userId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/delete-recycler": {
+      "delete": {
+        "tags": [
+          "Admin",
+          "Recyclers"
+        ],
+        "summary": "Deletes a recycler",
+        "description": "Requires admin privileges",
+        "operationId": "DeleteRecycler",
+        "parameters": [
+          {
+            "name": "recyclerId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recycler deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/delete-hub-staff": {
+      "delete": {
+        "tags": [
+          "Admin",
+          "Hub Staff"
+        ],
+        "summary": "Deletes a hub staff member",
+        "description": "Requires admin privileges",
+        "operationId": "DeleteHubStaff",
+        "parameters": [
+          {
+            "name": "hubStaffId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Hub staff deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
+    "/api/admin/delete-waste-category": {
+      "delete": {
+        "tags": [
+          "Admin",
+          "Waste Categories"
+        ],
+        "summary": "Deletes a waste category",
+        "description": "Requires admin privileges",
+        "operationId": "DeleteWasteCategory",
+        "parameters": [
+          {
+            "name": "wasteCategoryId",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Waste category deleted successfully",
+            "content": {
+              "application/json": {
+                "schema": { }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized access - admin privileges required"
+          }
+        }
+      }
+    },
     "/api/User": {
       "get": {
         "tags": [
