@@ -34,6 +34,10 @@ public partial class smartwasteContext : DbContext
 
     public virtual DbSet<WasteCategory> WasteCategories { get; set; }
     public virtual DbSet<Admin> Admins { get; set; }
+    //public DbSet<Payment> Payments { get; set; }
+    //public DbSet<Enrollment> Enrollments { get; set; }
+    public DbSet<WalletRedemption> WalletRedemptions { get; set; }
+    public DbSet<Payment> Payment { get; set; }
 
 
 
