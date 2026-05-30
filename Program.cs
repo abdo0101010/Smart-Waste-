@@ -10,6 +10,8 @@ using SmartWaste.Repositories;
 using SmartWaste.Services;
 using System.Text;
 using System.Xml.Schema;
+using SmartWaste.Services;
+
 namespace SmartWaste
 {
     public class Program
@@ -40,8 +42,10 @@ namespace SmartWaste
             builder.Services.AddScoped<ISupportTicketsServices, SupportTicketsServices>();
             builder.Services.AddScoped<IAdminRepository , AdminRepository>();  
             builder.Services.AddScoped<IAuthServices, AuthServices>();
+            builder.Services.AddScoped<IPaymentService, PaymentService>();
 
-           builder.Services.AddAuthentication(op=>op.DefaultAuthenticateScheme="MySchema")
+
+            builder.Services.AddAuthentication(op=>op.DefaultAuthenticateScheme="MySchema")
 .AddJwtBearer("MySchema", options =>
 {
     string securityKey = "this is my custom Secret key for authentication";
