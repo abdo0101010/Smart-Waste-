@@ -93,6 +93,16 @@ namespace SmartWaste.Services
                 await _UserRepository.CreateUser(userCreationDTO);
             }
         }
+        public GetSpecficUser GetUserByIdWithDetails(int userId)
+        {
+
+            if(userId > 0)
+            {
+                return _UserRepository.GetUserByIdWithDetails(userId);
+            }
+            return null;
+
+        }
 
     }
 }

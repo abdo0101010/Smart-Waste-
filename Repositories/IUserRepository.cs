@@ -31,6 +31,7 @@ namespace SmartWaste.Repositories
         public List<UserDTo> GetAllUserDtos();
                 public decimal? GetTotalWalletPoints();
         public List<UserFilterAdminDTO> GetUsersByFilter(string KeyofFilter, string status);
+        public GetSpecficUser GetUserByIdWithDetails(int userId);
 
 
     }

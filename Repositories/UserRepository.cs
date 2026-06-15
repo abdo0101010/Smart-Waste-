@@ -201,6 +201,19 @@ namespace SmartWaste.Repositories
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
         }
+        public GetSpecficUser GetUserByIdWithDetails(int userId)
+        {
+            var user= _context.Users.FirstOrDefault(u => u.UserId == userId);
+            GetSpecficUser NUesr = new GetSpecficUser
+            {
+                UserId = user.UserId,
+                FullName = user.FullName,
+                Email = user.Email,
+                WalletPoints = user.WalletPoints
+            };
+
+            return NUesr;
+        }
 
         public void SaveChanges()
         {
