@@ -1,4 +1,5 @@
-﻿using SmartWaste.DTO.UserDTO;
+﻿using Microsoft.AspNetCore.Http.HttpResults;
+using SmartWaste.DTO.UserDTO;
 using SmartWaste.DTO.UserDTOS;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
@@ -102,6 +103,27 @@ namespace SmartWaste.Services
             }
             return null;
 
+        }
+        public List<UserRankDTO> SortUsersByWalletPoints(string sortOrder)
+        {
+            if (!string.IsNullOrEmpty(sortOrder))
+            {
+                return _UserRepository.SortUsersByWalletPoints(sortOrder);
+            }
+            return null;
+        }
+
+        public UserRankDTO GetRankingUser(int id, string sortOrder)
+        {
+            if (id > 0 && !string.IsNullOrEmpty(sortOrder))
+            {
+                return _UserRepository.GetRankingUser(id, sortOrder);
+            }
+            return null;
+        }
+        public int GetAvgPointsUsers()
+        {
+            return _UserRepository.GetAvgPointsUsers();
         }
 
     }

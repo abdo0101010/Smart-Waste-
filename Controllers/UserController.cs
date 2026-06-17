@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.UserDTO;
 using SmartWaste.Models;
-using SmartWaste.DTO.PickupRequestDTOS;
-using SmartWaste.DTO.UserRedemptionDTOS;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
+using SmartWaste.DTO.UserDTOS;
 
-// For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
 namespace SmartWaste.Controllers
 {
@@ -78,7 +76,7 @@ namespace SmartWaste.Controllers
             OperationId = "GetUserByIdWithDetails",
             Tags = new[] { "User" }
         )]
-        [SwaggerResponse(200, "Returns the user with details", typeof(User))]
+        [SwaggerResponse(200, "Returns the user with details", typeof(GetSpecficUser))]
 
         [SwaggerResponse(404, "User not found")]
         
@@ -94,6 +92,52 @@ namespace SmartWaste.Controllers
 
             return Ok(userDto);
 
+        }
+        [HttpGet("/api/User/SortingUser")]
+        [SwaggerOperation(
+            Summary = "Sort users by wallet points",
+            Description = "Sorts users based on their wallet points in ascending or descending order.",
+            OperationId = "SortingUser",
+            Tags = new[] { "User" }
+        )]
+        [SwaggerResponse(200, "Returns the sorted list of users", typeof(List<UserRankDTO>))]
+        [SwaggerResponse(400, "Invalid sort order")]
+        public IActionResult SortingUser(string sortOrder)
+        {
+            var sortedUsers = _userService.SortUsersByWalletPoints(sortOrder);
+            return Ok(sortedUsers);
+        }
+        [HttpGet("/api/User/GetRankingUser/{id:int}")]
+        [SwaggerOperation(
+            Summary = "Get user ranking by ID",
+            Description = "Retrieves the ranking of a user based on their wallet points.",
+            OperationId = "GetRankingUser",
+            Tags = new[] { "User" }
+        )]
+        [SwaggerResponse(200, "Returns the user ranking", typeof(UserRankDTO))]
+        [SwaggerResponse(404, "User not found")]
+        public IActionResult GetRankingUser(int id, string sortOrder)
+        {
+            var userRank = _userService.GetRankingUser(id, sortOrder);
+            if (userRank == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+            return Ok(userRank);
+        }
+        [HttpGet("/api/User/Getavgpoint")]
+        [SwaggerOperation(
+            Summary = "Get average points of users",
+            Description = "Retrieves the average wallet points of all users.",
+            OperationId = "GetAvgPointsUsers",
+            Tags = new[] { "User" }
+        )]
+
+        [SwaggerResponse(200, "Returns the average points of users", typeof(int))]
+        [SwaggerResponse(400,"not found")]
+        public IActionResult Getavgpoint()
+        {
+                   return Ok(_userService.GetAvgPointsUsers());
         }
 
     }

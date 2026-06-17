@@ -46,6 +46,7 @@ public partial class User
     //[Required]
     public string? ProfilePictureUrl { get; set; }
     public string Role { get; set; } = "User";
+    public string? Bottle {  get; set; }
     public virtual ICollection<PickupRequest>? PickupRequests { get; set; } = new List<PickupRequest>();
 
     public virtual ICollection<UserRedemption> ?UserRedemptions { get; set; } = new List<UserRedemption>();
