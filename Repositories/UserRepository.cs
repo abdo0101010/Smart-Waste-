@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.DTO.RequestItemDTOS;
@@ -9,6 +10,7 @@ using SmartWaste.DTO.UserDTOS;
 using SmartWaste.DTO.UserRedemptionDTOS;
 using SmartWaste.Models;
 using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SmartWaste.Repositories
 {
@@ -214,7 +216,50 @@ namespace SmartWaste.Repositories
 
             return NUesr;
         }
+        public List<UserRankDTO> SortUsersByWalletPoints(string sortOrder)
+        {
+            var users = _context.Users.AsQueryable();
+            if (sortOrder == "asc")
+            {
+                users = users.OrderBy(u => u.WalletPoints);
 
+
+            }
+            else if (sortOrder == "desc")
+            {
+                users = users.OrderByDescending(u => u.WalletPoints);
+            }
+            var usersList = users.ToList();
+            List<UserRankDTO> sortedUsers = usersList.Select((u, index) => new UserRankDTO
+            {
+                UserId = u.UserId,
+                Name = u.FullName,
+                BottleCount=u.Bottle,
+                WalletPoints = u.WalletPoints ?? 0
+                ,Rank=index+1
+            }).ToList();
+            return sortedUsers;
+        }
+        public UserRankDTO GetRankingUser(int id, string sortOrder)
+        {
+            var users = SortUsersByWalletPoints(sortOrder);
+            var rankedUsers = users.Select((u, index) => new UserRankDTO
+            {
+                UserId = u.UserId,               
+                Name = u. Name,
+                WalletPoints = u.WalletPoints, 
+                Rank = index + 1,                
+                BottleCount = u.BottleCount          
+            }).ToList(); var rankedUser = rankedUsers.FirstOrDefault(u => u.UserId   == id);
+            var targetUser = rankedUsers.FirstOrDefault(u => u.UserId == id);
+
+            return targetUser;
+        }
+        public int GetAvgPointsUsers()
+        {
+            var avgPoints = _context.Users.Average(u => u.WalletPoints);
+            return (int)avgPoints;
+        }
         public void SaveChanges()
         {
             _context.SaveChanges();
