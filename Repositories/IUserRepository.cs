@@ -38,6 +38,8 @@ namespace SmartWaste.Repositories
         public int GetAvgPointsUsers();
         public void RegisterUser(dataforregister userCreationDTO);
         public void UpdateUser(updateUser newUser, int id);
+            Task UpdateUserBottlesAndPointsAsync(int userId, int bottleCount, decimal pointsEarned);
+        
 
 
 

@@ -302,6 +302,23 @@ namespace SmartWaste.Repositories
 
             _context.SaveChanges();
         }
+        public async Task UpdateUserBottlesAndPointsAsync(int userId, int bottleCount, decimal pointsEarned)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null) throw new KeyNotFoundException("User not found.");
+
+            // تحويل حقل الـ Bottle الحالي لرقم وتزويد الجديد عليه
+            int currentBottles = 0;
+            if (!string.IsNullOrEmpty(user.Bottle))
+            {
+                int.TryParse(user.Bottle, out currentBottles);
+            }
+
+            user.Bottle = (currentBottles + bottleCount).ToString();
+            user.WalletPoints = (user.WalletPoints ?? 0) + pointsEarned;
+
+            await _context.SaveChangesAsync();
+        }
         public void SaveChanges()
         {
             _context.SaveChanges();
