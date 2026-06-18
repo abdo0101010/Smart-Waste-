@@ -37,6 +37,8 @@ namespace SmartWaste.Repositories
         public UserRankDTO GetRankingUser(int id, string sortOrder);
         public int GetAvgPointsUsers();
         public void RegisterUser(dataforregister userCreationDTO);
+        public void UpdateUser(updateUser newUser, int id);
+
 
 
 

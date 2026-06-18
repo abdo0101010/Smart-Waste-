@@ -276,6 +276,32 @@ namespace SmartWaste.Repositories
             _context.Users.Add(user);
             SaveChanges();
         }
+        public void UpdateUser(updateUser newUser, int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.UserId == id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"user is no exist");
+            }
+
+            if (!string.IsNullOrEmpty(newUser.PasswordHash))
+            {
+                if (newUser.PasswordHash != newUser.ConfirmPassword)
+                {
+                    throw new InvalidOperationException("Password and confirm password do not match.");
+                }
+
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.PasswordHash);
+            }
+
+            user.FullName = newUser.FullName;
+            user.Address = newUser.Address;
+
+          
+            _context.Users.Update(user);
+
+            _context.SaveChanges();
+        }
         public void SaveChanges()
         {
             _context.SaveChanges();
