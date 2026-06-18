@@ -1,4 +1,5 @@
-﻿using SmartWaste.Models;
+﻿using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.Models;
 using SmartWaste.Repositories;
 
 namespace SmartWaste.Services
@@ -18,7 +19,21 @@ namespace SmartWaste.Services
                 _pickupRequestRepository.AddPickupRequest(pickupRequest);
             }
         }
-
+        public PickupRequest GetPickupRequestById(int id)
+        {
+            if(id > 0)
+            {
+                return _pickupRequestRepository.GetPickupRequestById(id);
+            }
+            return null;
+        }
+        public void UpdatePickupRequest(PickupRequest pickupRequest)
+        {
+            if(pickupRequest != null)
+            {
+                _pickupRequestRepository.UpdatePickupRequest(pickupRequest);
+            }
+        }
         public void DeletePickupRequest(int id)
         {
             if(id > 0)
@@ -37,37 +52,30 @@ namespace SmartWaste.Services
             return _pickupRequestRepository.GetAllPickupRequestsWithRecyclersAndHubStaff();
         }
 
-        public PickupRequest GetPickupRequestById(int id)
-        {
-            if(id > 0)
-            {
-                return _pickupRequestRepository.GetPickupRequestById(id);
-            }
-            return null;
-        }
-
-        public void SaveChanges()
-        {
-            _pickupRequestRepository.SaveChanges();
-        }
-
-        public void UpdatePickupRequest(PickupRequest pickupRequest)
-        {
-            if(pickupRequest != null)
-            {
-                _pickupRequestRepository.UpdatePickupRequest(pickupRequest);
-            }
-        }
-        public int GetTotalPickupRequests()
+         public int GetTotalPickupRequests()
         {
             return _pickupRequestRepository.GetTotalPickupRequests();
         }
         public decimal? TotalEaring()
         {
             return _pickupRequestRepository.TotalEaring();
-
-
-
         }
+        public PickupInfoDTOS GetTodayPickupSummary()
+        {
+            return _pickupRequestRepository.GetTodayPickupSummary();
+        }
+        public List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status)
+        {
+            return _pickupRequestRepository.GetRecyclerRequestsWithFilters( search, status);
+        }
+        public bool AcceptPickupRequest(int requestId, int recyclerId)
+        {
+            return _pickupRequestRepository.AcceptPickupRequest(requestId, recyclerId);
+        }
+        public void SaveChanges()
+        {
+            _pickupRequestRepository.SaveChanges();
+        }       
+      
     }
 }
