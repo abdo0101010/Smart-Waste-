@@ -1,4 +1,5 @@
-﻿using SmartWaste.Models;
+﻿using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
 {
@@ -12,6 +13,8 @@ namespace SmartWaste.Repositories
         public List<PickupRequest> GetAllPickupRequestsWithRecyclersAndHubStaff();
         public int GetTotalPickupRequests();
             public decimal? TotalEaring();
+        public PickupInfoDTOS GetTodayPickupSummary();
+        public List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status);
+        public bool AcceptPickupRequest(int requestId, int recyclerId);
         public void SaveChanges();
-    }
-}
+    }}
