@@ -1,24 +1,29 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using SmartWaste.DTO.EcoSnapUploadDTOS;
 using SmartWaste.DTO.UserDTO;
+using SmartWaste.DTO.UserDTOS;
 using SmartWaste.Models;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
-using SmartWaste.DTO.UserDTOS;
+using System.Security.Claims;
 
 
 namespace SmartWaste.Controllers
 {
     [Route("api/[controller]")]
     [Produces("application/json")]
-    [Consumes("application/json")]
+    //[Consumes("application/json")]
     [SwaggerTag("Operations related to users")] 
     [ApiController]
     public class UserController : ControllerBase
     {
         IUserService _userService;
-        public UserController(IUserService userService)
+        private readonly IEcoSnapService _ecoSnapService;
+        public UserController(IUserService userService, IEcoSnapService ecoSnapService)
         {
             _userService = userService;
+            _ecoSnapService = ecoSnapService;
         }
         //[HttpGet]
         //public IActionResult GetAllUsers()
@@ -159,6 +164,39 @@ namespace SmartWaste.Controllers
             catch (InvalidOperationException ex)
             {
                 return BadRequest(new { message = ex.Message });
+            }
+        }
+
+        [Authorize]
+        [HttpPost("UploadEcoSnapImage")]
+        [Consumes("multipart/form-data")]
+        [RequestSizeLimit(100_000_000)]
+        public async Task<IActionResult> UploadEcoSnapImage([FromForm] IFormFile file) // 🔥 رجعناها مباشرة هنا
+        {
+            if (file == null || file.Length == 0)
+                return BadRequest(new { Message = "برجاء اختيار صورة صالحة." });
+
+            var user = HttpContext.User;
+            var userIdClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized(new { Message = "User not authorized or session expired." });
+            }
+
+            try
+            {
+                int detectedBottles = await _ecoSnapService.ProcessImageWithAIAsync(userId, file);
+
+                return Ok(new
+                {
+                    Message = "Image processed and data saved successfully via EcoSnap! 🤖🎉",
+                    BottlesDetected = detectedBottles,
+                    PointsEarned = detectedBottles * 5
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "An error occurred while processing the image", Details = ex.Message });
             }
         }
     }

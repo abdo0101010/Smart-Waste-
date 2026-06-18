@@ -141,5 +141,12 @@ namespace SmartWaste.Services
                 _UserRepository.UpdateUser(newUser, id);
             }
         }
+        public async Task UpdateUserBottlesAndPointsAsync(int userId, int bottleCount, decimal pointsEarned)
+        {
+            if (userId > 0 && bottleCount >= 0 && pointsEarned >= 0)
+            {
+                await _UserRepository.UpdateUserBottlesAndPointsAsync(userId, bottleCount, pointsEarned);
+            }
+        }
     }
 }
