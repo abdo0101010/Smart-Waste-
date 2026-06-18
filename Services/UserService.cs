@@ -134,5 +134,12 @@ namespace SmartWaste.Services
             }
 
         }
+        public void UpdateUser(updateUser newUser, int id)
+        {
+            if (newUser != null && id > 0)
+            {
+                _UserRepository.UpdateUser(newUser, id);
+            }
+        }
     }
 }

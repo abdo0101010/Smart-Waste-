@@ -139,6 +139,27 @@ namespace SmartWaste.Controllers
         {
                    return Ok(_userService.GetAvgPointsUsers());
         }
+        [HttpPost("/api/User/UpdateUser/{id:int}")]
+        public IActionResult UpdateUser(int id, [FromBody] updateUser newUser)
+        {
+            if (newUser == null)
+            {
+                return BadRequest(new { message = "Invalid user data" });
+            }
 
+            try
+            {
+                _userService.UpdateUser(newUser, id);
+                return Ok(new { message = "User updated successfully" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+        }
     }
 }
