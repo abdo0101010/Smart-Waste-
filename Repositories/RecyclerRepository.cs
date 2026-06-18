@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.RecuclerDTOS;
+using SmartWaste.DTO.Register;
 using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
@@ -104,6 +105,20 @@ namespace SmartWaste.Repositories
                 FullName = recyclerCreationDTO.FullName,
                 Phone = recyclerCreationDTO.Phone,
                 PasswordHash = recyclerCreationDTO.PasswordHash
+            };
+            _context.Recyclers.Add(recycler);
+            SaveChanges();
+        }
+        public void RegisterRecycler(dataforregister recyclerCreationDTO)
+        {
+            var recycler = new Recycler
+            {
+                FullName = recyclerCreationDTO.FullName,
+                PasswordHash = recyclerCreationDTO.PasswordHash,
+                Role= recyclerCreationDTO.Role,
+                    Phone = recyclerCreationDTO.Phone
+
+
             };
             _context.Recyclers.Add(recycler);
             SaveChanges();

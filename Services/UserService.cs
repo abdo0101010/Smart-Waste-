@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Http.HttpResults;
+using SmartWaste.DTO.Register;
 using SmartWaste.DTO.UserDTO;
 using SmartWaste.DTO.UserDTOS;
 using SmartWaste.Models;
@@ -60,7 +61,7 @@ namespace SmartWaste.Services
         }
         public List<UserDTo> GetAllUserDtos()
         {
-          return  _UserRepository.GetAllUserDtos();
+            return _UserRepository.GetAllUserDtos();
         }
         public int GetTotalUsers()
         {
@@ -70,14 +71,14 @@ namespace SmartWaste.Services
         {
             return _UserRepository.GetTotalActiveUsers();
         }
-            public decimal? GetTotalWalletPoints()
-            {
-                return _UserRepository.GetTotalWalletPoints();
+        public decimal? GetTotalWalletPoints()
+        {
+            return _UserRepository.GetTotalWalletPoints();
         }
-            public List<UserFilterAdminDTO> GetUsersByFilter(string KeyofFilter, string status)
-            {
-                return _UserRepository.GetUsersByFilter(KeyofFilter, status);
-            }
+        public List<UserFilterAdminDTO> GetUsersByFilter(string KeyofFilter, string status)
+        {
+            return _UserRepository.GetUsersByFilter(KeyofFilter, status);
+        }
         public User GetUserByName(string name)
         {
             if (!string.IsNullOrEmpty(name))
@@ -90,14 +91,14 @@ namespace SmartWaste.Services
         {
             if (userCreationDTO != null)
             {
-              
+
                 await _UserRepository.CreateUser(userCreationDTO);
             }
         }
         public GetSpecficUser GetUserByIdWithDetails(int userId)
         {
 
-            if(userId > 0)
+            if (userId > 0)
             {
                 return _UserRepository.GetUserByIdWithDetails(userId);
             }
@@ -125,6 +126,13 @@ namespace SmartWaste.Services
         {
             return _UserRepository.GetAvgPointsUsers();
         }
+        public void RegisterUser(dataforregister userCreationDTO)
+        {
+            if (userCreationDTO != null)
+            {
+                _UserRepository.RegisterUser(userCreationDTO);
+            }
 
+        }
     }
 }

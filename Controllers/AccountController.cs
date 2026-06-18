@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SmartWaste.DTO.AccountDTOS;
+using SmartWaste.DTO.Register;
 using SmartWaste.Models;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
@@ -18,9 +19,13 @@ namespace SmartWaste.Controllers
     public class AccountController : ControllerBase
     {
         IAuthServices _authServices;
-        public AccountController(IAuthServices authServices)
+        IUserService _userService;
+        IRecyclerService _recyclerService;
+        public AccountController(IAuthServices authServices, IUserService userService, IRecyclerService recyclerService)
         {
             _authServices = authServices;
+            _userService = userService;
+            _recyclerService = recyclerService;
         }
         //[HttpPost("Login")]
         //public IActionResult Login(UserData data)
@@ -90,6 +95,31 @@ namespace SmartWaste.Controllers
 
             }
 
+        }
+        [HttpPost("Register")]
+        [SwaggerOperation(
+            Summary = "Register endpoint for user and driver registration",
+            Description = "Registers a new user or driver based on the provided role",
+            OperationId = "Register",
+            Tags = new[] { "Account", "Registration" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Returns a success message upon successful registration", typeof(string))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Returns if the registration fails due to invalid role or data")] 
+        public IActionResult Register(dataforregister userCreationDTO)
+        {
+            if (userCreationDTO.Role=="User")
+            {
+                _userService.RegisterUser(userCreationDTO);
+                return Ok("User registered successfully");
+            }
+            else if (userCreationDTO.Role == "Driver")
+            {
+                _recyclerService.RegisterRecycler(userCreationDTO);
+                return Ok("Driver registered successfully");
+            }
+            else
+            {
+                return BadRequest("Invalid role specified. Please use 'User' or 'Driver'.");
+            }
         }
     }
 }
