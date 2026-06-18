@@ -33,6 +33,8 @@ public partial class User
     [MinLength(30,ErrorMessage ="address must be more than 30 digit ")]
     [MaxLength(100,ErrorMessage = "address must be less than 100 digit")]
     public string? Address { get; set; }
+    [RegularExpression(@"^01[0125]\d{8}$")]
+    public string? Phone { get; set; } = null!;
     [Required]
 
     public string? Status { get; set; } ="Active";

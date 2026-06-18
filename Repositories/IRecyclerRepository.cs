@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.RecuclerDTOS;
+using SmartWaste.DTO.Register;
 using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
@@ -29,6 +30,8 @@ namespace SmartWaste.Repositories
         public List<RecyclerWithTotaltripDTO> GetSortingRecyclersByRating();
         public void UpdateRecyclerStatus(int recyclerId, string newStatus);
         public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO);
+        public void RegisterRecycler(dataforregister recyclerCreationDTO);
+
 
     }
 }

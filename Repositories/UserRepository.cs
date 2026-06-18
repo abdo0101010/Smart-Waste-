@@ -4,6 +4,7 @@ using Microsoft.CodeAnalysis.Scripting;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.DTO.Register;
 using SmartWaste.DTO.RequestItemDTOS;
 using SmartWaste.DTO.UserDTO;
 using SmartWaste.DTO.UserDTOS;
@@ -259,6 +260,21 @@ namespace SmartWaste.Repositories
         {
             var avgPoints = _context.Users.Average(u => u.WalletPoints);
             return (int)avgPoints;
+        }
+        public void RegisterUser(dataforregister userCreationDTO)
+        {
+            User user = new User
+            {
+
+                FullName = userCreationDTO.FullName,
+                Email = userCreationDTO.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userCreationDTO.PasswordHash),
+                Address = userCreationDTO.Address,
+                Role = userCreationDTO.Role,
+                Phone = userCreationDTO.Phone
+            };
+            _context.Users.Add(user);
+            SaveChanges();
         }
         public void SaveChanges()
         {

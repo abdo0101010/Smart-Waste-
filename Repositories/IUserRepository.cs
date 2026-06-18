@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartWaste.DTO.Register;
 using SmartWaste.DTO.UserDTO;
 using SmartWaste.DTO.UserDTOS;
 using SmartWaste.Models;
@@ -35,6 +36,8 @@ namespace SmartWaste.Repositories
         public List<UserRankDTO> SortUsersByWalletPoints(string sortOrder);
         public UserRankDTO GetRankingUser(int id, string sortOrder);
         public int GetAvgPointsUsers();
+        public void RegisterUser(dataforregister userCreationDTO);
+
 
 
 

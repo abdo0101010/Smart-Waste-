@@ -1,4 +1,5 @@
 ﻿using SmartWaste.DTO.RecuclerDTOS;
+using SmartWaste.DTO.Register;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
 
@@ -108,6 +109,17 @@ namespace SmartWaste.Services
             else
             {
                 throw new ArgumentNullException(nameof(recyclerCreationDTO), "RecyclerCreationDTO cannot be null.");
+            }
+        }
+        public void RegisterRecycler(dataforregister recyclerCreationDTO)
+        {
+            if (recyclerCreationDTO != null)
+            {
+                _RecyclerRepository.RegisterRecycler(recyclerCreationDTO);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(recyclerCreationDTO), "dataforregister cannot be null.");
             }
         }
     }
