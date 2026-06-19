@@ -15,6 +15,7 @@ namespace SmartWaste.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+
     // [Authorize(Roles = "Admin")]
     [Produces("application/json")]
     [Consumes("application/json")]
