@@ -39,6 +39,7 @@ namespace SmartWaste
             builder.Services.AddScoped<IPaymentService, PaymentService>();
             builder.Services.AddScoped<IEcoSnapService, EcoSnapService>();
             builder.Services.AddScoped<IUserService, UserService>();
+            builder.Services.AddScoped<IImageStorageService, ImageStorageService>();
 
             // 3. إعدادات الـ Authentication والـ JWT Token
             builder.Services.AddAuthentication(op => op.DefaultAuthenticateScheme = "MySchema")
@@ -60,14 +61,12 @@ namespace SmartWaste
                 option.UseLazyLoadingProxies().UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection"))
             );
 
-            // 5. إعدادات الـ Swagger (تم إزالة السطر المتكرر وحل مشكلة الـ Namespaces)
+            // 5. إعدادات الـ Swagger وحل مشكلة الـ Namespaces والتضارب
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen(c =>
             {
-                c.EnableAnnotations(); // مهم جداً لقراءة الـ Attributes
-
-                // حل مشكلة تضارب الـ DTOs المتشابهة في الأسم
-                c.CustomSchemaIds(type => type.FullName);
+                c.EnableAnnotations(); // تفعيل الـ Annotations لقراءة الـ Attributes
+                c.CustomSchemaIds(type => type.FullName); // منع تضارب الـ DTOs المتشابهة
 
                 c.SwaggerDoc("v1", new Microsoft.OpenApi.OpenApiInfo
                 {
@@ -91,14 +90,21 @@ namespace SmartWaste
 
             var app = builder.Build();
 
-            // 7. ترتيب الـ Middleware Pipeline (ترتيب قاتل ومهم جداً)
+            // 7. ترتيب الـ Middleware Pipeline
             app.UseSwagger();
             app.UseSwaggerUI(c => c.SwaggerEndpoint("/swagger/v1/swagger.json", "SmartWaste API V1"));
 
             app.UseHttpsRedirection();
+
+            // تأمين الـ wwwroot برمجياً منعاً لأي كراش
+            string wwwrootPath = Path.Combine(builder.Environment.ContentRootPath, "wwwroot");
+            if (!Directory.Exists(wwwrootPath))
+            {
+                Directory.CreateDirectory(wwwrootPath);
+            }
             app.UseStaticFiles();
 
-            // 🔥 لازم الـ CORS يشتغل هنا قبل الـ Authentication والـ Controllers عشان المتصفح يقبل الـ Request
+            // 🔥 الـ CORS في مكانه السحري قبل الـ Auth والـ Controllers
             app.UseCors("AllowAll");
 
             app.UseAuthentication();

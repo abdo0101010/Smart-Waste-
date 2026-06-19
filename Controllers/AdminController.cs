@@ -29,8 +29,9 @@ namespace SmartWaste.Controllers
         ISupportTicketsServices _supportTicketsServices;
         IHubStaffService _hubStaffService;
         IWasteCategoryService _wasteCategoryService;
+        IImageStorageService _imageStorageService;
 
-        public AdminController(IPickupRequestService pickupRequestService, IRecyclerService recyclerService, IUserService userService, IRequestItemService requestingService, ISupportTicketsServices supportTicketsServices, IHubStaffService hubStaffService, IWasteCategoryService wasteCategoryService)
+        public AdminController(IPickupRequestService pickupRequestService, IRecyclerService recyclerService, IUserService userService, IRequestItemService requestingService, ISupportTicketsServices supportTicketsServices, IHubStaffService hubStaffService, IWasteCategoryService wasteCategoryService ,IImageStorageService imageStorageService)
         {
             _pickupRequestService = pickupRequestService;
             _recyclerService = recyclerService;
@@ -39,16 +40,17 @@ namespace SmartWaste.Controllers
             _supportTicketsServices = supportTicketsServices;
             _hubStaffService = hubStaffService;
             _wasteCategoryService = wasteCategoryService;
+            _imageStorageService = imageStorageService;
 
         }
 
 
         [HttpGet("/api/admin/total-recyclers")]
         [SwaggerOperation(
-Summary = "Gets the total number of recyclers",
-Description = "Requires admin privileges",
-OperationId = "GetTotalRecyclers",
-Tags = new[] { "Admin", "Recyclers  " }
+               Summary = "Gets the total number of recyclers",
+               Description = "Requires admin privileges",
+               OperationId = "GetTotalRecyclers",
+               Tags = new[] { "Admin", "Recyclers  " }
 
 )]
         [SwaggerResponse(200, Description = "Total number of recyclers retrieved successfully", Type = typeof(int))]
@@ -276,6 +278,7 @@ Tags = new[] { "Admin", "Users" })]
             return Ok(new { Message = "Hub staff created successfully" });
         }
         [HttpPost("/api/admin/create-waste-category")]
+        [Consumes("multipart/form-data")]
         [SwaggerOperation(
                                         Summary = "Creates a new waste category",
                                         Description = "Requires admin privileges",
@@ -284,13 +287,28 @@ Tags = new[] { "Admin", "Users" })]
         [SwaggerResponse(200, Description = "Waste category created successfully", Type = typeof(object))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
 
-        public IActionResult CreateWasteCategory(WasteCategoryCreationsDTO wasteCategoryCreationDTO)
+        //public IActionResult CreateWasteCategory(WasteCategoryCreationsDTO wasteCategoryCreationDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    _wasteCategoryService.AddWasteCategory(wasteCategoryCreationDTO);
+        //    return Ok(new { Message = "Waste category created successfully" });
+        //}
+        public async Task<IActionResult> CreateWasteCategory([FromForm] WasteCategoryCreationsDTO wasteCategoryCreationDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            _wasteCategoryService.AddWasteCategory(wasteCategoryCreationDTO);
+
+            string? imagePath = null;
+            if (wasteCategoryCreationDTO.Image != null)
+            {
+                imagePath = await _imageStorageService.SaveImageAsync(wasteCategoryCreationDTO.Image, "categories");
+            }
+            _wasteCategoryService.AddWasteCategory(wasteCategoryCreationDTO, imagePath);
             return Ok(new { Message = "Waste category created successfully" });
         }
         [HttpPut("/api/admin/update-waste-category")]
@@ -301,13 +319,34 @@ Tags = new[] { "Admin", "Users" })]
                                         Tags = new[] { "Admin", "Waste Categories" })]
         [SwaggerResponse(200, Description = "Waste category updated successfully", Type = typeof(object))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
-        public IActionResult UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategoryCreationDTO)
+        //public IActionResult UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategoryCreationDTO)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    _wasteCategoryService.UpdateWasteCategory(wasteCategoryCreationDTO);
+        //    return Ok(new { Message = "Waste category updated successfully" });
+        //}
+        public async Task<IActionResult> UpdateWasteCategory([FromForm] WasteCategoryCreationsDTO wasteCategoryCreationDTO)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
             }
-            _wasteCategoryService.UpdateWasteCategory(wasteCategoryCreationDTO);
+            string? imagePath = null;
+            if (wasteCategoryCreationDTO.Image != null)
+            {
+                var existingCategory = _wasteCategoryService.GetWasteCategoryById(wasteCategoryCreationDTO.CategoryId);
+
+                if (existingCategory != null && !string.IsNullOrEmpty(existingCategory.ImagePath))
+                {
+                    _imageStorageService.DeleteImage(existingCategory.ImagePath);
+                }
+                imagePath = await _imageStorageService.SaveImageAsync(wasteCategoryCreationDTO.Image, "categories");
+            }
+
+            _wasteCategoryService.UpdateWasteCategory(wasteCategoryCreationDTO, imagePath);
             return Ok(new { Message = "Waste category updated successfully" });
         }
         [HttpPut("/api/admin/update-recycler-status")]

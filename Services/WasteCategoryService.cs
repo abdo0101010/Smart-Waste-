@@ -7,17 +7,23 @@ namespace SmartWaste.Services
     public class WasteCategoryService : IWasteCategoryService
     {
         IWasteCategoryRepository _WasteCategoryRepository;
-        public WasteCategoryService(IWasteCategoryRepository wasteCategoryRepository)
+        IImageStorageService _ImageStorageService;
+       
+        public WasteCategoryService(IWasteCategoryRepository wasteCategoryRepository,
+            IImageStorageService imageStorageService)
         {
             _WasteCategoryRepository = wasteCategoryRepository;
+            _ImageStorageService = imageStorageService;
+
         }
-        public void AddWasteCategory(WasteCategoryCreationsDTO wasteCategory)
+        public void AddWasteCategory(WasteCategoryCreationsDTO wasteCategory, string? imagePath)
         {
             if (wasteCategory != null)
             {
-                _WasteCategoryRepository.AddWasteCategory(wasteCategory);
+                _WasteCategoryRepository.AddWasteCategory(wasteCategory, imagePath);
             }
         }
+
 
         public void DeleteWasteCategory(int id)
         {
@@ -46,13 +52,12 @@ namespace SmartWaste.Services
             _WasteCategoryRepository.SaveChanges();
         }
 
-        public void UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategory)
+        public void UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategory, string? imagePath)
         {
             if (wasteCategory != null)
             {
-                _WasteCategoryRepository.UpdateWasteCategory(wasteCategory);
+                _WasteCategoryRepository.UpdateWasteCategory(wasteCategory, imagePath);
             }
-
         }
     }
 }
