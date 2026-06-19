@@ -23,16 +23,16 @@ public partial class PickupRequest
     [DataType(DataType.DateTime)]
     [Display(Name = "Verification Date")]
     public DateTime? VerificationDate { get; set; }=DateTime.Now;   
-    [Required]
-    public string Status { get; set; }
-    [Required]
+   
+    public string? Status { get; set; }
+   
 
     public string? Qrcode { get; set; }
-    [Required]
+
     [Range(10, 1000, ErrorMessage = "Estimated points must be between 10 and 1000.")]
         
     public decimal? EstimatedPoints { get; set; }
-    [Required]
+    
     [Range(10, 1000, ErrorMessage = "Final points must be between 10 and 1000.")]
 
     public decimal? FinalPoints { get; set; }

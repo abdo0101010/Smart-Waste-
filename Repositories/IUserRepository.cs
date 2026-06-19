@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SmartWaste.DTO.Register;
 using SmartWaste.DTO.UserDTO;
 using SmartWaste.DTO.UserDTOS;
 using SmartWaste.Models;
@@ -31,6 +32,19 @@ namespace SmartWaste.Repositories
         public List<UserDTo> GetAllUserDtos();
                 public decimal? GetTotalWalletPoints();
         public List<UserFilterAdminDTO> GetUsersByFilter(string KeyofFilter, string status);
+        public GetSpecficUser GetUserByIdWithDetails(int userId);
+        public List<UserRankDTO> SortUsersByWalletPoints(string sortOrder);
+        public UserRankDTO GetRankingUser(int id, string sortOrder);
+        public int GetAvgPointsUsers();
+        public void RegisterUser(dataforregister userCreationDTO);
+        public void UpdateUser(updateUser newUser, int id);
+            Task UpdateUserBottlesAndPointsAsync(int userId, int bottleCount, decimal pointsEarned);
+        
+
+
+
+
+
 
 
     }

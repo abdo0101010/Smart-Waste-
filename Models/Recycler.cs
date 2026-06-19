@@ -14,8 +14,8 @@ public partial class Recycler
     [MaxLength(50, ErrorMessage = "full name cannot exceed 50 characters")]
     public string FullName { get; set; } = null!;
     [RegularExpression(@"^01[0125]\d{8}$")]
-    public string Phone { get; set; } = null!;
-    public string PasswordHash { get; set; } = null!; // خليناها كابيتال
+    public string ?Phone { get; set; } = null!;
+    public string PasswordHash { get; set; } = null!; 
     public string? VehicleInfo { get; set; }
 
     public string? Status { get; set; }

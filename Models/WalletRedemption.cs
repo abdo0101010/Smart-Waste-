@@ -40,7 +40,6 @@ namespace SmartWaste.Models
         [Column("CreatedAt")]
         public DateTime? CreatedAt { get; set; } = DateTime.Now;
 
-        // العلاقة (Foreign Key) مع جدول المستخدمين الأساسي عندك في المشروع
         [ForeignKey("UserId")]
         public virtual User User { get; set; } = null!;
     }

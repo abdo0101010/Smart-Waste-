@@ -1,14 +1,17 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.CodeAnalysis.Scripting;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.DTO.Register;
 using SmartWaste.DTO.RequestItemDTOS;
 using SmartWaste.DTO.UserDTO;
 using SmartWaste.DTO.UserDTOS;
 using SmartWaste.DTO.UserRedemptionDTOS;
 using SmartWaste.Models;
 using System.Linq;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace SmartWaste.Repositories
 {
@@ -201,7 +204,121 @@ namespace SmartWaste.Repositories
             _context.Users.Add(user);
             await _context.SaveChangesAsync();
         }
+        public GetSpecficUser GetUserByIdWithDetails(int userId)
+        {
+            var user= _context.Users.FirstOrDefault(u => u.UserId == userId);
+            GetSpecficUser NUesr = new GetSpecficUser
+            {
+                UserId = user.UserId,
+                FullName = user.FullName,
+                Email = user.Email,
+                WalletPoints = user.WalletPoints
+            };
 
+            return NUesr;
+        }
+        public List<UserRankDTO> SortUsersByWalletPoints(string sortOrder)
+        {
+            var users = _context.Users.AsQueryable();
+            if (sortOrder == "asc")
+            {
+                users = users.OrderBy(u => u.WalletPoints);
+
+
+            }
+            else if (sortOrder == "desc")
+            {
+                users = users.OrderByDescending(u => u.WalletPoints);
+            }
+            var usersList = users.ToList();
+            List<UserRankDTO> sortedUsers = usersList.Select((u, index) => new UserRankDTO
+            {
+                UserId = u.UserId,
+                Name = u.FullName,
+                BottleCount=u.Bottle,
+                WalletPoints = u.WalletPoints ?? 0
+                ,Rank=index+1
+            }).ToList();
+            return sortedUsers;
+        }
+        public UserRankDTO GetRankingUser(int id, string sortOrder)
+        {
+            var users = SortUsersByWalletPoints(sortOrder);
+            var rankedUsers = users.Select((u, index) => new UserRankDTO
+            {
+                UserId = u.UserId,               
+                Name = u. Name,
+                WalletPoints = u.WalletPoints, 
+                Rank = index + 1,                
+                BottleCount = u.BottleCount          
+            }).ToList(); var rankedUser = rankedUsers.FirstOrDefault(u => u.UserId   == id);
+            var targetUser = rankedUsers.FirstOrDefault(u => u.UserId == id);
+
+            return targetUser;
+        }
+        public int GetAvgPointsUsers()
+        {
+            var avgPoints = _context.Users.Average(u => u.WalletPoints);
+            return (int)avgPoints;
+        }
+        public void RegisterUser(dataforregister userCreationDTO)
+        {
+            User user = new User
+            {
+
+                FullName = userCreationDTO.FullName,
+                Email = userCreationDTO.Email,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(userCreationDTO.PasswordHash),
+                Address = userCreationDTO.Address,
+                Role = userCreationDTO.Role,
+                Phone = userCreationDTO.Phone
+            };
+            _context.Users.Add(user);
+            SaveChanges();
+        }
+        public void UpdateUser(updateUser newUser, int id)
+        {
+            var user = _context.Users.FirstOrDefault(u => u.UserId == id);
+            if (user == null)
+            {
+                throw new KeyNotFoundException($"user is no exist");
+            }
+
+            if (!string.IsNullOrEmpty(newUser.PasswordHash))
+            {
+                if (newUser.PasswordHash != newUser.ConfirmPassword)
+                {
+                    throw new InvalidOperationException("Password and confirm password do not match.");
+                }
+
+                user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(newUser.PasswordHash);
+            }
+
+            user.FullName = newUser.FullName;
+            user.Address = newUser.Address;
+
+          
+            _context.Users.Update(user);
+
+            _context.SaveChanges();
+        }
+        public async Task UpdateUserBottlesAndPointsAsync(int userId, int bottleCount, decimal pointsEarned)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
+            if (user == null) throw new KeyNotFoundException("User not found.");
+
+            // تحويل حقل الـ Bottle الحالي لرقم وتزويد الجديد عليه
+            int currentBottles = 0;
+            if (!string.IsNullOrEmpty(user.Bottle))
+            {
+                int.TryParse(user.Bottle, out currentBottles);
+            }
+
+            user.Bottle = (currentBottles + bottleCount).ToString();
+            user.WalletPoints = (user.WalletPoints ?? 0) + pointsEarned;
+
+            await _context.SaveChangesAsync();
+        }
         public void SaveChanges()
         {
             _context.SaveChanges();
