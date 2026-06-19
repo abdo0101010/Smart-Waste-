@@ -171,21 +171,29 @@ namespace SmartWaste.Controllers
         [HttpPost("UploadEcoSnapImage")]
         [Consumes("multipart/form-data")]
         [RequestSizeLimit(100_000_000)]
-        public async Task<IActionResult> UploadEcoSnapImage([FromForm] IFormFile file) // 🔥 رجعناها مباشرة هنا
+        public async Task<IActionResult> UploadEcoSnapImage( EcoSnapUploadDTO model)
         {
-            if (file == null || file.Length == 0)
+            // 1. التشيك الأول على الملف
+            if (model == null || model.File == null || model.File.Length == 0)
                 return BadRequest(new { Message = "برجاء اختيار صورة صالحة." });
 
+            // 2. التشييك الأمني المضمون على الـ User ID
             var user = HttpContext.User;
-            var userIdClaim = user.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            if (user == null || !user.Identity.IsAuthenticated)
             {
                 return Unauthorized(new { Message = "User not authorized or session expired." });
             }
 
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId) || userId == 0)
+            {
+                return Unauthorized(new { Message = "User ID is invalid or missing from token." });
+            }
+
             try
             {
-                int detectedBottles = await _ecoSnapService.ProcessImageWithAIAsync(userId, file);
+                // كدة مستحيل يدخل هنا والـ userId بـ 0 أو null
+                int detectedBottles = await _ecoSnapService.ProcessImageWithAIAsync(userId, model.File);
 
                 return Ok(new
                 {
@@ -196,6 +204,7 @@ namespace SmartWaste.Controllers
             }
             catch (Exception ex)
             {
+                // الـ Catch دي بتحمي البروجكت من إنه يقفل لو الـ AI أو الـ DB رموا أي إيرور
                 return StatusCode(500, new { Message = "An error occurred while processing the image", Details = ex.Message });
             }
         }
