@@ -9,7 +9,7 @@ namespace SmartWaste.Repositories
         public WasteCategory GetWasteCategoryById(int id);
         public void UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategory , string? imagePath);
         public void DeleteWasteCategory(int id);
-        public IEnumerable<WasteCategory> GetAllWasteCategories();
+        public IEnumerable<WasteCategoryViewModelDTO> GetAllWasteCategories();
         public void SaveChanges();
     }
 }
