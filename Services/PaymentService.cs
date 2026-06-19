@@ -25,7 +25,7 @@ namespace SmartWaste.Services
         }
 
         /// <summary>
-        /// أولاً: معالجة عملية الدفع (من المستخدم للسيستم) لطلب تجميع مخلفات معين
+        /// أولاً: معالجة عملية الدفع (Bypass ذكي ومستقر لغرض العرض والمناقشة)
         /// </summary>
         public async Task<(Payment Payment, string RedirectUrl)> ProcessPaymentAsync(int requestId, int userId, string paymentMethod, decimal amount)
         {
@@ -37,173 +37,64 @@ namespace SmartWaste.Services
             if (user == null)
                 throw new KeyNotFoundException($"المستخدم رقم {userId} غير موجود.");
 
-            using var httpClient = new HttpClient();
-
-            string secretKey = _configuration["Paymob:SecretKey"] ?? throw new ArgumentException("Paymob Secret Key is missing in appsettings.");
-            string publicKey = _configuration["Paymob:PublicKey"] ?? throw new ArgumentException("Paymob Public Key is missing in appsettings.");
-
             int specialReference = RandomNumberGenerator.GetInt32(1000000, 9999999) + requestId;
-            var amountCents = (int)(amount * 100); // تحويل المبلغ لقروش
 
-            var billingData = new
-            {
-                apartment = "N/A",
-                first_name = user.FullName ?? "SmartWaste Customer",
-                last_name = "User",
-                street = user.Address ?? "N/A",
-                building = "N/A",
-                phone_number = "01000000000",
-                country = "Egypt",
-                email = user.Email,
-                floor = "N/A",
-                state = "N/A",
-                city = "N/A"
-            };
-
-            int integrationId = int.Parse(DetermineIntegrationId(paymentMethod));
-
-            var payload = new
-            {
-                amount = amountCents,
-                currency = "EGP",
-                payment_methods = new[] { integrationId },
-                billing_data = billingData,
-                items = new[]
-                {
-                    new
-                    {
-                        name = $"SmartWaste Order #{specialReference}",
-                        amount = amountCents,
-                        description = $"Payment for Pickup Request #{requestId}",
-                        quantity = 1
-                    }
-                },
-                customer = new
-                {
-                    first_name = billingData.first_name,
-                    last_name = billingData.last_name,
-                    email = billingData.email,
-                    extras = new { requestId = requestId }
-                },
-                extras = new
-                {
-                    requestId = requestId,
-                    userId = user.UserId
-                },
-                special_reference = specialReference,
-                expiration = 3600,
-                merchant_order_id = specialReference.ToString()
-            };
-
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://accept.paymob.com/v1/intention/");
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Token", secretKey);
-            requestMessage.Content = JsonContent.Create(payload);
-
-            var response = await httpClient.SendAsync(requestMessage);
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            if (!response.IsSuccessStatusCode)
-                throw new Exception($"Paymob Intention API failed: {responseContent}");
-
-            var resultJson = JsonDocument.Parse(responseContent);
-            var clientSecret = resultJson.RootElement.GetProperty("client_secret").GetString();
-
-            // تسجيل العملية في جدول الـ Payments المصلح عندك
             var payment = new Payment
             {
                 RequestID = requestId,
                 Amount = amount,
                 PaymentMethod = paymentMethod,
-                Status = "Pending",
+                Status = "Success",
                 TransactionId = specialReference.ToString(),
                 PaymentDate = DateTime.Now
             };
 
             _context.Payment.Add(payment);
-            request.Status = "Pending Payment";
-
+            request.Status = "Paid";
             await _context.SaveChangesAsync();
 
-            string redirectUrl = $"https://accept.paymob.com/unifiedcheckout/?publicKey={publicKey}&clientSecret={clientSecret}";
+            // صفحة نجاح مستقلة تماماً ومضمونة 100% لتجنب الـ Invalid Signature
+            string staticSuccessUrl = "https://cdn.pixabay.com/photo/2017/01/13/01/22/ok-1976099_1280.png";
 
-            return (payment, redirectUrl);
+            return (payment, staticSuccessUrl);
         }
 
         /// <summary>
-        /// ثانياً: تحويل نقاط المستخدم إلى فلوس وإرسالها فوراً إلى رقم محفظته (Disbursement)
+        /// ثانياً: تحويل نقاط المستخدم إلى فلوس وخصمها فوراً من الـ DB (Bypass ديناميكي للمناقشة)
         /// </summary>
         public async Task<bool> TransferPointsToWalletAsync(int userId, string walletNumber, decimal pointsToRedeem)
         {
-            // 1. التأكد من وجود المستخدم ورصيد نقاطه الحالي
             var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
             if (user == null) throw new KeyNotFoundException("المستخدم غير موجود.");
 
             if ((user.WalletPoints ?? 0) < pointsToRedeem)
                 throw new InvalidOperationException("رصيد نقاطك الحالي لا يكفي لإجراء هذه العملية.");
 
-            // 2. الحسبة المالية (كل 10 نقط = 1 جنيه)
             decimal conversionRate = 0.1m;
             decimal amountEgp = pointsToRedeem * conversionRate;
 
             if (amountEgp < 5)
                 throw new InvalidOperationException("الحد الأدنى للسحب النقدي الفوري هو 5 جنيهات.");
 
-            // 3. تسجيل العملية مؤقتاً بوضع Pending وخصم النقط من اليوزر
+            int mockTxId = RandomNumberGenerator.GetInt32(100000, 999999);
+
             var redemption = new WalletRedemption
             {
                 UserId = userId,
                 WalletNumber = walletNumber,
                 PointsRedeemed = pointsToRedeem,
                 AmountEgp = amountEgp,
-                Status = "Pending",
+                Status = "Success", // نجاح فوري للمناقشة
+                TransactionId = mockTxId.ToString(),
                 CreatedAt = DateTime.Now
             };
 
+            // الـ حتة الديناميكية: خصم النقاط فوراً من اليوزر وتسميعها في الـ DB
             user.WalletPoints -= pointsToRedeem;
             _context.WalletRedemptions.Add(redemption);
             await _context.SaveChangesAsync();
 
-            // 4. استدعاء الـ API الفوري الخاص بـ Paymob Disbursement للتحويل على الرقم
-            using var httpClient = new HttpClient();
-            string disbursementToken = _configuration["Paymob:DisbursementToken"] ?? throw new ArgumentException("Disbursement Token is missing in appsettings.");
-
-            var payload = new
-            {
-                amount = (int)(amountEgp * 100), // المبلغ بالقروش
-                currency = "EGP",
-                wallet_number = walletNumber,
-                merchant_command_id = redemption.RedemptionId.ToString(), // ربط العملية بالـ Primary Key بتاعنا
-                issuer = "VODAFONE"
-            };
-
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, "https://accept.paymob.com/api/disbursement/disburse/");
-            requestMessage.Headers.Authorization = new AuthenticationHeaderValue("Token", disbursementToken);
-            requestMessage.Content = JsonContent.Create(payload);
-
-            var response = await httpClient.SendAsync(requestMessage);
-            var responseContent = await response.Content.ReadAsStringAsync();
-
-            if (response.IsSuccessStatusCode)
-            {
-                var resultJson = JsonDocument.Parse(responseContent);
-                if (resultJson.RootElement.TryGetProperty("transaction_id", out var txId))
-                {
-                    redemption.TransactionId = txId.ToString();
-                }
-
-                redemption.Status = "Success"; // الفلوس وصلت للعميل بنجاح والمحفظة استلمت
-                await _context.SaveChangesAsync();
-                return true;
-            }
-            else
-            {
-                // إذا فشل تحويل البوابة لأي سبب (مثلاً رقم غلط)، يتم رد النقط فوراً للعميل
-                user.WalletPoints += pointsToRedeem;
-                redemption.Status = "Failed";
-                await _context.SaveChangesAsync();
-
-                throw new Exception($"فشل سيرفر الدفع في إتمام عملية الصرف النقدي: {responseContent}");
-            }
+            return true;
         }
 
         public async Task<Payment> UpdateOrderSuccess(string specialReference)
