@@ -21,9 +21,10 @@ namespace SmartWaste.DTO.WasteCategoryDTOS
 
         [Required]
         [Display(Name = "Unit Type")]
-     
-
         public string? UnitType { get; set; }
+
+        [Display(Name = "Category Image")]
+        public IFormFile? Image { get; set; }
     }
 
 }

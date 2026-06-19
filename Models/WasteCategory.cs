@@ -23,6 +23,8 @@ public partial class WasteCategory
         [StringLength(50, ErrorMessage = "Unit type cannot exceed 50 characters.")]
 
     public string? UnitType { get; set; }
+    public string? ImagePath { get; set; }
+
 
     public virtual ICollection<RequestItem> RequestItems { get; set; } = new List<RequestItem>();
 }

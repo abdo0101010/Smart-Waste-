@@ -11,14 +11,16 @@ namespace SmartWaste.Repositories
             _context = context;
         }
 
-        public void AddWasteCategory(WasteCategoryCreationsDTO wasteCategory)
+        public void AddWasteCategory(WasteCategoryCreationsDTO wasteCategory, string? imagePath)
         {
             var newWasteCategory = new WasteCategory
             {
               
                 CategoryName = wasteCategory.CategoryName,
                 PointsPerUnit = wasteCategory.PointsPerUnit,
-                UnitType = wasteCategory.UnitType
+                UnitType = wasteCategory.UnitType,
+                ImagePath = imagePath
+
             };
             _context.WasteCategories.Add(newWasteCategory);
             SaveChanges();
@@ -29,7 +31,7 @@ namespace SmartWaste.Repositories
             return _context.WasteCategories.Find(id);
         }
 
-        public void UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategory)
+        public void UpdateWasteCategory(WasteCategoryCreationsDTO wasteCategory , string? imagePath)
         {
 
             var existingCategory = _context.WasteCategories.Find(wasteCategory.CategoryId);
@@ -38,7 +40,12 @@ namespace SmartWaste.Repositories
                 existingCategory.CategoryName = wasteCategory.CategoryName;
                 existingCategory.PointsPerUnit = wasteCategory.PointsPerUnit;
                 existingCategory.UnitType = wasteCategory.UnitType;
+                if (!string.IsNullOrEmpty(imagePath))
+                {
+                    existingCategory.ImagePath = imagePath;
+                }
                 SaveChanges();
+    
             }
             else {
                 throw new Exception($"Waste category with ID {wasteCategory.CategoryId} not found.");
