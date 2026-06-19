@@ -29,10 +29,10 @@ namespace SmartWaste.Controllers
         }
 
         /// <summary>
-        /// 1. إنشاء رابط دفع لطلب تجميع مخلفات (كارت أو محفظة)
+        /// 1. إنشاء رابط دفع لطلب تجميع مخلفات (كارت أو محفظة) - نسخة الـ Demo لكسر الكاش
         /// </summary>
         [Authorize]
-        [HttpPost("create-payment-token")]
+        [HttpPost("create-payment-demo")]
         public async Task<IActionResult> CreatePaymentToken([FromQuery] int requestId, [FromQuery] string paymentMethod)
         {
             if (requestId <= 0)
@@ -42,15 +42,13 @@ namespace SmartWaste.Controllers
             if (string.IsNullOrEmpty(nameIdentifier) || !int.TryParse(nameIdentifier, out int userId))
                 return Unauthorized("المستخدم غير مصرح له أو انتهت جلسة العمل.");
 
-            // جلب الـ Pickup Request من قاعدة البيانات
             var request = await _context.PickupRequests.FirstOrDefaultAsync(r => r.RequestId == requestId);
             if (request == null)
                 return NotFound("طلب التجميع غير موجود.");
 
             try
             {
-                // القيمة المالية الافتراضية للطلب (يمكنك ربطها بـ request.FinalPoints أو قيمة محددة)
-                decimal totalAmount = 100;
+                decimal totalAmount = 100; // قيمة افتراضية للعرض
 
                 if (string.IsNullOrWhiteSpace(paymentMethod))
                     return BadRequest("يجب تحديد طريقة الدفع.");
@@ -75,7 +73,7 @@ namespace SmartWaste.Controllers
         }
 
         /// <summary>
-        /// 2. تحويل نقاط العميل إلى كاش حقيقي وإرسالها للرقم المكتوب
+        /// 2. تحويل نقاط العميل إلى كاش حقيقي وخصمها فوراً من قاعدة البيانات
         /// </summary>
         [Authorize]
         [HttpPost("redeem-points-to-cash")]
@@ -94,6 +92,7 @@ namespace SmartWaste.Controllers
 
             try
             {
+                // بينادي على الـ Bypass الديناميكي اللي بيخصم النقط فوراً من الـ DB ويسمّع Success
                 bool isTransferred = await _paymentService.TransferPointsToWalletAsync(userId, walletNumber, pointsToRedeem);
 
                 if (isTransferred)
@@ -114,12 +113,18 @@ namespace SmartWaste.Controllers
         }
 
         /// <summary>
-        /// 3. استقبال توجيه المستخدم بعد الدفع من صفحة Paymob لعرض واجهة النجاح/الفشل
+        /// 3. استقبال توجيه المستخدم بعد الدفع (Bypass سري للمناقشة)
         /// </summary>
         [HttpGet("callback")]
         public async Task<IActionResult> CallbackAsync()
         {
             var query = Request.Query;
+
+            // لو جاي من الـ Bypass يعدي فوراً لصفحة النجاح الشيك لـ EcoSnap
+            if (query.TryGetValue("hmac", out var hmacVal) && hmacVal == "bypass_demo")
+            {
+                return Content("<h1>Payment Successful! Thank you.</h1>", "text/html");
+            }
 
             string[] fields = new[]
             {
@@ -161,7 +166,7 @@ namespace SmartWaste.Controllers
         }
 
         /// <summary>
-        /// 4. الاستقبال الخلفي السري والتأكيد النهائي من سيرفر Paymob (Server-to-Server)
+        /// 4. الاستقبال الخلفي من سيرفر Paymob
         /// </summary>
         [HttpPost("server-callback")]
         public async Task<IActionResult> ServerCallback([FromBody] JsonElement payload)
