@@ -1,4 +1,5 @@
-﻿using SmartWaste.DTO.WasteCategoryDTOS;
+﻿using Microsoft.EntityFrameworkCore;
+using SmartWaste.DTO.WasteCategoryDTOS;
 using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
@@ -62,9 +63,14 @@ namespace SmartWaste.Repositories
             }
         }
 
-        public IEnumerable<WasteCategory> GetAllWasteCategories()
+        public IEnumerable<WasteCategoryViewModelDTO> GetAllWasteCategories()   
         {
-            return _context.WasteCategories.ToList();
+            return _context.WasteCategories.Select(c => new WasteCategoryViewModelDTO
+            {
+                CategoryName = c.CategoryName,
+                PointsPerUnit = c.PointsPerUnit,
+                ImagePath = c.ImagePath
+            }).ToList();
         }
 
         public void SaveChanges()

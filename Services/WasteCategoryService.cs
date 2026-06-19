@@ -33,11 +33,21 @@ namespace SmartWaste.Services
             }
         }
 
-        public IEnumerable<WasteCategory> GetAllWasteCategories()
+        //public IEnumerable<WasteCategory> GetAllWasteCategories()
+        //{
+        //    return _WasteCategoryRepository.GetAllWasteCategories();
+        //}
+        public IEnumerable<WasteCategoryViewModelDTO> GetAllWasteCategories()
         {
-            return _WasteCategoryRepository.GetAllWasteCategories();
-        }
+            var categories = _WasteCategoryRepository.GetAllWasteCategories();
 
+            return categories.Select(c => new WasteCategoryViewModelDTO
+            {
+                CategoryName = c.CategoryName,
+                PointsPerUnit = c.PointsPerUnit,
+                ImagePath = c.ImagePath
+            });
+        }
         public WasteCategory GetWasteCategoryById(int id)
         {
             if (id > 0)
@@ -59,5 +69,6 @@ namespace SmartWaste.Services
                 _WasteCategoryRepository.UpdateWasteCategory(wasteCategory, imagePath);
             }
         }
+       
     }
 }
