@@ -16,7 +16,7 @@
         public async Task<int> ProcessImageWithAIAsync(int userId, IFormFile file)
         {
             using var httpClient = new HttpClient();
-            string aiApiUrl = "http://localhost:5000/predict"; // URL صاحبك
+            string aiApiUrl = "https://badass-ecosystem-hazy.ngrok-free.dev/verify-shipment/"; // URL صاحبك
 
             using var content = new MultipartFormDataContent();
             using var fileStream = file.OpenReadStream();
