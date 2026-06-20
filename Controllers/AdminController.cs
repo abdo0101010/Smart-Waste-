@@ -214,6 +214,18 @@ Tags = new[] { "Admin", "Users" })]
             var supportTickets = _supportTicketsServices.ShowSupportTicket(status, search);
             return Ok(supportTickets);
         }
+        [HttpGet("/api/admin/waste-categories")]
+        [SwaggerOperation(
+                          Summary = "Gets all waste categories",
+                          Description = "Retrieves all waste categories with name, points, and image",
+                          OperationId = "GetAllWasteCategories",
+                          Tags = new[] { "Admin", "Waste Categories" })]
+        [SwaggerResponse(200, Description = "Waste categories retrieved successfully", Type = typeof(List<WasteCategoryViewModelDTO>))]
+        public IActionResult GetAllWasteCategories()
+        {
+            var categories = _wasteCategoryService.GetAllWasteCategories();
+            return Ok(categories);
+        }
         [HttpPost("/api/admin/create-user")]
         [SwaggerOperation(
                                         Summary = "Creates a new user",
