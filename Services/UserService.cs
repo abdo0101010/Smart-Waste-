@@ -167,5 +167,14 @@ namespace SmartWaste.Services
                 throw new ArgumentException("Password, Confirm Password, and Role are required.");
             }
         }
+        public List<UserDetailsForAdminDTo> GetAllUsersWithDetailsForAdmin()
+        {
+            var users = _UserRepository.GetAllUsersWithDetailsForAdmin();
+            if (users == null || !users.Any())
+            {
+                throw new InvalidOperationException("No users found with details for admin.");
+            }
+            return users;
+        }
     }
 }

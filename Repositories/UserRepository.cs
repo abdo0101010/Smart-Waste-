@@ -359,6 +359,15 @@ namespace SmartWaste.Repositories
 
             _context.SaveChanges();
         }
+        public List<UserDetailsForAdminDTo> GetAllUsersWithDetailsForAdmin()
+        {
+            return _context.Users.Select(u => new UserDetailsForAdminDTo
+            {
+                UserId = u.UserId,
+                FullName = u.FullName,
+                Phone = u.Phone
+            }).ToList();
+        } 
         public void SaveChanges()
         {
             _context.SaveChanges();

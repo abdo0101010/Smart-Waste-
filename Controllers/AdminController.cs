@@ -414,5 +414,20 @@ Tags = new[] { "Admin", "Users" })]
             _wasteCategoryService.DeleteWasteCategory(wasteCategoryId);
             return Ok(new { Message = "Waste category deleted successfully" });
         }
+        [HttpGet("/api/admin/list-users-for-admin")]
+        [SwaggerOperation(
+            Summary = "Gets a list of users with details for admin",
+            Description = "Requires admin privileges",
+            OperationId = "GetListofUserForAdmin",
+            Tags = new[] { "Admin", "Users" })]
+        [SwaggerResponse(200, Description = "List of users with details retrieved successfully", Type=typeof(List<UserDetailsForAdminDTo>))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+
+
+        public IActionResult GetListofUserForAdmin()
+        {
+            var users = _userService.GetAllUsersWithDetailsForAdmin();
+            return Ok(users);
+        }
     }
 }
