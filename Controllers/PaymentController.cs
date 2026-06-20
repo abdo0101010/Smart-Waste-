@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SmartWaste.Controllers
 {
@@ -33,6 +34,12 @@ namespace SmartWaste.Controllers
         /// </summary>
         [Authorize]
         [HttpPost("create-payment-demo")]
+        [SwaggerOperation("Create a payment token for a demo request")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Payment token created successfully", typeof(object))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request data")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized - User must be logged in")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Pickup request not found")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error processing payment")]
         public async Task<IActionResult> CreatePaymentToken([FromQuery] int requestId, [FromQuery] string paymentMethod)
         {
             if (requestId <= 0)
@@ -77,6 +84,11 @@ namespace SmartWaste.Controllers
         /// </summary>
         [Authorize]
         [HttpPost("redeem-points-to-cash")]
+        [SwaggerOperation("Redeem user points to cash")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Points redeemed successfully", typeof(object))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request data")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized - User must be logged in")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error processing redemption")]
         public async Task<IActionResult> RedeemPointsToCash([FromQuery] string walletNumber, [FromQuery] decimal pointsToRedeem)
         {
             if (string.IsNullOrWhiteSpace(walletNumber) || pointsToRedeem <= 0)
@@ -116,6 +128,10 @@ namespace SmartWaste.Controllers
         /// 3. استقبال توجيه المستخدم بعد الدفع (Bypass سري للمناقشة)
         /// </summary>
         [HttpGet("callback")]
+        [SwaggerOperation("Handle user redirection after payment")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Payment processed successfully", typeof(object))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request data")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error processing payment callback")]
         public async Task<IActionResult> CallbackAsync()
         {
             var query = Request.Query;
@@ -169,6 +185,11 @@ namespace SmartWaste.Controllers
         /// 4. الاستقبال الخلفي من سيرفر Paymob
         /// </summary>
         [HttpPost("server-callback")]
+        [SwaggerOperation("Handle server callback from Paymob")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Callback processed successfully", typeof(object))]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request data")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized - Invalid HMAC")]
+        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error processing server callback")]
         public async Task<IActionResult> ServerCallback([FromBody] JsonElement payload)
         {
             try
