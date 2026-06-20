@@ -1,4 +1,5 @@
-﻿using SmartWaste.DTO.HubStaffDTOS;
+﻿        using System.Net.Http.Json;
+using SmartWaste.DTO.HubStaffDTOS;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
 
@@ -73,5 +74,49 @@ public HubStaff GetHubStaffByName(string name)
                 _hubStaffRepository.UpdateHubStaff(hubStaff);
             }
         }
+
+public async Task<bool> VerifyShipmentWithAIAsync(IFormFile fileBefore, IFormFile fileAfter, int transactionId)
+    {
+        using var httpClient = new HttpClient();
+        string aiApiUrl = "https://badass-ecosystem-hazy.ngrok-free.dev/verify-shipment/";
+
+        using var content = new MultipartFormDataContent();
+
+        // 1. تجهيز وإضافة الصورة الأولى (file_before)
+        using var streamBefore = fileBefore.OpenReadStream();
+        using var contentBefore = new StreamContent(streamBefore);
+        content.Add(contentBefore, "file_before", fileBefore.FileName);
+
+        // 2. تجهيز وإضافة الصورة الثانية (file_after)
+        using var streamAfter = fileAfter.OpenReadStream();
+        using var contentAfter = new StreamContent(streamAfter);
+        content.Add(contentAfter, "file_after", fileAfter.FileName);
+
+        // 3. إضافة الـ transaction_id كـ StringContent حسب طلب الموديل
+        content.Add(new StringContent(transactionId.ToString()), "transaction_id");
+
+        // 🚀 ضرب الـ Request للموديل لايف
+        var response = await httpClient.PostAsync(aiApiUrl, content);
+        if (!response.IsSuccessStatusCode)
+        {
+            var errorContent = await response.Content.ReadAsStringAsync();
+            throw new Exception($"AI Verification Failed. Status: {response.StatusCode}, Details: {errorContent}");
+        }
+
+        // 4. قراءة الـ Response المرن
+        var jsonResult = await response.Content.ReadFromJsonAsync<Dictionary<string, object>>();
+        if (jsonResult != null && jsonResult.TryGetValue("status", out var statusObj))
+        {
+            string status = statusObj.ToString();
+            if (status.Equals("SUCCESS", StringComparison.OrdinalIgnoreCase))
+            {
+                // 🔥 هنا تقدر تحدث حالة الطلب في الداتابيز بتاعتك لـ Verified أو Approved
+                // await _pickupRequestRepository.UpdateStatusToVerifiedAsync(transactionId);
+                return true;
+            }
+        }
+
+        return false;
     }
+}
 }
