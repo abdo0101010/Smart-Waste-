@@ -166,47 +166,74 @@ namespace SmartWaste.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
+        [HttpPost("/api/User/ForgetPassWord")]
+        [SwaggerOperation(
+            Summary = "Reset user password",
+            Description = "Allows users and Driver to reset their password by providing their email, new password, confirm password, role, and phone number.",
+            OperationId = "ForgetPassWord",
+            Tags = new[] { "User" ,"Driver"}
+            )]
+        [SwaggerResponse(200, "Password reset successfully")]
+        [SwaggerResponse(404, "User not found")]
+
+
+
+        public IActionResult ForgetPassWord(string ?email, string newPassword, string confirmPassword, string role, string? Phone)
+        {
+            try
+            {
+                _userService.ForgetPassword(email, newPassword, confirmPassword, role, Phone);
+                return Ok(new { message = "Password reset successfully" });
+            }
+            catch
+            {
+                                return NotFound(new { message = "User not found or invalid input" });
+            }
+
+
+        }
 
         [Authorize]
         [HttpPost("UploadEcoSnapImage")]
         [Consumes("multipart/form-data")]
         [RequestSizeLimit(100_000_000)]
         public async Task<IActionResult> UploadEcoSnapImage( EcoSnapUploadDTO model)
-        {
-            // 1. التشيك الأول على الملف
-            if (model == null || model.File == null || model.File.Length == 0)
-                return BadRequest(new { Message = "برجاء اختيار صورة صالحة." });
-
-            // 2. التشييك الأمني المضمون على الـ User ID
-            var user = HttpContext.User;
-            if (user == null || !user.Identity.IsAuthenticated)
             {
-                return Unauthorized(new { Message = "User not authorized or session expired." });
-            }
+                // 1. التشيك الأول على الملف
+                if (model == null || model.File == null || model.File.Length == 0)
+                    return BadRequest(new { Message = "برجاء اختيار صورة صالحة." });
 
-            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId) || userId == 0)
-            {
-                return Unauthorized(new { Message = "User ID is invalid or missing from token." });
-            }
-
-            try
-            {
-                // كدة مستحيل يدخل هنا والـ userId بـ 0 أو null
-                int detectedBottles = await _ecoSnapService.ProcessImageWithAIAsync(userId, model.File);
-
-                return Ok(new
+                // 2. التشييك الأمني المضمون على الـ User ID
+                var user = HttpContext.User;
+                if (user == null || !user.Identity.IsAuthenticated)
                 {
-                    Message = "Image processed and data saved successfully via EcoSnap! 🤖🎉",
-                    BottlesDetected = detectedBottles,
-                    PointsEarned = detectedBottles * 5
-                });
-            }
-            catch (Exception ex)
-            {
-                // الـ Catch دي بتحمي البروجكت من إنه يقفل لو الـ AI أو الـ DB رموا أي إيرور
-                return StatusCode(500, new { Message = "An error occurred while processing the image", Details = ex.Message });
-            }
+                    return Unauthorized(new { Message = "User not authorized or session expired." });
+                }
+
+                var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId) || userId == 0)
+                {
+                    return Unauthorized(new { Message = "User ID is invalid or missing from token." });
+                }
+
+                try
+                {
+                    // كدة مستحيل يدخل هنا والـ userId بـ 0 أو null
+                    int detectedBottles = await _ecoSnapService.ProcessImageWithAIAsync(userId, model.File);
+
+                    return Ok(new
+                    {
+                        Message = "Image processed and data saved successfully via EcoSnap! 🤖🎉",
+                        BottlesDetected = detectedBottles,
+                        PointsEarned = detectedBottles * 5
+                    });
+                }
+                catch (Exception ex)
+                {
+                    // الـ Catch دي بتحمي البروجكت من إنه يقفل لو الـ AI أو الـ DB رموا أي إيرور
+                    return StatusCode(500, new { Message = "An error occurred while processing the image", Details = ex.Message });
+                }
+              
         }
     }
 }

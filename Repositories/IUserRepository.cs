@@ -39,7 +39,8 @@ namespace SmartWaste.Repositories
         public void RegisterUser(dataforregister userCreationDTO);
         public void UpdateUser(updateUser newUser, int id);
             Task UpdateUserBottlesAndPointsAsync(int userId, int bottleCount, decimal pointsEarned);
-        
+        public void ForgetPassword(string? email, string newPassword, string confirmPassword, string role, string? Phone);
+
 
 
 

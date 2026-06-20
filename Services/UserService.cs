@@ -148,5 +148,24 @@ namespace SmartWaste.Services
                 await _UserRepository.UpdateUserBottlesAndPointsAsync(userId, bottleCount, pointsEarned);
             }
         }
+        public void ForgetPassword(string? email, string newPassword, string confirmPassword, string role, string? Phone)
+        {
+            if (!string.IsNullOrEmpty(newPassword) && !string.IsNullOrEmpty(confirmPassword) && !string.IsNullOrEmpty(role))
+            {
+                if ((role.Equals("Recycler", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(Phone)) ||
+                    (role.Equals("User", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(email)))
+                {
+                    _UserRepository.ForgetPassword(email, newPassword, confirmPassword, role, Phone);
+                }
+                else
+                {
+                    throw new ArgumentException("Identifying information (Email/Phone) is missing for the selected role.");
+                }
+            }
+            else
+            {
+                throw new ArgumentException("Password, Confirm Password, and Role are required.");
+            }
+        }
     }
 }

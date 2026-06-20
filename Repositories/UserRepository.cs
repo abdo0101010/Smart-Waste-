@@ -319,6 +319,46 @@ namespace SmartWaste.Repositories
 
             await _context.SaveChangesAsync();
         }
+        public void ForgetPassword(string? email, string newPassword, string confirmPassword, string role, string? Phone)
+        {
+            if (newPassword != confirmPassword)
+            {
+                throw new InvalidOperationException("Password and confirm password do not match.");
+            }
+
+            string hashedPass = BCrypt.Net.BCrypt.HashPassword(newPassword);
+
+            if (role.Equals("Recycler", StringComparison.OrdinalIgnoreCase))
+            {
+                if (string.IsNullOrEmpty(Phone))
+                {
+                    throw new ArgumentException("Phone number is required for Recycler password reset.");
+                }
+
+                var recycler = _context.Recyclers.FirstOrDefault(r => r.Phone == Phone);
+                if (recycler == null)
+                    throw new KeyNotFoundException($"Recycler with phone number '{Phone}' not found."); 
+
+                recycler.PasswordHash = hashedPass;
+                _context.Recyclers.Update(recycler);
+            }
+            else 
+            {
+                if (string.IsNullOrEmpty(email))
+                {
+                    throw new ArgumentException("Email is required for User password reset.");
+                }
+
+                var user = _context.Users.FirstOrDefault(u => u.Email == email);
+                if (user == null)
+                    throw new KeyNotFoundException($"User with email '{email}' not found.");
+
+                user.PasswordHash = hashedPass;
+                _context.Users.Update(user);
+            }
+
+            _context.SaveChanges();
+        }
         public void SaveChanges()
         {
             _context.SaveChanges();
