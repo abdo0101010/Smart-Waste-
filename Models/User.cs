@@ -49,6 +49,9 @@ public partial class User
     public string? ProfilePictureUrl { get; set; }
     public string Role { get; set; } = "User";
     public string? Bottle {  get; set; }
+
+    public string? VerificationCode { get; set; }
+    public DateTime? VerificationCodeExpiration { get; set; }
     public virtual ICollection<PickupRequest>? PickupRequests { get; set; } = new List<PickupRequest>();
 
     public virtual ICollection<UserRedemption> ?UserRedemptions { get; set; } = new List<UserRedemption>();

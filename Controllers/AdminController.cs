@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.HubStaffDTOS;
@@ -31,7 +31,7 @@ namespace SmartWaste.Controllers
         IWasteCategoryService _wasteCategoryService;
         IImageStorageService _imageStorageService;
 
-        public AdminController(IPickupRequestService pickupRequestService, IRecyclerService recyclerService, IUserService userService, IRequestItemService requestingService, ISupportTicketsServices supportTicketsServices, IHubStaffService hubStaffService, IWasteCategoryService wasteCategoryService ,IImageStorageService imageStorageService)
+        public AdminController(IPickupRequestService pickupRequestService, IRecyclerService recyclerService, IUserService userService, IRequestItemService requestingService, ISupportTicketsServices supportTicketsServices, IHubStaffService hubStaffService, IWasteCategoryService wasteCategoryService, IImageStorageService imageStorageService)
         {
             _pickupRequestService = pickupRequestService;
             _recyclerService = recyclerService;
@@ -413,11 +413,11 @@ Tags = new[] { "Admin", "Users" })]
             _hubStaffService.DeleteHubStaff(hubStaffId);
             return Ok(new { Message = "Hub staff deleted successfully" });
         }
-        [HttpDelete("/api/admin/delete-waste-category")] 
+        [HttpDelete("/api/admin/delete-waste-category")]
         [SwaggerOperation(
                                         Summary = "Deletes a waste category",
                                         Description = "Requires admin privileges",
-            Tags = new[] {"Admin", "Waste Categories" },    
+            Tags = new[] { "Admin", "Waste Categories" },
             OperationId = "DeleteWasteCategory")]
         [SwaggerResponse(200, Description = "Waste category deleted successfully", Type = typeof(object))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
@@ -432,7 +432,7 @@ Tags = new[] { "Admin", "Users" })]
             Description = "Requires admin privileges",
             OperationId = "GetListofUserForAdmin",
             Tags = new[] { "Admin", "Users" })]
-        [SwaggerResponse(200, Description = "List of users with details retrieved successfully", Type=typeof(List<UserDetailsForAdminDTo>))]
+        [SwaggerResponse(200, Description = "List of users with details retrieved successfully", Type = typeof(List<UserDetailsForAdminDTo>))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
 
 

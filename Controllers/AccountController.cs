@@ -21,49 +21,28 @@ namespace SmartWaste.Controllers
         IAuthServices _authServices;
         IUserService _userService;
         IRecyclerService _recyclerService;
-        public AccountController(IAuthServices authServices, IUserService userService, IRecyclerService recyclerService)
+        IEmailService _emailService;
+        IForgetPasswordService _forgetPasswordService;
+
+        public AccountController(IAuthServices authServices, IUserService userService, IRecyclerService recyclerService, IEmailService emailService, IForgetPasswordService forgetPasswordService)
         {
             _authServices = authServices;
             _userService = userService;
             _recyclerService = recyclerService;
+            _emailService = emailService;
+            _forgetPasswordService = forgetPasswordService;
         }
-        //[HttpPost("Login")]
-        //public IActionResult Login(UserData data)
-        //{
-        //    if (data.Name == "admin" && data.Password == "123")
-        //    {
-        //        List<Claim> USerINfo = new List<Claim>();
-        //        string securityKey = "this is my custom Secret key for authentication";
-        //        var symmetricSecurityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(securityKey));
-        //        var sgnr = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
-        //        USerINfo.Add(new Claim(ClaimTypes.Name, data.Name));
-        //        USerINfo.Add(new Claim(ClaimTypes.Role, data.Role));
-        //        USerINfo.Add(new Claim("Password", data.Password));
-        //        var jwttoken = new JwtSecurityToken(
-        //            claims: USerINfo,
-        //            expires: DateTime.Now.AddDays(7),
-        //            signingCredentials: sgnr
-        //            );
-        //        var token = new JwtSecurityTokenHandler().WriteToken(jwttoken);
 
-        //        return Ok(token);
-        //    }
-        //    else
-        //    {
-        //        return Unauthorized();
-        //    }
-        //}
         [HttpPost("Login")]
         [SwaggerOperation(
-      Summary = "Login endpoint for user authentication",
-      Description = "Authenticates a user and returns a JWT token if successful",
-      OperationId = "Login",
-      Tags = new[] { "Account", "Authentication" })]
+            Summary = "Login endpoint for user authentication",
+            Description = "Authenticates a user and returns a JWT token if successful",
+            OperationId = "Login",
+            Tags = new[] { "Account", "Authentication" })]
         [SwaggerResponse(StatusCodes.Status200OK, "Returns a JWT token and user information upon successful authentication", typeof(object))]
         [SwaggerResponse(StatusCodes.Status401Unauthorized, "Returns if the authentication fails due to invalid credentials")]
         public IActionResult Login(UserData data)
         {
-            // نداء الـ Service وأخذ النتيجة كاملة
             var authResult = _authServices.AuthenticateUser(data);
 
             if (authResult == null)
@@ -76,8 +55,7 @@ namespace SmartWaste.Controllers
             var symmetricSecurityKey = new SymmetricSecurityKey(System.Text.Encoding.UTF8.GetBytes(securityKey));
             var sgnr = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256);
 
-            // حقن البيانات جوه الـ Claims الخاصة بالتوكن
-            USerINfo.Add(new Claim(ClaimTypes.NameIdentifier, authResult.UserId.ToString())); // الـ ID هنا مهم جداً للـ سيكيورتي
+            USerINfo.Add(new Claim(ClaimTypes.NameIdentifier, authResult.UserId.ToString()));
             USerINfo.Add(new Claim(ClaimTypes.Name, data.Name));
             USerINfo.Add(new Claim(ClaimTypes.Role, authResult.Role));
 
@@ -89,7 +67,6 @@ namespace SmartWaste.Controllers
 
             var token = new JwtSecurityTokenHandler().WriteToken(jwttoken);
 
-            // إرجاع الـ JSON النهائي للـ Frontend
             return Ok(new
             {
                 Token = token,
@@ -99,7 +76,6 @@ namespace SmartWaste.Controllers
             });
         }
 
-        
         [HttpPost("Register")]
         [SwaggerOperation(
             Summary = "Register endpoint for user and driver registration",
@@ -107,10 +83,10 @@ namespace SmartWaste.Controllers
             OperationId = "Register",
             Tags = new[] { "Account", "Registration" })]
         [SwaggerResponse(StatusCodes.Status200OK, "Returns a success message upon successful registration", typeof(string))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "Returns if the registration fails due to invalid role or data")] 
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Returns if the registration fails due to invalid role or data")]
         public IActionResult Register(dataforregister userCreationDTO)
         {
-            if (userCreationDTO.Role=="User")
+            if (userCreationDTO.Role == "User")
             {
                 _userService.RegisterUser(userCreationDTO);
                 return Ok("User registered successfully");
@@ -123,6 +99,83 @@ namespace SmartWaste.Controllers
             else
             {
                 return BadRequest("Invalid role specified. Please use 'User' or 'Driver'.");
+            }
+        }
+
+        [HttpPost("SendVerificationCode")]
+        [SwaggerOperation(
+            Summary = "Send OTP verification code to email",
+            Description = "Generates a 6-digit OTP code, saves it to the database, and sends it to the user's or recycler's email.",
+            Tags = new[] { "Account", "Password Reset" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Verification code sent successfully")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Email not found for the specified role")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Missing data or exception occurred")]
+        public async Task<IActionResult> SendCode(string email, string role)
+        {
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(role))
+            {
+                return BadRequest(new { message = "البيانات المطلوبة ناقصة." });
+            }
+
+            string otpCode = new Random().Next(100000, 999999).ToString();
+
+            try
+            {
+                _forgetPasswordService.SaveOtpCode(email, role, otpCode);
+
+                string emailBody = $@"
+                <div style='direction: rtl; font-family: sans-serif; text-align: center; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;'>
+                    <h3 style='color: #2e7d32;'>مرحباً بك في Eco Vision</h3>
+                    <p>طلبك لإعادة تعيين كلمة المرور جاهز. كود التحقق الخاص بك هو:</p>
+                    <h2 style='color: #2e7d32; letter-spacing: 4px; background: #e8f5e9; padding: 10px; display: inline-block; border-radius: 4px;'><b>{otpCode}</b></h2>
+                    <p style='color: #757575; font-size: 12px;'>هذا الكود صالح لمدة 5 دقائق فقط.</p>
+                </div>";
+
+                await _emailService.SendEmailAsync(email, "إعادة تعيين كلمة المرور - SmartWaste", emailBody);
+
+                return Ok(new { message = "Verification code sent to email successfully" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "حدث خطأ أثناء إرسال الكود.", error = ex.Message });
+            }
+        }
+
+        [HttpPost("ConfirmPasswordReset")]
+        [SwaggerOperation(
+            Summary = "Confirm OTP and reset password",
+            Description = "Verifies the provided OTP code and updates the password for the user or recycler if valid and not expired.",
+            Tags = new[] { "Account", "Password Reset" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Password reset successfully")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid OTP, expired OTP, or mismatched passwords")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "User or Recycler not found")]
+        public IActionResult ConfirmReset(string email, string code, string newPassword, string confirmPassword, string role)
+        {
+            if (string.IsNullOrEmpty(email  ) || string.IsNullOrEmpty(code) || string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(role))
+            {
+                return BadRequest(new { message = "جميع الحقول مطلوبة للتأكيد." });
+            }
+
+            try
+            {
+                _forgetPasswordService.VerifyOTPAndResetPassword(email, code, newPassword, confirmPassword, role);
+                return Ok(new { message = "تم إعادة تعيين كلمة المرور بنجاح." });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = "حدث خطأ أثناء تأكيد تعديل كلمة المرور.", error = ex.Message });
             }
         }
     }

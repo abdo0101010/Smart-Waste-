@@ -36,6 +36,10 @@ namespace SmartWaste.Repositories
                 SaveChanges();
             }
         }
+        public Recycler GetRecyclerByEmail(string email)
+        {
+            return _context.Recyclers.FirstOrDefault(r => r.Email.ToLower() == email.ToLower());
+        }
         public Recycler GetRecyclerByName(string Name)
         {
             return _context.Recyclers.FirstOrDefault(r => r.FullName.ToLower() == Name.ToLower());

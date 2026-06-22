@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SmartWaste.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace SmartWaste.Controllers
 {
@@ -14,9 +15,19 @@ namespace SmartWaste.Controllers
         {
             _hubStaffService = hubStaffService;
         }
-        //[Authorize(Roles = "HubStaff")] // تأمين الـ Endpoint لموظفين الهاب بس
+        //[Authorize(Roles = "HubStaff")] //
         [HttpPost("VerifyRequestShipment")]
         [Consumes("multipart/form-data")]
+        [SwaggerOperation(
+            Summary = "Verify shipment request using AI",
+            Description = "Accepts two images (before and after) and a transaction ID to verify the shipment using AI.",
+            OperationId = "VerifyRequestShipment"
+
+        )]
+        [SwaggerResponse(200, "Shipment verified successfully")]
+        [SwaggerResponse(400, "Invalid request or verification failed")]
+        [SwaggerResponse(500, "Internal server error")]
+
         public async Task<IActionResult> VerifyShipment(IFormFile fileBefore, IFormFile fileAfter, [FromForm] int transactionId)
         {
             if (fileBefore == null || fileAfter == null || transactionId <= 0)
