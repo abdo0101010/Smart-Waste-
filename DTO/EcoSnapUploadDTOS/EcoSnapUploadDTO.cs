@@ -2,6 +2,6 @@
 {
     public class EcoSnapUploadDTO
     {
-        public IFormFile File { get; set; } = null!;
+        public IFormFile image { get; set; } = null!;
     }
 }
