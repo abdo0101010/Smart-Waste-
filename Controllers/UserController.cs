@@ -197,7 +197,7 @@ namespace SmartWaste.Controllers
         [HttpPost("UploadEcoSnapImage")]
         [Consumes("multipart/form-data")]
         [RequestSizeLimit(100_000_000)]
-        public async Task<IActionResult> UploadEcoSnapImage( EcoSnapUploadDTO model)
+        public async Task<IActionResult> UploadEcoSnapImage( [FromForm] EcoSnapUploadDTO model)
             {
                 // 1. التشيك الأول على الملف
                 if (model == null || model.File == null || model.File.Length == 0)
