@@ -122,5 +122,13 @@ namespace SmartWaste.Services
                 throw new ArgumentNullException(nameof(recyclerCreationDTO), "dataforregister cannot be null.");
             }
         }
+        public Recycler GetRecyclerByEmail(string email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                return _RecyclerRepository.GetRecyclerByEmail(email);
+            }
+            return null;
+        }   
     }
 }

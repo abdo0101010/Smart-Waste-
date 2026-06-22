@@ -41,6 +41,10 @@ namespace SmartWaste
             builder.Services.AddScoped<IUserService, UserService>();
             builder.Services.AddScoped<IImageStorageService, ImageStorageService>();
 
+            builder.Services.AddScoped<IEmailService, EmailService>();
+            builder.Services.AddScoped<IForgetPasswordRepository, ForgetPasswordRepository>();
+            builder.Services.AddScoped<IForgetPasswordService, ForgetPasswordService>();
+
             // 3. إعدادات الـ Authentication والـ JWT Token
             builder.Services.AddAuthentication(op => op.DefaultAuthenticateScheme = "MySchema")
             .AddJwtBearer("MySchema", options =>
