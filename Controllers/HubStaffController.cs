@@ -19,6 +19,7 @@ namespace SmartWaste.Controllers
             _ecoSnapService = ecoSnapService;
         }
 
+        //[Authorize(Roles = "HubStaff,Admin")] // تأمين الـ Endpoint لليوزر الصح
         [HttpPost("VerifyRequestShipment")]
         [Consumes("multipart/form-data")]
         public async Task<IActionResult> VerifyShipment([FromForm] HubStaffVerifyDTO model)
@@ -28,10 +29,14 @@ namespace SmartWaste.Controllers
                 return BadRequest(new { Message = "برجاء رفع صورة الاستلام وإدخال رقم عملية صحيح." });
             }
 
+            // لقط الـ ID بتاع موظف المخزن الحالي من الـ Token كـ int (للأمان والتوثيق)
+            var hubStaffIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            int.TryParse(hubStaffIdClaim, out int hubStaffId);
+
             try
             {
-                // نمرر الـ ID وصورة الهاب ستاف فقط، والـ Service تجيب الباقي
-                int count = await _ecoSnapService.VerifyHubShipmentAsync(0, model.TransactionId, model.FileAfter);
+                // باصي الـ hubStaffId الحقيقي بدل الـ 0
+                int count = await _ecoSnapService.VerifyHubShipmentAsync(hubStaffId, model.TransactionId, model.FileAfter);
 
                 return Ok(new
                 {
@@ -39,6 +44,10 @@ namespace SmartWaste.Controllers
                     FinalBottlesDetected = count,
                     PointsAwarded = count * 5
                 });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { Message = ex.Message });
             }
             catch (Exception ex)
             {

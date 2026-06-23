@@ -58,74 +58,98 @@ namespace SmartWaste.Services
             return newRequest.RequestId;
         }
 
-        // ====== [ الخطوة الثانية: الهاب ستاف يفحص ويضرب الـ AI ] ======
         public async Task<int> VerifyHubShipmentAsync(int userId, int transactionId, IFormFile fileAfter)
         {
-            // 1. هنجيب الطلب بالـ ID ونلقط صورة اليوزر المحفوظة
+            // 1. جلب الطلب بالـ ID لنسحب مسار صورة اليوزر (Before)
             var pickupRequest = await _context.PickupRequests.FirstOrDefaultAsync(p => p.RequestId == transactionId);
-            if (pickupRequest == null) throw new KeyNotFoundException("رقم العملية (Transaction ID) هذا غير مسجل بالداتابيز.");
+            if (pickupRequest == null)
+            {
+                throw new KeyNotFoundException("رقم العملية (Transaction ID) هذا غير مسجل بالداتابيز.");
+            }
 
             string userImagePath = pickupRequest.RequestImageUrl;
-            if (string.IsNullOrEmpty(userImagePath)) throw new Exception("هذا الطلب لا يحتوي على صورة مرفوعة من المستخدم.");
+            if (string.IsNullOrEmpty(userImagePath))
+            {
+                throw new Exception("هذا الطلب لا يحتوي على صورة مرفوعة من المستخدم.");
+            }
 
-            // 2. تحويل مسار السيرفر لـ Stream حقيقي
+            // 2. تحويل مسار السيرفر لـ مسار فيزيائي حقيقي للوصول للملف
             var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
             string fullUserImagePath = Path.Combine(rootPath, userImagePath.TrimStart('/'));
-            if (!File.Exists(fullUserImagePath)) throw new FileNotFoundException("صورة المستخدم الأصلية لم تعد موجودة على السيرفر.");
+            if (!File.Exists(fullUserImagePath))
+            {
+                throw new FileNotFoundException("صورة المستخدم الأصلية لم تعد موجودة على السيرفر.");
+            }
 
-            // 3. حفظ صورة الهاب ستاف الجديدة برضه للتوثيق
+            // 3. حفظ صورة الهاب ستاف (After) الجديدة في الـ uploads للتوثيق
             string uniqueFileNameAfter = Guid.NewGuid().ToString() + "_" + fileAfter.FileName;
             string filePathAfter = Path.Combine(rootPath, "uploads", uniqueFileNameAfter);
+
             using (var fileStream = new FileStream(filePathAfter, FileMode.Create))
             {
                 await fileAfter.CopyToAsync(fileStream);
             }
             pickupRequest.VerificationImageUrl = "/uploads/" + uniqueFileNameAfter;
 
-            // 4. تجهيز الـ HttpClient وضخ الـ Payload الثلاثي للـ FastAPI
+            // 4. تجهيز الـ HttpClient وضخ الـ Payload الثلاثي للـ FastAPI كـ Bytes وبالمسميات الدقيقة
             using var httpClient = new HttpClient();
             string aiApiUrl = "https://badass-ecosystem-hazy.ngrok-free.dev/verify-shipment/";
 
             using var content = new MultipartFormDataContent();
 
-            // ضخ الـ file_before (صورة اليوزر من السيرفر) بدون using فرعي
-            var fileStreamBefore = new FileStream(fullUserImagePath, FileMode.Open, FileAccess.Read);
-            var contentBefore = new StreamContent(fileStreamBefore);
-            content.Add(contentBefore, "file_before", Path.GetFileName(fullUserImagePath));
+            // تحويل الـ file_before لـ ByteArrayContent لضمان قراءتها كاملة
+            byte[] fileBeforeBytes = await File.ReadAllBytesAsync(fullUserImagePath);
+            var contentBefore = new ByteArrayContent(fileBeforeBytes);
+            contentBefore.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+            content.Add(contentBefore, "file_before", "user_image.jpg");
 
-            // ضخ الـ file_after (صورة الهاب ستاف الحالية)
-            var streamAfter = fileAfter.OpenReadStream();
-            var contentAfter = new StreamContent(streamAfter);
-            content.Add(contentAfter, "file_after", fileAfter.FileName);
+            // تحويل الـ file_after لـ ByteArrayContent لمنع مشاكل الـ Stream Position
+            using var streamAfter = fileAfter.OpenReadStream();
+            using var memoryStreamAfter = new MemoryStream();
+            await streamAfter.CopyToAsync(memoryStreamAfter);
+            byte[] fileAfterBytes = memoryStreamAfter.ToArray();
 
-            // ضخ الـ transaction_id
+            var contentAfter = new ByteArrayContent(fileAfterBytes);
+            contentAfter.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
+            content.Add(contentAfter, "file_after", "hub_image.jpg");
+
+            // ضخ الـ transaction_id كـ StringContent بنفس المسمى المستهدف في البايثون
             content.Add(new StringContent(transactionId.ToString()), "transaction_id");
 
-            // 🚀 إرسال الطلب لايف للـ FastAPI
+            // 🚀 إرسال الطلب لايف وسيرفر الـ FastAPI هيرد بـ HTTP 200 في الحالتين
             var response = await httpClient.PostAsync(aiApiUrl, content);
-
-            // قفل الـ Stream اليدوي فوراً بعد الإرسال
-            fileStreamBefore.Close();
 
             if (!response.IsSuccessStatusCode)
             {
                 var errorDetail = await response.Content.ReadAsStringAsync();
-                throw new Exception($"AI Server rejected the payload. Status: {response.StatusCode}. Reason: {errorDetail}");
+                throw new Exception($"AI Server HTTP Error. Status: {response.StatusCode}. Reason: {errorDetail}");
             }
 
-            // 5. قراءة الفحص وحساب النقاط
+            // 5. قراءة الـ JSON وفحص الـ Logic الداخلي للموديل (مربط الفرس 🎯)
             var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>();
+
+            // التشيك على الـ status الداخلية اللي باعتها الـ AI
+            if (jsonResult.TryGetProperty("status", out var statusElement) && statusElement.GetString() == "FAILED")
+            {
+                string aiMessage = jsonResult.TryGetProperty("message", out var msgElement) ? msgElement.GetString() : "فشلت عملية المطابقة وعدم تطابق الكمية.";
+
+                // رمي إيرور صريح يوقف الـ Cycle ويمنع الـ SaveChanges والـ النقاط
+                throw new Exception(aiMessage);
+            }
+
+            // لو الـ Status مش FAILED (يعني الـ عملية نجحت ومطابقة للـ Before)
             if (jsonResult.TryGetProperty("count_after", out var countElement))
             {
                 int countAfter = countElement.GetInt32();
-                decimal pointsEarned = countAfter * 5;
+                decimal pointsEarned = countAfter * 5; // حساب النقاط (كل زجاجة بـ 5 نقاط)
 
-                // تحديث الداتابيز بالبيانات النهائية
+                // تحديث بيانات الـ Request في الـ Database بالقيم النهائية
                 pickupRequest.Status = "Verified";
                 pickupRequest.FinalBottlesCount = countAfter;
                 pickupRequest.FinalPoints = pointsEarned;
                 pickupRequest.VerificationDate = DateTime.UtcNow;
 
+                // تحديث إجمالي نقاط وبوتلز المستخدم الحقيقي المربوط بالعملية أوتوماتيكياً
                 await _userRepository.UpdateUserBottlesAndPointsAsync(pickupRequest.UserId, countAfter, pointsEarned);
                 await _context.SaveChangesAsync();
 
