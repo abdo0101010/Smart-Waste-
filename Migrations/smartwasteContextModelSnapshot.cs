@@ -185,6 +185,9 @@ namespace SmartWaste.Migrations
                     b.Property<DateTime?>("PickupDate")
                         .HasColumnType("datetime");
 
+                    b.Property<string>("Priority")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Qrcode")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)")

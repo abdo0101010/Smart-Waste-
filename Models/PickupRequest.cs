@@ -46,4 +46,5 @@ public partial class PickupRequest
     public virtual ICollection<RequestItem> RequestItems { get; set; } = new List<RequestItem>();
 
     public virtual User User { get; set; } = null!;
+    public string? Priority { get; set; }
 }

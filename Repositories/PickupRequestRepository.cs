@@ -81,7 +81,7 @@ namespace SmartWaste.Repositories
 
         }
 
-        public List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status)
+        public List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority ,string? zone, string? material)
         {
             var query = _context.PickupRequests
                            .Include(p => p.User)        //  بيانات المواطن عشان اسمه وعنوانه
@@ -95,14 +95,26 @@ namespace SmartWaste.Repositories
             {
                 query = query.Where(p => p.Status == status);
             }
-            
+            if (!string.IsNullOrEmpty(priority) && priority != "all")
+            {
+                query = query.Where(p => p.Priority == priority); 
+            }
+            if (!string.IsNullOrEmpty(zone) && zone != "all")
+            {
+                query = query.Where(p => p.User.Address.Contains(zone));
+            }
+            if (!string.IsNullOrEmpty(material) && material != "all")
+            {
+                query = query.Where(p => p.RequestItems.Any(ri => ri.Category.CategoryName == material));
+            }
             if (!string.IsNullOrEmpty(search))
             {
                 query = query.Where(p => p.RequestId.ToString().Contains(search) ||
                                          p.Status.Contains(search) ||
+                                         p.Priority.Contains(search) ||
                                         p.RequestItems.Any(ri => ri.Category.CategoryName.Contains(search))||
                                         p.User.FullName.Contains(search) ||
-                                         p.User.Address.Contains(search)); // السيرش بالعنوان بدل الخريطة 
+                                         p.User.Address.Contains(search));   
             }
             return query.ToList();
         }
