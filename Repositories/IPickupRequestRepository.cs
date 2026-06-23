@@ -14,7 +14,10 @@ namespace SmartWaste.Repositories
         public int GetTotalPickupRequests();
             public decimal? TotalEaring();
         public PickupInfoDTOS GetTodayPickupSummary();
-        public List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority, string? zone, string? material);
-        public bool AcceptPickupRequest(int requestId, int recyclerId);
+        List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority, string? zone, string? material);
         public void SaveChanges();
-    }}
+        Task<IEnumerable<PickupRequest>> GetRequestsByUserIdAsync(int userId);
+        bool AcceptPickupRequest(int requestId, int recyclerId);
+
+    }
+}

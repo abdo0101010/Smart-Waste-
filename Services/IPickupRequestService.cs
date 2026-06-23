@@ -1,22 +1,29 @@
 ﻿using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.Models;
+using SmartWaste.Repositories;
 
 namespace SmartWaste.Services
 {
     public interface IPickupRequestService
     {
-        public void AddPickupRequest(PickupRequest pickupRequest);
-        public PickupRequest GetPickupRequestById(int id);
-        public void UpdatePickupRequest(PickupRequest pickupRequest);
-        public void DeletePickupRequest(int id);
-        public IEnumerable<PickupRequest> GetAllPickupRequests();
-        public List<PickupRequest> GetAllPickupRequestsWithRecyclersAndHubStaff();
-        public int GetTotalPickupRequests();
-        public decimal? TotalEaring();
-        public PickupInfoDTOS GetTodayPickupSummary();
+        List<PickupRequestViewModelDTO> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority, string? zone, string? material);
 
-        public bool AcceptPickupRequest(int requestId, int recyclerId);
-        public List<PickupRequestViewModelDTO> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority, string? zone, string? material);
-        public void SaveChanges();
+        // حل الإيرور الثالث: إضافة تعريف الـ History جوه انترفيس السيرفيس
+        Task<IEnumerable<PickupRequestViewModelDTO>> GetUserHistoryAsync(int userId);
+
+        // حل الإيرور الثاني: إضافة تعريف الـ Summary جوه انترفيس السيرفيس
+        PickupInfoDTOS GetTodayPickupSummary();
+
+        // باقي الميثودز الأساسية اللي الـ Controller بيحتاجها من السيرفيس
+        void AddPickupRequest(PickupRequest pickupRequest);
+        PickupRequest GetPickupRequestById(int id);
+        void UpdatePickupRequest(PickupRequest pickupRequest);
+        void DeletePickupRequest(int id);
+        IEnumerable<PickupRequest> GetAllPickupRequests();
+        List<PickupRequest> GetAllPickupRequestsWithRecyclersAndHubStaff();
+        int GetTotalPickupRequests();
+        decimal? TotalEaring();
+        bool AcceptPickupRequest(int requestId, int recyclerId);
+        void SaveChanges();
     }
 }

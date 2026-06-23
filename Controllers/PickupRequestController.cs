@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
 
 namespace SmartWaste.Controllers
 {
@@ -67,6 +68,34 @@ namespace SmartWaste.Controllers
             }
 
             return Ok(new { Message = "The pickup request has been successfully assigned to you and is now In Progress." });
+        }
+        //[Authorize(Roles = "Citizen")]
+        [HttpGet("my-history")]
+        public async Task<IActionResult> GetMyHistory()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("User ID is missing or invalid in Token.");
+            }
+
+            var history = await _pickupRequestService.GetUserHistoryAsync(userId);
+            return Ok(history);
+        }
+
+        // 2. للأدمن أو موظف المخزن: الـ Parameter هنا أصبح int صريح
+        //[Authorize(Roles = "Admin,HubStaff")]
+        [HttpGet("user-history/{userId:int}")] // وضعنا :int هنا كـ Route Constraint للحماية
+        public async Task<IActionResult> GetUserHistoryForAdmin(int userId)
+        {
+            if (userId <= 0)
+            {
+                return BadRequest("A valid User ID is required.");
+            }
+
+            var history = await _pickupRequestService.GetUserHistoryAsync(userId);
+            return Ok(history);
         }
 
     }
