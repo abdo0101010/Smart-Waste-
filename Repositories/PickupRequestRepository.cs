@@ -134,6 +134,16 @@ namespace SmartWaste.Repositories
             request.Status = "In Progress";          
             return true;
         }
+        public async Task<IEnumerable<PickupRequest>> GetRequestsByUserIdAsync(int userId)
+        {
+            return await _context.PickupRequests
+                .Where(r => r.UserId == userId)
+                .Include(r => r.User) // عشان نقدر نجيب اسم المواطن وعنوانه (Zone)
+                .Include(r => r.RequestItems)
+                    .ThenInclude(ri => ri.Category) // عشان نقدر نجيب الـ CategoryName للمخلفات
+                .OrderByDescending(r => r.RequestDate) // الترتيب من أحدث طلب لأقدم طلب
+                .ToListAsync();
+        }
         public void SaveChanges()
         {
             _context.SaveChanges();
