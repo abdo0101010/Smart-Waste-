@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using SmartWaste.DTO.HubStaffDTOS;
 using SmartWaste.Services;
-using Swashbuckle.AspNetCore.Annotations;
+using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SmartWaste.Controllers
 {
@@ -10,47 +12,37 @@ namespace SmartWaste.Controllers
     [ApiController]
     public class HubStaffController : ControllerBase
     {
-        private readonly IHubStaffService _hubStaffService;
-        public HubStaffController(IHubStaffService hubStaffService)
+        private readonly IEcoSnapService _ecoSnapService;
+
+        public HubStaffController(IEcoSnapService ecoSnapService)
         {
-            _hubStaffService = hubStaffService;
+            _ecoSnapService = ecoSnapService;
         }
-        //[Authorize(Roles = "HubStaff")] //
+
         [HttpPost("VerifyRequestShipment")]
         [Consumes("multipart/form-data")]
-        [SwaggerOperation(
-            Summary = "Verify shipment request using AI",
-            Description = "Accepts two images (before and after) and a transaction ID to verify the shipment using AI.",
-            OperationId = "VerifyRequestShipment"
-
-        )]
-        [SwaggerResponse(200, "Shipment verified successfully")]
-        [SwaggerResponse(400, "Invalid request or verification failed")]
-        [SwaggerResponse(500, "Internal server error")]
-
-        public async Task<IActionResult> VerifyShipment(IFormFile fileBefore, IFormFile fileAfter, [FromForm] int transactionId)
+        public async Task<IActionResult> VerifyShipment([FromForm] HubStaffVerifyDTO model)
         {
-            if (fileBefore == null || fileAfter == null || transactionId <= 0)
+            if (model == null || model.FileAfter == null || model.TransactionId <= 0)
             {
-                return BadRequest(new { Message = "برجاء رفع الصورتين وإدخال رقم عملية صحيح." });
+                return BadRequest(new { Message = "برجاء رفع صورة الاستلام وإدخال رقم عملية صحيح." });
             }
 
             try
             {
-                bool isVerified = await _hubStaffService.VerifyShipmentWithAIAsync(fileBefore, fileAfter, transactionId);
+                // نمرر الـ ID وصورة الهاب ستاف فقط، والـ Service تجيب الباقي
+                int count = await _ecoSnapService.VerifyHubShipmentAsync(0, model.TransactionId, model.FileAfter);
 
-                if (isVerified)
+                return Ok(new
                 {
-                    return Ok(new { Message = "تم التحقق من الشحنة ومطابقتها بنجاح عبر الـ AI! ✅🤖" });
-                }
-                else
-                {
-                    return BadRequest(new { Message = "فشل التحقق.. الصورتين غير متطابقتين أو هناك اختلاف في العدد." });
-                }
+                    Message = "تم التحقق من الشحنة ومطابقتها بنجاح عبر الـ AI! ✅🤖",
+                    FinalBottlesDetected = count,
+                    PointsAwarded = count * 5
+                });
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "حدث خطأ أثناء الاتصال بموديل التحقق", Details = ex.Message });
+                return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة الصورة وفحص الـ AI", Details = ex.Message });
             }
         }
     }

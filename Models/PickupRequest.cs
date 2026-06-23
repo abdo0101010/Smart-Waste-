@@ -28,6 +28,9 @@ public partial class PickupRequest
    
 
     public string? Qrcode { get; set; }
+    public string? RequestImageUrl { get; set; } // مسار صورة الـ file_before
+    public string? VerificationImageUrl { get; set; } // مسار صورة الـ file_after
+    public int? FinalBottlesCount { get; set; }
 
     [Range(10, 1000, ErrorMessage = "Estimated points must be between 10 and 1000.")]
         
