@@ -144,7 +144,7 @@ namespace SmartWaste.Controllers
         {
                    return Ok(_userService.GetAvgPointsUsers());
         }
-        [HttpPost("/api/User/UpdateUser/{id:int}")]
+        [HttpPut("/api/User/UpdateUser/{id:int}")]
         public IActionResult UpdateUser(int id, [FromBody] updateUser newUser)
         {
             if (newUser == null)

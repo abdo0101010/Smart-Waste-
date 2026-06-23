@@ -69,7 +69,7 @@ namespace SmartWaste.Controllers
 
             return Ok(new { Message = "The pickup request has been successfully assigned to you and is now In Progress." });
         }
-        //[Authorize(Roles = "Citizen")]
+        [Authorize(Roles = "User")]
         [HttpGet("my-history")]
         public async Task<IActionResult> GetMyHistory()
         {
@@ -85,7 +85,7 @@ namespace SmartWaste.Controllers
         }
 
         // 2. للأدمن أو موظف المخزن: الـ Parameter هنا أصبح int صريح
-        //[Authorize(Roles = "Admin,HubStaff")]
+        [Authorize(Roles = "Admin,HubStaff")]
         [HttpGet("user-history/{userId:int}")] // وضعنا :int هنا كـ Route Constraint للحماية
         public async Task<IActionResult> GetUserHistoryForAdmin(int userId)
         {
