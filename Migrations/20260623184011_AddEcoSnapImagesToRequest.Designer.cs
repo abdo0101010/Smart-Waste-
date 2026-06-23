@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartWaste.Models;
 
@@ -11,9 +12,11 @@ using SmartWaste.Models;
 namespace SmartWaste.Migrations
 {
     [DbContext(typeof(smartwasteContext))]
-    partial class smartwasteContextModelSnapshot : ModelSnapshot
+    [Migration("20260623184011_AddEcoSnapImagesToRequest")]
+    partial class AddEcoSnapImagesToRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -187,9 +190,6 @@ namespace SmartWaste.Migrations
 
                     b.Property<DateTime?>("PickupDate")
                         .HasColumnType("datetime");
-
-                    b.Property<string>("Priority")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Qrcode")
                         .HasMaxLength(100)
