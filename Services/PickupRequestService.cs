@@ -64,10 +64,22 @@ namespace SmartWaste.Services
         {
             return _pickupRequestRepository.GetTodayPickupSummary();
         }
-        public List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status)
+        public List<PickupRequestViewModelDTO> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority, string? zone, string? material)
         {
-            return _pickupRequestRepository.GetRecyclerRequestsWithFilters( search, status);
+            var requests = _pickupRequestRepository.GetRecyclerRequestsWithFilters(search, status, priority, zone, material);
+            var dtoList = requests.Select(p => new PickupRequestViewModelDTO
+            {
+                RequestId = p.RequestId,
+                CitizenName = p.User?.FullName ?? "N/A", // اسم المواطن
+                Status = p.Status ?? "Pending",
+                Priority = p.Priority ?? "Normal",
+                Zone = p.User?.Address ?? "N/A", // العنوان (المنطقة)
+                CategoryName = p.RequestItems.FirstOrDefault()?.Category?.CategoryName ?? "N/A",
+                TotalWeight = p.RequestItems.Sum(ri => ri.Quantity)
+            }).ToList();
+            return dtoList;
         }
+
         public bool AcceptPickupRequest(int requestId, int recyclerId)
         {
             return _pickupRequestRepository.AcceptPickupRequest(requestId, recyclerId);

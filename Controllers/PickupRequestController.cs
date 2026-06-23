@@ -7,10 +7,11 @@ using Swashbuckle.AspNetCore.Annotations;
 namespace SmartWaste.Controllers
 {
     [Route("api/[controller]")]
-    [ApiController]
+    //[ApiController]
     [Produces("application/json")]
     [Consumes("application/json")]
     [SwaggerTag("Endpoints for managing, tracking, and viewing pickup requests dashboard statistics")]
+    [ApiController]
     public class PickupRequestsController : ControllerBase
     {
         private readonly IPickupRequestService _pickupRequestService;
@@ -35,12 +36,16 @@ namespace SmartWaste.Controllers
         [HttpGet("/api/recycler/pickup-requests/search")]
         [SwaggerOperation(
           Summary = "Gets filtered pickup requests for the driver's table",
-          Description = "Retrieves requests based on search query (ID, citizen name, address) and status filter.",
+          Description = "Retrieves requests based on search query (ID, citizen name, address) , status, priority, and zone filters.",
           OperationId = "GetFilteredPickupRequests",
           Tags = new[] { "Recycler", "Pickup Requests" })]
-        public IActionResult GetRequestsByFilter([FromQuery] string? search, [FromQuery] string? status)
+        public IActionResult GetRequestsByFilter([FromQuery] string? search,
+                                                 [FromQuery] string?status,
+                                                 [FromQuery] string? priority, 
+                                                 [FromQuery] string? zone, [FromQuery] string? material)
+
         {
-            var filteredRequests = _pickupRequestService.GetRecyclerRequestsWithFilters(search, status);
+            var filteredRequests = _pickupRequestService.GetRecyclerRequestsWithFilters(search, status, priority,zone, material);
             return Ok(filteredRequests);
         }
         [HttpPut("/api/recycler/pickup-requests/{id}/accept")]
