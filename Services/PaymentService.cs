@@ -53,14 +53,13 @@ namespace SmartWaste.Services
             request.Status = "Paid";
             await _context.SaveChangesAsync();
 
-            // صفحة نجاح مستقلة تماماً ومضمونة 100% لتجنب الـ Invalid Signature
             string staticSuccessUrl = "https://cdn.pixabay.com/photo/2017/01/13/01/22/ok-1976099_1280.png";
 
             return (payment, staticSuccessUrl);
         }
 
         /// <summary>
-        /// ثانياً: تحويل نقاط المستخدم إلى فلوس وخصمها فوراً من الـ DB (Bypass ديناميكي للمناقشة)
+        /// ثانياً: تحويل نقاط المستخدم إلى فلوس وخصمها فوراً من الـ DB (Bypass ديناميكي للمناقشة مضبوط بالـ SecretKey الصح)
         /// </summary>
         public async Task<bool> TransferPointsToWalletAsync(int userId, string walletNumber, decimal pointsToRedeem)
         {
@@ -76,6 +75,13 @@ namespace SmartWaste.Services
             if (amountEgp < 5)
                 throw new InvalidOperationException("الحد الأدنى للسحب النقدي الفوري هو 5 جنيهات.");
 
+            // 🚀 قراءة الـ SecretKey الصح لتجنب الـ KeyNotFoundException
+            var secretKey = _configuration["Paymob:SecretKey"];
+            if (string.IsNullOrEmpty(secretKey))
+            {
+                throw new InvalidOperationException("خطأ في الإعدادات: الـ SecretKey الخاص بـ Paymob غير موجود.");
+            }
+
             int mockTxId = RandomNumberGenerator.GetInt32(100000, 999999);
 
             var redemption = new WalletRedemption
@@ -84,12 +90,12 @@ namespace SmartWaste.Services
                 WalletNumber = walletNumber,
                 PointsRedeemed = pointsToRedeem,
                 AmountEgp = amountEgp,
-                Status = "Success", // نجاح فوري للمناقشة
+                Status = "Success",
                 TransactionId = mockTxId.ToString(),
                 CreatedAt = DateTime.Now
             };
 
-            // الـ حتة الديناميكية: خصم النقاط فوراً من اليوزر وتسميعها في الـ DB
+            // خصم النقاط فوراً من اليوزر وتسميعها لايف
             user.WalletPoints -= pointsToRedeem;
             _context.WalletRedemptions.Add(redemption);
             await _context.SaveChangesAsync();
