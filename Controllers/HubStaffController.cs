@@ -51,6 +51,12 @@ namespace SmartWaste.Controllers
             }
             catch (Exception ex)
             {
+                // لو الرسالة جاية من الـ AI بسبب عدم التطابق، رجعها 400 Bad Request بدل 500
+                if (ex.Message == "Quantity Mismatch Error!" || ex.Message.Contains("Mismatch"))
+                {
+                    return BadRequest(new { Message = "فشل التحقق من الشحنة", Details = ex.Message });
+                }
+
                 return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة الصورة وفحص الـ AI", Details = ex.Message });
             }
         }

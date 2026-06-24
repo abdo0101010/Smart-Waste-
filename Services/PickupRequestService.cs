@@ -1,4 +1,5 @@
 ﻿using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.DTO.RequestItemDTOS;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
 
@@ -112,6 +113,11 @@ namespace SmartWaste.Services
                 CreatedAt = r.RequestDate.GetValueOrDefault(DateTime.Now)
             }).ToList();
         }
+        public async Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync()
+        {
+            return await _pickupRequestRepository.GetPendingHubRequestsAsync();
+        }
+
         public void SaveChanges()
         {
             _pickupRequestRepository.SaveChanges();

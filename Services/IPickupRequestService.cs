@@ -1,4 +1,5 @@
 ﻿using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.DTO.RequestItemDTOS;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
 
@@ -24,6 +25,8 @@ namespace SmartWaste.Services
         int GetTotalPickupRequests();
         decimal? TotalEaring();
         bool AcceptPickupRequest(int requestId, int recyclerId);
+        public Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync();
+
         void SaveChanges();
     }
 }
