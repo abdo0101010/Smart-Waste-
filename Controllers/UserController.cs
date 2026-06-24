@@ -223,6 +223,16 @@ namespace SmartWaste.Controllers
                 return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة الصورة", Details = ex.Message });
             }
         }
+        [HttpGet("get userby email")]
+        public IActionResult GetUserByEmail(string email)
+        {
+            var user = _userService.GetUserByEmail(email);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+            return Ok(user);
+        }
 
     }
 }

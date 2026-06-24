@@ -1,75 +1,106 @@
-﻿namespace SmartWaste.Repositories
+﻿using Microsoft.EntityFrameworkCore;
+using SmartWaste.Models;
+using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace SmartWaste.Repositories
 {
-    public class ForgetPasswordRepository: IForgetPasswordRepository
+    public class ForgetPasswordRepository : IForgetPasswordRepository
     {
+        private readonly smartwasteContext _context;
         private readonly IUserRepository _userRepository;
         private readonly IRecyclerRepository _recyclerRepository;
-       
-        public ForgetPasswordRepository(IUserRepository userRepository, IRecyclerRepository recyclerRepository)
+
+        public ForgetPasswordRepository(smartwasteContext context, IUserRepository userRepository, IRecyclerRepository recyclerRepository)
         {
+            _context = context;
             _userRepository = userRepository;
             _recyclerRepository = recyclerRepository;
         }
-        public void SaveOtpCode(string email, string role, string code)
+
+        // 1. ميثود حفظ كود الـ OTP بشكل Async
+        public async Task SaveOtpCodeAsync(string email, string role, string code)
         {
             var expirationTime = DateTime.UtcNow.AddMinutes(5);
 
             if (role.Equals("Recycler", StringComparison.OrdinalIgnoreCase))
             {
-                var recycler = _recyclerRepository.GetRecyclerByEmail(email);
+                var recycler = await _context.Recyclers.FirstOrDefaultAsync(r => r.Email == email);
                 if (recycler == null) throw new KeyNotFoundException("هذا البريد الإلكتروني غير مسجل للـ Recycler");
 
                 recycler.VerificationCode = code;
                 recycler.VerificationCodeExpiration = expirationTime;
-                _recyclerRepository.UpdateRecycler(recycler);
-                _recyclerRepository.SaveChanges();
+
+                _context.Recyclers.Update(recycler); // إجبار السيرفر اللايف على التحديث
             }
             else
             {
-                var user = _userRepository.GetUserByEmail(email);
+                var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
                 if (user == null) throw new KeyNotFoundException("هذا البريد الإلكتروني غير مسجل للـ User");
 
                 user.VerificationCode = code;
                 user.VerificationCodeExpiration = expirationTime;
-                _userRepository.UpdateUser(user);
-          _userRepository.SaveChanges();
+
+                _context.Users.Update(user); // إجبار السيرفر اللايف على التحديث
             }
+
+            await _context.SaveChangesAsync();
         }
 
-        public void VerifyOTPAndResetPassword(string email, string code, string newPassword, string confirmPassword, string role)
+        // 2. ميثود التحقق وتغيير الباسورد بالـ BCrypt الحاسم 🎯
+        public async Task VerifyOTPAndResetPasswordAsync(string email, string code, string newPassword, string confirmPassword, string role)
         {
             if (newPassword != confirmPassword)
                 throw new InvalidOperationException("كلمتا المرور غير متطابقتين.");
 
             string hashedPass = BCrypt.Net.BCrypt.HashPassword(newPassword);
 
-            if (role.Equals("Recycler", StringComparison.OrdinalIgnoreCase))
+            // 🚀 فتح Transaction صريحة لضمان الحفظ النهائي في الـ SQL Server
+            using var transaction = await _context.Database.BeginTransactionAsync();
+
+            try
             {
-                var recycler = _recyclerRepository.GetRecyclerByEmail(email);
-                if (recycler == null) throw new KeyNotFoundException("الـ Recycler غير موجود.");
+                if (role.Equals("Recycler", StringComparison.OrdinalIgnoreCase))
+                {
+                    var recycler = await _context.Recyclers.FirstOrDefaultAsync(r => r.Email == email);
+                    if (recycler == null) throw new KeyNotFoundException("الـ Recycler غير موجود.");
 
-                if (recycler.VerificationCode != code || recycler.VerificationCodeExpiration < DateTime.UtcNow)
-                    throw new InvalidOperationException("كود التحقق غير صحيح أو انتهت صلاحيته.");
+                    if (recycler.VerificationCode != code)
+                        throw new InvalidOperationException("كود التحقق غير صحيح.");
 
-                recycler.PasswordHash = hashedPass;
-                recycler.VerificationCode = null;
-                recycler.VerificationCodeExpiration = null;
-                _recyclerRepository.UpdateRecycler(recycler);
-                _recyclerRepository.SaveChanges();
+                    recycler.PasswordHash = hashedPass;
+                    recycler.VerificationCode = null;
+                    recycler.VerificationCodeExpiration = null;
+
+                    _context.Recyclers.Update(recycler);
+                }
+                else
+                {
+                    var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
+                    if (user == null) throw new KeyNotFoundException("الـ User غير موجود.");
+
+                    if (user.VerificationCode != code)
+                        throw new InvalidOperationException("كود التحقق غير صحيح.");
+
+                    user.PasswordHash = hashedPass;
+                    user.VerificationCode = null;
+                    user.VerificationCodeExpiration = null;
+
+                    _context.Users.Update(user);
+                }
+
+                // حفظ التغييرات
+                await _context.SaveChangesAsync();
+
+                // 🎯 السطر السحري: إجبار الـ SQL Server على كتابة الداتا الجديدة حالا وقفل الـ Transaction
+                await transaction.CommitAsync();
             }
-            else
+            catch (Exception)
             {
-                var user = _userRepository.GetUserByEmail(email);
-                if (user == null) throw new KeyNotFoundException("الـ User غير موجود.");
-
-                if (user.VerificationCode != code || user.VerificationCodeExpiration < DateTime.UtcNow)
-                    throw new InvalidOperationException("كود التحقق غير صحيح أو انتهت صلاحيته.");
-
-                user.PasswordHash = hashedPass;
-                user.VerificationCode = null;
-                user.VerificationCodeExpiration = null;
-                _userRepository.UpdateUser(user);
-                _userRepository.SaveChanges();
+                // لو حصلت أي مشكلة بنلغي كل حاجة
+                await transaction.RollbackAsync();
+                throw;
             }
         }
     }
