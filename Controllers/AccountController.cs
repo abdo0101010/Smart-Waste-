@@ -121,22 +121,27 @@ namespace SmartWaste.Controllers
 
             try
             {
-                _forgetPasswordService.SaveOtpCode(email, role, otpCode);
+                // 🚀 الـ await السحرية: السيستم هيقف هنا ويروح يشيك في الداتابيز الأول
+                // لو الإيميل غلط أو مش متسجل، الـ Repo هترمي Exception والـ catch هتمسكه حالا!
+                await _forgetPasswordService.SaveOtpCodeAsync(email, role, otpCode);
 
+                // كود تصميم الإيميل
                 string emailBody = $@"
-                <div style='direction: rtl; font-family: sans-serif; text-align: center; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;'>
-                    <h3 style='color: #2e7d32;'>مرحباً بك في Eco Vision</h3>
-                    <p>طلبك لإعادة تعيين كلمة المرور جاهز. كود التحقق الخاص بك هو:</p>
-                    <h2 style='color: #2e7d32; letter-spacing: 4px; background: #e8f5e9; padding: 10px; display: inline-block; border-radius: 4px;'><b>{otpCode}</b></h2>
-                    <p style='color: #757575; font-size: 12px;'>هذا الكود صالح لمدة 5 دقائق فقط.</p>
-                </div>";
+        <div style='direction: rtl; font-family: sans-serif; text-align: center; border: 1px solid #e0e0e0; padding: 20px; border-radius: 8px;'>
+            <h3 style='color: #2e7d32;'>مرحباً بك في Eco Vision</h3>
+            <p>طلبك لإعادة تعيين كلمة المرور جاهز. كود التحقق الخاص بك هو:</p>
+            <h2 style='color: #2e7d32; letter-spacing: 4px; background: #e8f5e9; padding: 10px; display: inline-block; border-radius: 4px;'><b>{otpCode}</b></h2>
+            <p style='color: #757575; font-size: 12px;'>هذا الكود صالح لمدة 5 دقائق فقط.</p>
+        </div>";
 
+                // إرسال الإيميل
                 await _emailService.SendEmailAsync(email, "إعادة تعيين كلمة المرور - SmartWaste", emailBody);
 
                 return Ok(new { message = "Verification code sent to email successfully" });
             }
             catch (KeyNotFoundException ex)
             {
+                // 🎯 أول ما الـ Repo تكتشف إن الإيميل مش موجود للـ Role ده، هتنور هنا وترجع 404 صريحة!
                 return NotFound(new { message = ex.Message });
             }
             catch (Exception ex)
@@ -153,16 +158,18 @@ namespace SmartWaste.Controllers
         [SwaggerResponse(StatusCodes.Status200OK, "Password reset successfully")]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid OTP, expired OTP, or mismatched passwords")]
         [SwaggerResponse(StatusCodes.Status404NotFound, "User or Recycler not found")]
-        public IActionResult ConfirmReset(string email, string code, string newPassword, string confirmPassword, string role)
+        public async Task<IActionResult> ConfirmReset(string email, string code, string newPassword, string confirmPassword, string role)
         {
-            if (string.IsNullOrEmpty(email  ) || string.IsNullOrEmpty(code) || string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(role))
+            if (string.IsNullOrEmpty(email) || string.IsNullOrEmpty(code) || string.IsNullOrEmpty(newPassword) || string.IsNullOrEmpty(confirmPassword) || string.IsNullOrEmpty(role))
             {
                 return BadRequest(new { message = "جميع الحقول مطلوبة للتأكيد." });
             }
 
             try
             {
-                _forgetPasswordService.VerifyOTPAndResetPassword(email, code, newPassword, confirmPassword, role);
+                // 🚀 الـ await السحرية: اجبر السيستم يستنى الحفظ الفعلي في الداتابيز قبل ما يرجع 200!
+                await _forgetPasswordService.VerifyOTPAndResetPasswordAsync(email, code, newPassword, confirmPassword, role);
+
                 return Ok(new { message = "تم إعادة تعيين كلمة المرور بنجاح." });
             }
             catch (KeyNotFoundException ex)

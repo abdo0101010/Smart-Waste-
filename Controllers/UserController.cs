@@ -144,7 +144,7 @@ namespace SmartWaste.Controllers
         {
                    return Ok(_userService.GetAvgPointsUsers());
         }
-        [HttpPost("/api/User/UpdateUser/{id:int}")]
+        [HttpPut("/api/User/UpdateUser/{id:int}")]
         public IActionResult UpdateUser(int id, [FromBody] updateUser newUser)
         {
             if (newUser == null)
@@ -192,48 +192,47 @@ namespace SmartWaste.Controllers
 
 
         }
-
         [Authorize]
         [HttpPost("UploadEcoSnapImage")]
         [Consumes("multipart/form-data")]
-        [RequestSizeLimit(100_000_000)]
-        public async Task<IActionResult> UploadEcoSnapImage( [FromForm] EcoSnapUploadDTO model)
+        public async Task<IActionResult> UploadEcoSnapImage([FromForm] EcoSnapUploadDTO model)
+        {
+            if (model == null || model.File == null || model.File.Length == 0)
+                return BadRequest(new { Message = "برجاء اختيار صورة صالحة." });
+
+            var user = HttpContext.User;
+            var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
             {
-                // 1. التشيك الأول على الملف
-                if (model == null || model.File == null || model.File.Length == 0)
-                    return BadRequest(new { Message = "برجاء اختيار صورة صالحة." });
+                return Unauthorized(new { Message = "User ID غير صالح أو غير موجود بالتوكن." });
+            }
 
-                // 2. التشييك الأمني المضمون على الـ User ID
-                var user = HttpContext.User;
-                if (user == null || !user.Identity.IsAuthenticated)
-                {
-                    return Unauthorized(new { Message = "User not authorized or session expired." });
-                }
+            try
+            {
+                // الـ Service هتكريت الطلب وترجع الـ ID الفريد
+                int transactionId = await _ecoSnapService.ProcessUserUploadAsync(userId, model.File);
 
-                var userIdClaim = user.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-                if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId) || userId == 0)
+                return Ok(new
                 {
-                    return Unauthorized(new { Message = "User ID is invalid or missing from token." });
-                }
-
-                try
-                {
-                    // كدة مستحيل يدخل هنا والـ userId بـ 0 أو null
-                    int detectedBottles = await _ecoSnapService.ProcessImageWithAIAsync(userId, model.File);
-
-                    return Ok(new
-                    {
-                        Message = "Image processed and data saved successfully via EcoSnap! 🤖🎉",
-                        BottlesDetected = detectedBottles,
-                        PointsEarned = detectedBottles * 5
-                    });
-                }
-                catch (Exception ex)
-                {
-                    // الـ Catch دي بتحمي البروجكت من إنه يقفل لو الـ AI أو الـ DB رموا أي إيرور
-                    return StatusCode(500, new { Message = "An error occurred while processing the image", Details = ex.Message });
-                }
-              
+                    Message = "تم إنشاء طلبك وحفظ الصورة في الـ Waiting Room بنجاح! 🎉",
+                    TransactionId = transactionId
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة الصورة", Details = ex.Message });
+            }
         }
+        [HttpGet("get userby email")]
+        public IActionResult GetUserByEmail(string email)
+        {
+            var user = _userService.GetUserByEmail(email);
+            if (user == null)
+            {
+                return NotFound(new { message = "User not found" });
+            }
+            return Ok(user);
+        }
+
     }
 }

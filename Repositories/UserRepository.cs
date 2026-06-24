@@ -36,7 +36,10 @@ namespace SmartWaste.Repositories
         }
         public User GetUserByName(string name)
         {
-            return _context.Users.FirstOrDefault(u => u.FullName.ToLower() == name.ToLower());
+            // 🚀 AsNoTracking بتفرتك أي كاش وتجبر الـ EF تقرأ الـ PasswordHash الجديد حالا من الـ SQL Server
+            return _context.Users
+                .AsNoTracking()
+                .FirstOrDefault(u => u.FullName.ToLower() == name.ToLower());
         }
         public User? GetUserByEmail(string email)
         {

@@ -1,5 +1,8 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.SignalR;
+using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.DTO.RequestItemDTOS;
+using SmartWaste.Hubs;
 using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
@@ -7,9 +10,12 @@ namespace SmartWaste.Repositories
     public class PickupRequestRepository : IPickupRequestRepository
     {
         smartwasteContext _context;
-        public PickupRequestRepository(smartwasteContext context)
+        private readonly IHubContext<NotificationHub> _hubContext;
+
+        public PickupRequestRepository(smartwasteContext context, IHubContext<NotificationHub> hubContext)
         {
             _context = context;
+            _hubContext = hubContext;
         }
 
         public void AddPickupRequest(PickupRequest pickupRequest)
@@ -118,21 +124,87 @@ namespace SmartWaste.Repositories
             }
             return query.ToList();
         }
-        public bool AcceptPickupRequest(int requestId, int recyclerId)
+        public async Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId)
         {
-            // 1. بنجيب الطلب من الداتابيز باستخدام الـ ID بتاعه
-            var request = _context.PickupRequests.FirstOrDefault(p => p.RequestId == requestId);
+            // 🎯 الشرط السحري لتقليل التكلفة: الحد الأدنى لعدد الطلبات في المشوار الواحد
+            int minRequiredRequests = 5; // لازم السائق يلم 3 بيوت أو طلبات على الأقل في النزلة
 
-            // 2. لو الطلب مش موجود أو مش جاهز للاستلام بنرجع false
-            if (request == null || request.Status != "Open")
+            if (requestIds == null || requestIds.Count < minRequiredRequests)
             {
-                return false;
+                throw new InvalidOperationException($"عذراً، لتقليل تكلفة الشحن، لا يمكنك النزول لطلب أو اثنين فقط. يجب أن تختار {minRequiredRequests} طلبات على الأقل معاً لتشكيل خط سير مجمع.");
             }
 
-            // 3.  ربط الطلب بالسواق وتغيير الحالة لـ قيد التنفيذ
-            request.RecyclerId = recyclerId;
-            request.Status = "In Progress";          
+            // جلب كل الطلبات المبعوثة من الداتابيز للتأكد إنها لسه "Open" وموجودة
+            var requests = await _context.PickupRequests
+                .Where(p => requestIds.Contains(p.RequestId) && p.Status == "Open")
+                .ToListAsync();
+
+            // لو عدد الطلبات المتاحة فعلياً في الداتابيز أقل من اللي السواق اختارهم (لو حد خطف طلب منهم مثلاً)
+            if (requests.Count < requestIds.Count)
+            {
+                throw new Exception("بعض الطلبات التي اخترتها تم قبولها بالفعل من سائق آخر أو غير متاحة.");
+            }
+
+            // ----------------------------------------------------
+            // لو كله تمام والعدد مستوفي الشروط، بنحدثهم كلهم Loop واحدة 🚀
+            // ----------------------------------------------------
+            foreach (var request in requests)
+            {
+                request.RecyclerId = recyclerId;
+                request.Status = "In Progress";
+
+                try
+                {
+                    // تسجيل إشعار في الداتابيز لكل مواطن ميكلبش في خط السير ده
+                    var notification = new Notification
+                    {
+                        Title = "Driver is on the way! 🚛",
+                        Message = $"A driver has accepted your request (ORD-{request.RequestId}) in a combined route.",
+                        Type = "Pickup",
+                        CreatedAt = DateTime.UtcNow,
+                        UserId = request.UserId
+                    };
+                    _context.Notifications.Add(notification);
+                }
+                catch (Exception) { /* تخطي إيرور الإشعار الفردي لضمان حفظ الطلب */ }
+            }
+
+            // حفظ كل الطلبات والإشعارات في خطوة واحدة قوية جوه الـ SQL Server
+            await _context.SaveChangesAsync();
+
+            // ضخ إشعار عام للـ SignalR إن فيه طلبات اتجمعت واتقبلت
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Route Started", $"{requests.Count} requests have been batched into a new route.", "Pickup");
+
             return true;
+        }
+        public async Task<IEnumerable<PickupRequest>> GetRequestsByUserIdAsync(int userId)
+        {
+            return await _context.PickupRequests
+                .Where(r => r.UserId == userId)
+                .Include(r => r.User) // عشان نقدر نجيب اسم المواطن وعنوانه (Zone)
+                .Include(r => r.RequestItems)
+                    .ThenInclude(ri => ri.Category) // عشان نقدر نجيب الـ CategoryName للمخلفات
+                .OrderByDescending(r => r.RequestDate) // الترتيب من أحدث طلب لأقدم طلب
+                .ToListAsync();
+        }
+        public async Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync()
+        {
+            // سحب الطلبات المعلقة وعمل Join مع جدول المستخدمين لجلب الاسم
+            var pendingRequests = await _context.PickupRequests
+                .Include(p => p.User)
+                .Where(p => p.Status == "Pending")
+                .OrderByDescending(p => p.RequestDate) // الأحدث يظهر فوق
+                .Select(p => new PendingRequestFormDTO
+                {
+                    RequestId = p.RequestId,
+                    UserName = p.User != null ? p.User.FullName : "مستخدم غير معروف",
+                    Status = p.Status,
+                    // تنسيق التاريخ والوقت ليظهر بشكل كلين للـ Hub Staff
+                    TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A"
+                })
+                .ToListAsync();
+
+            return pendingRequests;
         }
         public void SaveChanges()
         {

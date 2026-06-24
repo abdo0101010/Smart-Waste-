@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartWaste.Models;
 
@@ -11,9 +12,11 @@ using SmartWaste.Models;
 namespace SmartWaste.Migrations
 {
     [DbContext(typeof(smartwasteContext))]
-    partial class smartwasteContextModelSnapshot : ModelSnapshot
+    [Migration("20260623184011_AddEcoSnapImagesToRequest")]
+    partial class AddEcoSnapImagesToRequest
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -113,40 +116,6 @@ namespace SmartWaste.Migrations
                     b.ToTable("HubStaff", (string)null);
                 });
 
-            modelBuilder.Entity("SmartWaste.Models.Notification", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("CreatedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRead")
-                        .HasColumnType("bit");
-
-                    b.Property<string>("Message")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Title")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Type")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int?>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Notifications");
-                });
-
             modelBuilder.Entity("SmartWaste.Models.Payment", b =>
                 {
                     b.Property<int>("PaymentId")
@@ -221,9 +190,6 @@ namespace SmartWaste.Migrations
 
                     b.Property<DateTime?>("PickupDate")
                         .HasColumnType("datetime");
-
-                    b.Property<string>("Priority")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Qrcode")
                         .HasMaxLength(100)

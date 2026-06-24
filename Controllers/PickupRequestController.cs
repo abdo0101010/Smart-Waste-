@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.DTO.RequestItemDTOS;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
+using System.Security.Claims;
 
 namespace SmartWaste.Controllers
 {
@@ -48,25 +50,90 @@ namespace SmartWaste.Controllers
             var filteredRequests = _pickupRequestService.GetRecyclerRequestsWithFilters(search, status, priority,zone, material);
             return Ok(filteredRequests);
         }
-        [HttpPut("/api/recycler/pickup-requests/{id}/accept")]
+        [HttpPut("/api/recycler/pickup-requests/accept-bulk")]
         [SwaggerOperation(
-        Summary = "Accepts an open pickup request and assigns it to the driver",
-        Description = "Updates the status of the pickup request to 'In Progress' and links it to the logged-in recycler's ID.",
-        OperationId = "AcceptPickupRequest",
-        Tags = new[] { "Recycler", "Pickup Requests" })]
+    Summary = "Accepts multiple pickup requests together to reduce shipping cost",
+    Description = "Enforces a minimum limit of requests per route to optimize driver trips.")]
         [SwaggerResponse(200, Description = "Pickup request accepted successfully")]
         [SwaggerResponse(400, Description = "Request could not be accepted (already taken or invalid)")]
         [SwaggerResponse(404, Description = "Pickup request not found")]
-        public IActionResult AcceptRequest(int id, [FromQuery] int recyclerId)
+        // 🎯 1. تحويل الـ Return Type لـ async Task
+        public async Task<IActionResult> AcceptBulkRequests([FromBody] List<int> requestIds, [FromQuery] int recyclerId)
         {
-            var result = _pickupRequestService.AcceptPickupRequest(id, recyclerId);
-
-            if (!result)
+            try
             {
-                return BadRequest(new { Message = "This request is either not found, or has already been taken by another driver." });
+                var result = await _pickupRequestService.AcceptBulkPickupRequestsAsync(requestIds, recyclerId);
+
+                return Ok(new { Message = $"Successfully assigned {requestIds.Count} requests to your current route! Drive safely. 🚛" });
+            }
+            catch (InvalidOperationException ex)
+            {
+                // هيرجع 400 لو السواق استهبل واختار طلب أو اتنين بس
+                return BadRequest(new { Message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة خط السير المجمع", Details = ex.Message });
+            }
+        }
+        [Authorize(Roles = "User")]
+        [HttpGet("my-history")]
+        public async Task<IActionResult> GetMyHistory()
+        {
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+            if (string.IsNullOrEmpty(userIdClaim) || !int.TryParse(userIdClaim, out int userId))
+            {
+                return Unauthorized("User ID is missing or invalid in Token.");
             }
 
-            return Ok(new { Message = "The pickup request has been successfully assigned to you and is now In Progress." });
+            var history = await _pickupRequestService.GetUserHistoryAsync(userId);
+            return Ok(history);
+        }
+
+        // 2. للأدمن أو موظف المخزن: الـ Parameter هنا أصبح int صريح
+        [Authorize(Roles = "Admin,HubStaff")]
+        [HttpGet("user-history/{userId:int}")] // وضعنا :int هنا كـ Route Constraint للحماية
+        public async Task<IActionResult> GetUserHistoryForAdmin(int userId)
+        {
+            if (userId <= 0)
+            {
+                return BadRequest("A valid User ID is required.");
+            }
+
+            var history = await _pickupRequestService.GetUserHistoryAsync(userId);
+            return Ok(history);
+        }
+
+        //[Authorize(Roles = "HubStaff,Admin")]
+        [HttpGet("GetPendingRequests")]
+        [SwaggerOperation(
+            Summary = "Fetches all pending pickup requests for hub staff or admim",
+            Description = "Retrieves a list of all pending pickup requests that require attention from hub staff or admin.",
+            OperationId =" GetPendingPickupRequests",
+            Tags = new[] { "HubStaff", "Admin", "Pickup Requests" }
+            )]
+        [SwaggerResponse(200, Description = "Pending pickup requests retrieved successfully", Type = typeof(IEnumerable<PendingRequestFormDTO>))]
+                [SwaggerResponse(204, Description = "No pending pickup requests found")]
+        [SwaggerResponse(500, Description = "An error occurred while fetching pending pickup requests")]
+        [SwaggerResponse(401, Description = "Unauthorized - HubStaff or Admin token required")]
+        public async Task<IActionResult> GetPendingRequests()
+        {
+            try
+            {
+                var requests = await _pickupRequestService.GetPendingHubRequestsAsync();
+
+                if (requests == null || !requests.Any())
+                {
+                    return Ok(new { Message = "لا توجد طلبات معلقة حالياً. 📭" });
+                }
+
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "حدث خطأ أثناء جلب الطلبات المعلقة", Details = ex.Message });
+            }
         }
 
     }
