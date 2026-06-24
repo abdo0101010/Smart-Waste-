@@ -16,5 +16,13 @@ namespace SmartWaste.Services
         {
             return _repository.ShowSupportTicket(status, search);
         }
+        public List<TicketDTO> GetRecyclerSupportTickets(int recyclerId, string status)
+        {
+            return _repository.GetRecyclerSupportTickets(recyclerId, status);
+        }
+       public void CreateTicket(CreateUserTicketDto dto)
+        {
+            _repository.CreateTicket(dto);
+        }
     }
 }

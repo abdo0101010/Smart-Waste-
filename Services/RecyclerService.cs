@@ -78,9 +78,9 @@ namespace SmartWaste.Services
             return _RecyclerRepository.GetTotalRecyclingActive();
         }
 
-        public List<ReyclerDetailsAdimDto> GetReyclerDetails()
+        public ReyclerDetailsAdimDto GetRecyclerByIdWithDetails(int recyclerId)
         {
-            return _RecyclerRepository.GetReyclerDetails();
+            return _RecyclerRepository.GetRecyclerByIdWithDetails(recyclerId);
         }
 
         public List<RecyclerWithTotaltripDTO> GetSortingRecyclersByRating()
