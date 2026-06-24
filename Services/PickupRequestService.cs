@@ -91,9 +91,9 @@ namespace SmartWaste.Services
             return dtoList;
         }
 
-        public bool AcceptPickupRequest(int requestId, int recyclerId)
+      public async Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId)
         {
-            return _pickupRequestRepository.AcceptPickupRequest(requestId, recyclerId);
+            return await _pickupRequestRepository.AcceptBulkPickupRequestsAsync(requestIds, recyclerId);
         }
         public async Task<IEnumerable<PickupRequestViewModelDTO>> GetUserHistoryAsync(int userId)
         {

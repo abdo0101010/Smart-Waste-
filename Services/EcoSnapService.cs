@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using SmartWaste.Hubs;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
 using System;
@@ -17,13 +19,15 @@ namespace SmartWaste.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
-        public smartwasteContext _context;
+        private readonly smartwasteContext _context;
+        private readonly IHubContext<NotificationHub> _hubContext;
 
-        public EcoSnapService(IUserRepository userRepository, IWebHostEnvironment webHostEnvironment, smartwasteContext context)
+        public EcoSnapService(IUserRepository userRepository, IWebHostEnvironment webHostEnvironment, smartwasteContext context, IHubContext<NotificationHub> hubContext)
         {
             _userRepository = userRepository;
             _webHostEnvironment = webHostEnvironment;
             _context = context;
+                        _hubContext = hubContext;
         }
         public async Task<int> ProcessUserUploadAsync(int userId, IFormFile file)
         {
@@ -50,9 +54,9 @@ namespace SmartWaste.Services
                 Status = "Pending",
                 RequestDate = DateTime.UtcNow
             };
-
             _context.PickupRequests.Add(newRequest);
             await _context.SaveChangesAsync();
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "New pickup request", "Citizen scheduled a glass pickup...", "Pickup");
 
             // رجع الـ RequestId عشان الموبايل يحتفظ بيه كـ transaction_id
             return newRequest.RequestId;
@@ -128,16 +132,36 @@ namespace SmartWaste.Services
             // 5. قراءة الـ JSON وفحص الـ Logic الداخلي للموديل (مربط الفرس 🎯)
             var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>();
 
-            // التشيك على الـ status الداخلية اللي باعتها الـ AI
+            // 🚨 الحالة الأولى: التشيك على الـ status الداخلية لو الـ AI رجع FAILED
             if (jsonResult.TryGetProperty("status", out var statusElement) && statusElement.GetString() == "FAILED")
             {
                 string aiMessage = jsonResult.TryGetProperty("message", out var msgElement) ? msgElement.GetString() : "فشلت عملية المطابقة وعدم تطابق الكمية.";
 
-                // رمي إيرور صريح يوقف الـ Cycle ويمنع الـ SaveChanges والـ النقاط
+                try
+                {
+                    // 🎯 إرسال نوتفكيشن الفشل للمواطن قبل ما نرمي الـ Exception ونقفل
+                    var failNotification = new Notification
+                    {
+                        Title = "Verification Failed ❌",
+                        Message = $"Your request (ORD-{transactionId}) was rejected. Reason: Quantity Mismatch!",
+                        Type = "Pickup",
+                        CreatedAt = DateTime.UtcNow,
+                        IsRead = false,
+                        UserId = pickupRequest.UserId // موجه للمواطن صاحب الطلب
+                    };
+                    _context.Notifications.Add(failNotification);
+                    await _context.SaveChangesAsync();
+
+                    // ضخها لايف بالـ SignalR
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", failNotification.Title, failNotification.Message, failNotification.Type);
+                }
+                catch (Exception) { /* لضمان عدم كراش الميثود أثناء تسجيل الإشعار الفاشل */ }
+
+                // رمي إيرور صريح يوقف الـ Cycle ويمنع الـ النقاط
                 throw new Exception(aiMessage);
             }
 
-            // لو الـ Status مش FAILED (يعني الـ عملية نجحت ومطابقة للـ Before)
+            // ✅ الحالة الثانية: لو الـ Status مش FAILED (يعني الـ عملية نجحت ومطابقة للـ Before)
             if (jsonResult.TryGetProperty("count_after", out var countElement))
             {
                 int countAfter = countElement.GetInt32();
@@ -151,7 +175,32 @@ namespace SmartWaste.Services
 
                 // تحديث إجمالي نقاط وبوتلز المستخدم الحقيقي المربوط بالعملية أوتوماتيكياً
                 await _userRepository.UpdateUserBottlesAndPointsAsync(pickupRequest.UserId, countAfter, pointsEarned);
+
+                try
+                {
+                    // 🎯 إرسال نوتفكيشن النجاح وإضافة النقاط للمواطن
+                    var successNotification = new Notification
+                    {
+                        Title = "Shipment Verified! 🎉",
+                        Message = $"Congratulations! (ORD-{transactionId}) verified successfully. +{pointsEarned} points added to your wallet.",
+                        Type = "Pickup",
+                        CreatedAt = DateTime.UtcNow,
+                        IsRead = false,
+                        UserId = pickupRequest.UserId
+                    };
+                    _context.Notifications.Add(successNotification);
+                }
+                catch (Exception) { }
+
+                // حفظ كل شيء (تحديث الطلب + إضافة إشعار النجاح)
                 await _context.SaveChangesAsync();
+
+                try
+                {
+                    // 🚀 ضخ إشعار النجاح لايف فوراً للمواطن بالـ SignalR
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Shipment Verified! 🎉", $"Order (ORD-{transactionId}) has been fully verified.", "Pickup");
+                }
+                catch (Exception) { }
 
                 return countAfter;
             }
