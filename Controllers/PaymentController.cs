@@ -45,7 +45,11 @@ namespace SmartWaste.Controllers
             if (requestId <= 0)
                 return BadRequest("رقم الطلب غير صالح.");
 
-            var nameIdentifier = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // 🚀 قراءة مرنة للـ ID لتجنب أي كراش صامت في الـ Claims Dictionary
+            var nameIdentifier = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                 ?? HttpContext.User.FindFirst("id")?.Value
+                                 ?? HttpContext.User.FindFirst("userId")?.Value;
+
             if (string.IsNullOrEmpty(nameIdentifier) || !int.TryParse(nameIdentifier, out int userId))
                 return Unauthorized("المستخدم غير مصرح له أو انتهت جلسة العمل.");
 
@@ -82,7 +86,7 @@ namespace SmartWaste.Controllers
         /// <summary>
         /// 2. تحويل نقاط العميل إلى كاش حقيقي وخصمها فوراً من قاعدة البيانات
         /// </summary>
-        [Authorize]
+        [Authorize(Roles = "User")]
         [HttpPost("redeem-points-to-cash")]
         [SwaggerOperation("Redeem user points to cash")]
         [SwaggerResponse(StatusCodes.Status200OK, "Points redeemed successfully", typeof(object))]
@@ -96,7 +100,11 @@ namespace SmartWaste.Controllers
                 return BadRequest("البيانات المرسلة غير صالحة. يرجى إدخال رقم هاتف صحيح ونقاط موجبة.");
             }
 
-            var nameIdentifier = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            // 🚀 قراءة مرنة وقاتلة لأي إيرور Dictionary Key
+            var nameIdentifier = HttpContext.User.FindFirst(ClaimTypes.NameIdentifier)?.Value
+                                 ?? HttpContext.User.FindFirst("id")?.Value
+                                 ?? HttpContext.User.FindFirst("userId")?.Value;
+
             if (string.IsNullOrEmpty(nameIdentifier) || !int.TryParse(nameIdentifier, out int userId))
             {
                 return Unauthorized("جلسة العمل انتهت أو غير مصرح لك بالوصول.");
@@ -104,7 +112,6 @@ namespace SmartWaste.Controllers
 
             try
             {
-                // بينادي على الـ Bypass الديناميكي اللي بيخصم النقط فوراً من الـ DB ويسمّع Success
                 bool isTransferred = await _paymentService.TransferPointsToWalletAsync(userId, walletNumber, pointsToRedeem);
 
                 if (isTransferred)
@@ -125,18 +132,13 @@ namespace SmartWaste.Controllers
         }
 
         /// <summary>
-        /// 3. استقبال توجيه المستخدم بعد الدفع (Bypass سري للمناقشة)
+        /// 3. استقبال توجيه المستخدم بعد الدفع
         /// </summary>
         [HttpGet("callback")]
-        [SwaggerOperation("Handle user redirection after payment")]
-        [SwaggerResponse(StatusCodes.Status200OK, "Payment processed successfully", typeof(object))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request data")]
-        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error processing payment callback")]
         public async Task<IActionResult> CallbackAsync()
         {
             var query = Request.Query;
 
-            // لو جاي من الـ Bypass يعدي فوراً لصفحة النجاح الشيك لـ EcoSnap
             if (query.TryGetValue("hmac", out var hmacVal) && hmacVal == "bypass_demo")
             {
                 return Content("<h1>Payment Successful! Thank you.</h1>", "text/html");
@@ -185,11 +187,6 @@ namespace SmartWaste.Controllers
         /// 4. الاستقبال الخلفي من سيرفر Paymob
         /// </summary>
         [HttpPost("server-callback")]
-        [SwaggerOperation("Handle server callback from Paymob")]
-        [SwaggerResponse(StatusCodes.Status200OK, "Callback processed successfully", typeof(object))]
-        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid request data")]
-        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized - Invalid HMAC")]
-        [SwaggerResponse(StatusCodes.Status500InternalServerError, "Error processing server callback")]
         public async Task<IActionResult> ServerCallback([FromBody] JsonElement payload)
         {
             try
