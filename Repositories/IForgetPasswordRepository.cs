@@ -2,9 +2,8 @@
 {
     public interface IForgetPasswordRepository
     {
-        public void SaveOtpCode(string email, string role, string code);
-        public void VerifyOTPAndResetPassword(string email, string code, string newPassword, string confirmPassword, string role);
-
+        Task SaveOtpCodeAsync(string email, string role, string code);
+        Task VerifyOTPAndResetPasswordAsync(string email, string code, string newPassword, string confirmPassword, string role);
 
     }
 }
