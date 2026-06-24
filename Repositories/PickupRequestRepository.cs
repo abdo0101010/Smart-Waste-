@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.DTO.RequestItemDTOS;
 using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
@@ -143,6 +144,25 @@ namespace SmartWaste.Repositories
                     .ThenInclude(ri => ri.Category) // عشان نقدر نجيب الـ CategoryName للمخلفات
                 .OrderByDescending(r => r.RequestDate) // الترتيب من أحدث طلب لأقدم طلب
                 .ToListAsync();
+        }
+        public async Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync()
+        {
+            // سحب الطلبات المعلقة وعمل Join مع جدول المستخدمين لجلب الاسم
+            var pendingRequests = await _context.PickupRequests
+                .Include(p => p.User)
+                .Where(p => p.Status == "Pending")
+                .OrderByDescending(p => p.RequestDate) // الأحدث يظهر فوق
+                .Select(p => new PendingRequestFormDTO
+                {
+                    RequestId = p.RequestId,
+                    UserName = p.User != null ? p.User.FullName : "مستخدم غير معروف",
+                    Status = p.Status,
+                    // تنسيق التاريخ والوقت ليظهر بشكل كلين للـ Hub Staff
+                    TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A"
+                })
+                .ToListAsync();
+
+            return pendingRequests;
         }
         public void SaveChanges()
         {

@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.PickupRequestDTOS;
+using SmartWaste.DTO.RequestItemDTOS;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
@@ -96,6 +97,37 @@ namespace SmartWaste.Controllers
 
             var history = await _pickupRequestService.GetUserHistoryAsync(userId);
             return Ok(history);
+        }
+
+        [Authorize(Roles = "HubStaff,Admin")]
+        [HttpGet("GetPendingRequests")]
+        [SwaggerOperation(
+            Summary = "Fetches all pending pickup requests for hub staff or admim",
+            Description = "Retrieves a list of all pending pickup requests that require attention from hub staff or admin.",
+            OperationId =" GetPendingPickupRequests",
+            Tags = new[] { "HubStaff", "Admin", "Pickup Requests" }
+            )]
+        [SwaggerResponse(200, Description = "Pending pickup requests retrieved successfully", Type = typeof(IEnumerable<PendingRequestFormDTO>))]
+                [SwaggerResponse(204, Description = "No pending pickup requests found")]
+        [SwaggerResponse(500, Description = "An error occurred while fetching pending pickup requests")]
+        [SwaggerResponse(401, Description = "Unauthorized - HubStaff or Admin token required")]
+        public async Task<IActionResult> GetPendingRequests()
+        {
+            try
+            {
+                var requests = await _pickupRequestService.GetPendingHubRequestsAsync();
+
+                if (requests == null || !requests.Any())
+                {
+                    return Ok(new { Message = "لا توجد طلبات معلقة حالياً. 📭" });
+                }
+
+                return Ok(requests);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { Message = "حدث خطأ أثناء جلب الطلبات المعلقة", Details = ex.Message });
+            }
         }
 
     }
