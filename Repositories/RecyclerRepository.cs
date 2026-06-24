@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.RecuclerDTOS;
 using SmartWaste.DTO.Register;
+using SmartWaste.DTO.UserDTOS;
 using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
@@ -69,18 +70,24 @@ namespace SmartWaste.Repositories
             return _context.Recyclers.Count(r => r.Status == "Active");
         }
 
-        public List<ReyclerDetailsAdimDto> GetReyclerDetails()
+        public ReyclerDetailsAdimDto GetRecyclerByIdWithDetails(int recyclerId)
         {
-            return _context.Recyclers.Select(r => new ReyclerDetailsAdimDto
+            var recycler = _context.Recyclers.Include(r => r.PickupRequests)
+                       .FirstOrDefault(r => r.RecyclerId == recyclerId); 
+            if (recycler == null) return null;
+            ReyclerDetailsAdimDto singleRecycler = new ReyclerDetailsAdimDto
             {
-                RecyclerID = r.RecyclerId,
-                FullName = r.FullName,
-                Phone = r.Phone,
-                VehicleInfo = r.VehicleInfo,
-                Status = r.Status,
-                Rating = r.Rating,
-                TotalTripsCompleted = r.PickupRequests.Count()
-            }).ToList();
+                RecyclerID = recycler.RecyclerId,
+                FullName = recycler.FullName,
+                Phone = recycler.Phone,
+                VehicleInfo = recycler.VehicleInfo,
+                Status = recycler.Status,
+                Rating = recycler.Rating,
+
+                TotalTripsCompleted = _context.PickupRequests.Count(p => p.RecyclerId == recyclerId && p.Status == "Completed")
+
+            };
+            return singleRecycler;
         }
         public List<RecyclerWithTotaltripDTO> GetSortingRecyclersByRating()
         {
