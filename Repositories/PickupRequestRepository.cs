@@ -127,7 +127,7 @@ namespace SmartWaste.Repositories
         public async Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId)
         {
             // 🎯 الشرط السحري لتقليل التكلفة: الحد الأدنى لعدد الطلبات في المشوار الواحد
-            int minRequiredRequests = 3; // لازم السائق يلم 3 بيوت أو طلبات على الأقل في النزلة
+            int minRequiredRequests = 5; // لازم السائق يلم 3 بيوت أو طلبات على الأقل في النزلة
 
             if (requestIds == null || requestIds.Count < minRequiredRequests)
             {
