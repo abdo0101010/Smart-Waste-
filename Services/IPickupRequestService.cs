@@ -24,7 +24,7 @@ namespace SmartWaste.Services
         List<PickupRequest> GetAllPickupRequestsWithRecyclersAndHubStaff();
         int GetTotalPickupRequests();
         decimal? TotalEaring();
-        bool AcceptPickupRequest(int requestId, int recyclerId);
+        public  Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId);
         public Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync();
 
         void SaveChanges();

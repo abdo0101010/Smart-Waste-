@@ -18,8 +18,8 @@ namespace SmartWaste.Repositories
         List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority, string? zone, string? material);
         public void SaveChanges();
         Task<IEnumerable<PickupRequest>> GetRequestsByUserIdAsync(int userId);
-        bool AcceptPickupRequest(int requestId, int recyclerId);
-        public  Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync();
+        public Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId);
+        public Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync();
 
 
     }

@@ -39,6 +39,8 @@ public partial class smartwasteContext : DbContext
     public DbSet<WalletRedemption> WalletRedemptions { get; set; }
     public DbSet<Payment> Payment { get; set; }
 
+ public DbSet<Notification> Notifications { get; set; }
+
 
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
