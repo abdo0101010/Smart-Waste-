@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.EcoSnapUploadDTOS;
+using SmartWaste.DTO.TicketSDTOS;
 using SmartWaste.DTO.UserDTO;
 using SmartWaste.DTO.UserDTOS;
 using SmartWaste.Models;
@@ -20,10 +21,12 @@ namespace SmartWaste.Controllers
     {
         IUserService _userService;
         private readonly IEcoSnapService _ecoSnapService;
-        public UserController(IUserService userService, IEcoSnapService ecoSnapService)
+        ISupportTicketsServices _supportTicketsServices;
+        public UserController(IUserService userService, IEcoSnapService ecoSnapService,ISupportTicketsServices supportTicketsServices)
         {
             _userService = userService;
             _ecoSnapService = ecoSnapService;
+            _supportTicketsServices = supportTicketsServices;
         }
         //[HttpGet]
         //public IActionResult GetAllUsers()
@@ -223,6 +226,7 @@ namespace SmartWaste.Controllers
                 return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة الصورة", Details = ex.Message });
             }
         }
+<<<<<<< Updated upstream
         [HttpGet("get userby email")]
         public IActionResult GetUserByEmail(string email)
         {
@@ -234,5 +238,18 @@ namespace SmartWaste.Controllers
             return Ok(user);
         }
 
+=======
+
+        [HttpPost("/api/user/tickets/create")]
+        [SwaggerOperation(Summary = "Citizen submits a new support ticket", Tags = new[] { "User Tickets" })]
+        public IActionResult CreateTicketFromUser([FromBody] CreateUserTicketDto dto)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+
+            _supportTicketsServices.CreateTicket(dto);
+            return Ok(new { message = "Ticket submitted successfully to Admin!" });
+        }
+>>>>>>> Stashed changes
     }
 }
