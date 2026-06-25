@@ -370,10 +370,41 @@ namespace SmartWaste.Repositories
                 FullName = u.FullName,
                 Phone = u.Phone
             }).ToList();
-        } 
+        }
+        public async Task feedbackRating(int requestId, int rating, string comment)
+        {
+            // 1. التشيك إن الـ Request موجود فعلياً ومربوط بدرايفر (Recycler)
+            var request = await _context.PickupRequests.FirstOrDefaultAsync(r => r.RequestId == requestId);
+
+            if (request == null)
+                throw new KeyNotFoundException($"طلب التجميع رقم {requestId} غير موجود في السيستم.");
+
+            if (request.RecyclerId == null)
+                throw new InvalidOperationException("لا يمكن تقييم هذا الطلب لأنه لم يتم تعيين سائق (Recycler) له بعد.");
+
+            // 2. إنشاء كائن الـ Feedback بناءً على الـ Properties اللي عندك في الموديل بالظبط
+            var feedback = new Feedback
+            {
+                RequestId = requestId,
+                Rating = rating,
+                Comment = comment,
+                CreatedAt = DateTime.Now
+                // ملحوظة: مش هنحط RecyclerId هنا لأن الموديل بتاعك مش بيدعمه مباشرة، هو مربوط بالـ Request والـ Request قايم بالواجب.
+            };
+
+            // 3. الإضافة والحفظ الأكيد في الـ SQL Server
+            await _context.Feedbacks.AddAsync(feedback);
+            await SaveChangesAsync();
+        }
+
         public void SaveChanges()
         {
             _context.SaveChanges();
+        }
+
+        public async Task SaveChangesAsync()
+        {
+            await _context.SaveChangesAsync();
         }
 
     }
