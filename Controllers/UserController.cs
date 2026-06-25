@@ -226,7 +226,6 @@ namespace SmartWaste.Controllers
                 return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة الصورة", Details = ex.Message });
             }
         }
-<<<<<<< Updated upstream
         [HttpGet("get userby email")]
         public IActionResult GetUserByEmail(string email)
         {
@@ -238,7 +237,7 @@ namespace SmartWaste.Controllers
             return Ok(user);
         }
 
-=======
+
 
         [HttpPost("/api/user/tickets/create")]
         [SwaggerOperation(Summary = "Citizen submits a new support ticket", Tags = new[] { "User Tickets" })]
@@ -250,6 +249,5 @@ namespace SmartWaste.Controllers
             _supportTicketsServices.CreateTicket(dto);
             return Ok(new { message = "Ticket submitted successfully to Admin!" });
         }
->>>>>>> Stashed changes
     }
 }
