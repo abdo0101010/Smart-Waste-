@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using SmartWaste.Models;
 
@@ -11,9 +12,11 @@ using SmartWaste.Models;
 namespace SmartWaste.Migrations
 {
     [DbContext(typeof(smartwasteContext))]
-    partial class smartwasteContextModelSnapshot : ModelSnapshot
+    [Migration("20260625220509_v7")]
+    partial class v7
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -131,9 +134,6 @@ namespace SmartWaste.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("RecyclerId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -150,8 +150,6 @@ namespace SmartWaste.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("RecyclerId");
 
                     b.HasIndex("UserId");
 
@@ -665,15 +663,9 @@ namespace SmartWaste.Migrations
 
             modelBuilder.Entity("SmartWaste.Models.Notification", b =>
                 {
-                    b.HasOne("SmartWaste.Models.Recycler", "Recycler")
-                        .WithMany()
-                        .HasForeignKey("RecyclerId");
-
                     b.HasOne("SmartWaste.Models.User", "User")
                         .WithMany()
                         .HasForeignKey("UserId");
-
-                    b.Navigation("Recycler");
 
                     b.Navigation("User");
                 });
