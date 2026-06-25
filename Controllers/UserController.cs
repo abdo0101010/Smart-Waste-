@@ -241,6 +241,9 @@ namespace SmartWaste.Controllers
 
         [HttpPost("/api/user/tickets/create")]
         [SwaggerOperation(Summary = "Citizen submits a new support ticket", Tags = new[] { "User Tickets" })]
+        [SwaggerResponse(200, "Ticket submitted successfully to Admin!")]
+        [SwaggerResponse(400, "Invalid ticket data")]
+
         public IActionResult CreateTicketFromUser([FromBody] CreateUserTicketDto dto)
         {
             if (!ModelState.IsValid)
@@ -248,6 +251,38 @@ namespace SmartWaste.Controllers
 
             _supportTicketsServices.CreateTicket(dto);
             return Ok(new { message = "Ticket submitted successfully to Admin!" });
+        }
+        [HttpPost("rate-driver")]
+        [SwaggerOperation(Summary = "Rate the driver/recycler for a specific pickup request", Description = "Allows users to add feedback for a specific pickup request by providing the request ID, rating, and comment.")]
+        [SwaggerResponse(StatusCodes.Status200OK, "Feedback added successfully.")]
+        [SwaggerResponse(StatusCodes.Status400BadRequest, "Invalid feedback data or request not assigned to a driver.")]
+        [SwaggerResponse(StatusCodes.Status401Unauthorized, "Unauthorized - User must be logged in.")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Pickup request not found.")]
+        public async Task<IActionResult> RateDriver([FromQuery] int requestId, [FromQuery] int rating, [FromQuery] string comment)
+        {
+            try
+            {
+                // نداء الـ Service
+                await _userService.feedbackRating(requestId, rating, comment);
+
+                return Ok(new { message = "تم تسجيل تقييمك للدرايفر بنجاح. شكراً لك!" });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { error = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (ArgumentException ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(StatusCodes.Status500InternalServerError, new { error = $"خطأ داخلي بالسيرفر: {ex.Message}" });
+            }
         }
     }
 }

@@ -176,5 +176,20 @@ namespace SmartWaste.Services
             }
             return users;
         }
+        public async Task feedbackRating(int requestId, int rating, string comment)
+        {
+            if (requestId > 0 && rating >= 1 && rating <= 5)
+            {
+                await _UserRepository.feedbackRating(requestId, rating, comment);
+            }
+            else
+            {
+                throw new ArgumentException("Invalid request ID or rating. Rating must be between 1 and 5.");
+            }
+        }
+        public async Task SaveChangesAsync()
+        {
+            await _UserRepository.SaveChangesAsync();
+        }
     }
 }
