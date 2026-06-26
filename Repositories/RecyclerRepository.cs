@@ -128,6 +128,9 @@ namespace SmartWaste.Repositories
                 PasswordHash = recyclerCreationDTO.PasswordHash,
                 Role= recyclerCreationDTO.Role,
                     Phone = recyclerCreationDTO.Phone
+                    ,
+                    Email = recyclerCreationDTO.Email,
+                   
 
 
             };
