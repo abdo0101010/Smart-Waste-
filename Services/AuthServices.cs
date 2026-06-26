@@ -43,7 +43,7 @@ namespace SmartWaste.Services
             var recycler = _context.Recyclers.AsNoTracking().FirstOrDefault(r => r.FullName == data.Name);
             if (recycler != null && BCrypt.Net.BCrypt.Verify(data.Password, recycler.PasswordHash))
             {
-                return new AuthResult { UserId = recycler.RecyclerId, Role = "Driver" };
+                return new AuthResult { UserId = recycler.RecyclerId, Role = "Recycler" };
             }
 
             // 3. الـ HubStaff

@@ -4,6 +4,7 @@ using Microsoft.IdentityModel.Tokens;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
 using SmartWaste.Services;
+using System.Globalization;
 using System.Text;
 
 namespace SmartWaste
@@ -12,6 +13,12 @@ namespace SmartWaste
     {
         public static void Main(string[] args)
         {
+
+            var cultureInfo = new CultureInfo("en-US");
+            cultureInfo.NumberFormat.NumberDecimalSeparator = ".";
+
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
             var builder = WebApplication.CreateBuilder(args);
 
             // 1. تفعيل الـ Controllers ومعالجة الـ Loops في الـ JSON
@@ -46,6 +53,10 @@ namespace SmartWaste
             builder.Services.AddScoped<IForgetPasswordService, ForgetPasswordService>();
             builder.Services.AddScoped<INotificationsRepository, NotificationsRepository>();
             builder.Services.AddScoped<INotificationService, NotificationService>();
+            builder.Services.AddScoped<ILocationHubService, LocationHubService>();
+            //builder.Services.AddScoped<ILocationHubRepository, LocationHubRepository>();
+
+
             builder.Services.AddSignalR();
             // 3. إعدادات الـ Authentication والـ JWT Token
             builder.Services.AddAuthentication(op => op.DefaultAuthenticateScheme = "MySchema")
@@ -118,6 +129,8 @@ namespace SmartWaste
 
             app.MapControllers();
             app.MapHub<SmartWaste.Hubs.NotificationHub>("/notificationHub");
+            app.MapHub<SmartWaste.Repositories.LocationHubRepository>("/locationHub");
+
             app.Run();
         }
     }
