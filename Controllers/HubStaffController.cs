@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.HubStaffDTOS;
+using SmartWaste.Models;
 using SmartWaste.Services;
+using Swashbuckle.AspNetCore.Annotations;
 using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
@@ -13,10 +15,12 @@ namespace SmartWaste.Controllers
     public class HubStaffController : ControllerBase
     {
         private readonly IEcoSnapService _ecoSnapService;
+        private readonly IHubStaffService _hubStaffService;
 
-        public HubStaffController(IEcoSnapService ecoSnapService)
+        public HubStaffController(IEcoSnapService ecoSnapService, IHubStaffService hubStaffService)
         {
             _ecoSnapService = ecoSnapService;
+            _hubStaffService = hubStaffService;
         }
 
         //[Authorize(Roles = "HubStaff,Admin")] // تأمين الـ Endpoint لليوزر الصح
@@ -59,6 +63,25 @@ namespace SmartWaste.Controllers
 
                 return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة الصورة وفحص الـ AI", Details = ex.Message });
             }
+        }
+        [HttpGet("{id}")]   
+        [SwaggerOperation(
+            Summary = "Get Hub Staff by ID",
+            Description = "Retrieve a Hub Staff member by their ID.",
+            OperationId = "GetHubStaffById",
+            Tags = new[] { "HubStaff" }
+            )]
+        [SwaggerResponse(200, "Successfully retrieved Hub Staff", typeof(HubStaff))]
+        [SwaggerResponse(404, "Hub Staff not found")]
+        
+        public IActionResult GetHubStaffById(int id)
+        {
+            var hubStaff = _hubStaffService.GetHubStaffById(id);
+            if (hubStaff == null)
+            {
+                return NotFound(new { Message = "Not Found Hub Staff" });
+            }
+            return Ok(hubStaff);
         }
     }
 }
