@@ -115,7 +115,10 @@ namespace SmartWaste.Repositories
             {
                 FullName = recyclerCreationDTO.FullName,
                 Phone = recyclerCreationDTO.Phone,
-                PasswordHash = recyclerCreationDTO.PasswordHash
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(recyclerCreationDTO.PasswordHash)
+                ,
+                Email = recyclerCreationDTO.Email
+
             };
             _context.Recyclers.Add(recycler);
             SaveChanges();
