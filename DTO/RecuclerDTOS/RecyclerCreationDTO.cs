@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using SmartWaste.Validations;
+using System.ComponentModel.DataAnnotations;
 
 namespace SmartWaste.DTO.RecuclerDTOS
 {
@@ -16,6 +17,10 @@ namespace SmartWaste.DTO.RecuclerDTOS
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "Password is too weak!")]
 
         public string PasswordHash { get; set; } = null!;
+        [UniqueEmail]
+        [Required(ErrorMessage = "Email is required")]
+        [EmailAddress(ErrorMessage = "Please enter a valid email address")]
+        public string Email { get; set; } = null!;
 
     }
  } 
