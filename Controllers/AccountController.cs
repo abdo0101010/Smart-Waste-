@@ -91,7 +91,7 @@ namespace SmartWaste.Controllers
                 _userService.RegisterUser(userCreationDTO);
                 return Ok("User registered successfully");
             }
-            else if (userCreationDTO.Role == "Driver")
+            else if (userCreationDTO.Role == "Recycler")
             {
                 _recyclerService.RegisterRecycler(userCreationDTO);
                 return Ok("Driver registered successfully");
