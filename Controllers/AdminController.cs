@@ -446,5 +446,16 @@ Tags = new[] { "Admin", "Users" })]
             var users = _userService.GetAllUsersWithDetailsForAdmin();
             return Ok(users);
         }
+        [HttpPost("CreateHubStaff")]
+
+        public IActionResult CreateHubStaff(HubstaffCreationsDto hubStaff)
+        {
+           if(hubStaff != null)
+           {
+               _hubStaffService.CreateHubStaff(hubStaff);
+               return Ok(new { Message = "Hub staff created successfully" });
+           }
+           return BadRequest(new { Message = "Failed to create hub staff" });
+        }
     }
 }
