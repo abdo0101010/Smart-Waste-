@@ -135,6 +135,42 @@ namespace SmartWaste.Controllers
                 return StatusCode(500, new { Message = "حدث خطأ أثناء جلب الطلبات المعلقة", Details = ex.Message });
             }
         }
+        [HttpGet("GetRequestsByRecyclerId/{recyclerId:int}")]
+        [SwaggerOperation(
+            Summary = "Fetches all pickup requests assigned to a specific recycler",
+            Description = "Retrieves a list of all pickup requests that have been assigned to the recycler with the given ID.",
+            OperationId = "GetRequestsByRecyclerId",
+            Tags = new[] { "Recycler", "Pickup Requests" }
+        )]
+        [SwaggerResponse(200, Description = "Pickup requests retrieved successfully", Type = typeof(IEnumerable<PickupRequestViewModelDTO>))]
+        [SwaggerResponse(404, Description = "No pickup requests found for the specified recycler ID")]
+        public async Task<IActionResult> GetRequestByRecyclerId(int recyclerId)
+        {
+            var requests = await _pickupRequestService.GetRequestsByRecyclerIdAsync(recyclerId);
+            if (requests == null || !requests.Any())
+            {
+                return NotFound(new { Message = "No pickup requests found for the specified recycler ID." });
+            }
+            return Ok(requests);
+        }
+        [HttpGet("GetRecyclerHistory/{recyclerId:int}")]
+        [SwaggerOperation(
+            Summary = "Fetches the history of pickup requests for a specific recycler",
+            Description = "Retrieves a list of all past pickup requests that have been completed or processed by the recycler with the given ID.",
+            OperationId = "GetRecyclerHistory",
+            Tags = new[] { "Recycler", "Pickup Requests" }
+        )]
+        [SwaggerResponse(200, Description = "Recycler history retrieved successfully", Type = typeof(IEnumerable<PickupRequestViewModelDTO>))]
+        [SwaggerResponse(404, Description = "No history found for the specified recycler ID")]
+        public async Task<IActionResult> GetRecyclerHistory(int recyclerId)
+        {
+            var history = await _pickupRequestService.GetRecyclerHistoryAsync(recyclerId);
+            if (history == null || !history.Any())
+            {
+                return NotFound(new { Message = "No history found for the specified recycler ID." });
+            }
+            return Ok(history);
+        }
 
     }
 }

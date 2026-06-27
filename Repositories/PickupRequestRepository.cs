@@ -187,6 +187,16 @@ namespace SmartWaste.Repositories
                 .OrderByDescending(r => r.RequestDate) // الترتيب من أحدث طلب لأقدم طلب
                 .ToListAsync();
         }
+        public async Task<IEnumerable<PickupRequest>> GetRequestsByRecyclerIdAsync(int recyclerId)
+        {
+            return await _context.PickupRequests
+                .Where(r => r.RecyclerId == recyclerId)
+                .Include(r => r.User) // عشان نقدر نجيب اسم المواطن وعنوانه (Zone)
+                .Include(r => r.RequestItems)
+                    .ThenInclude(ri => ri.Category) // عشان نقدر نجيب الـ CategoryName للمخلفات
+                .OrderByDescending(r => r.RequestDate) // الترتيب من أحدث طلب لأقدم طلب
+                .ToListAsync();
+        }
         public async Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync()
         {
             // سحب الطلبات المعلقة وعمل Join مع جدول المستخدمين لجلب الاسم
@@ -205,6 +215,27 @@ namespace SmartWaste.Repositories
                 .ToListAsync();
 
             return pendingRequests;
+        }
+        public async Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId)
+        {
+            return await _context.PickupRequests
+                .Where(r => r.RecyclerId == recyclerId)
+                .Include(r => r.User) // عشان نقدر نجيب اسم المواطن وعنوانه (Zone)
+                .Include(r => r.RequestItems)
+                    .ThenInclude(ri => ri.Category) // عشان نقدر نجيب الـ CategoryName للمخلفات
+                .OrderByDescending(r => r.RequestDate) // الترتيب من أحدث طلب لأقدم طلب
+                .Select(r => new PickupRequestViewModelDTO
+                {
+                    RequestId = r.RequestId,
+                    UserName = r.User != null ? r.User.FullName : "مستخدم غير معروف",
+                    Address = r.User != null ? r.User.Address : "عنوان غير معروف",
+                    Status = r.Status,
+                    Priority = r.Priority,
+                    RequestDate = r.RequestDate,
+                    PickupDate = r.PickupDate,
+                    Categories = r.RequestItems.Select(ri => ri.Category.CategoryName).ToList()
+                })
+                .ToListAsync();
         }
         public void SaveChanges()
         {
