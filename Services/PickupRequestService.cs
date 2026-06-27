@@ -118,6 +118,30 @@ namespace SmartWaste.Services
             return await _pickupRequestRepository.GetPendingHubRequestsAsync();
         }
 
+        //public async Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId)
+        //{
+        //    var requests = await _pickupRequestRepository.GetRequestsByRecyclerIdAsync(recyclerId);
+        //    return requests.Select(r => new PickupRequestViewModelDTO
+        //    {
+        //        RequestId = r.RequestId,
+        //        CitizenName = r.User?.FullName ?? "N/A",
+        //        Status = r.Status ?? "Pending",
+        //        Priority = r.Priority ?? "Normal",
+        //        Zone = r.User?.Address ?? "N/A",
+        //        PointsEarned = r.FinalPoints.HasValue ? Convert.ToInt32(r.FinalPoints.Value) : 0,
+        //        RequestImageUrl = r.RequestImageUrl ?? string.Empty,
+        //        CreatedAt = r.RequestDate.GetValueOrDefault(DateTime.Now)
+        //    }).ToList();
+        //}
+        public async Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId)
+        {
+            return await _pickupRequestRepository.GetRecyclerHistoryAsync(recyclerId);
+        }
+        public async Task<IEnumerable<PickupRequest>> GetRequestsByRecyclerIdAsync(int recyclerId)
+        {
+            return await _pickupRequestRepository.GetRequestsByRecyclerIdAsync(recyclerId);
+        }
+
         public void SaveChanges()
         {
             _pickupRequestRepository.SaveChanges();

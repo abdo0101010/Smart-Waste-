@@ -1,4 +1,5 @@
-﻿namespace SmartWaste.DTO.PickupRequestDTOS
+﻿
+namespace SmartWaste.DTO.PickupRequestDTOS
 {
     public class PickupRequestViewModelDTO
     {
@@ -19,5 +20,10 @@
         public string CitizenName { get; set; } = string.Empty;
         public string? DriverName { get; set; }
         public string? HubStaffName { get; set; }
+        public string UserName { get; internal set; }
+        public string? Address { get; internal set; }
+        public DateTime? RequestDate { get; internal set; }
+        public DateTime? PickupDate { get; internal set; }
+        public List<string> Categories { get; internal set; }
     }
 }
