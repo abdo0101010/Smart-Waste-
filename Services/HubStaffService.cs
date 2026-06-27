@@ -118,5 +118,16 @@ public async Task<bool> VerifyShipmentWithAIAsync(IFormFile fileBefore, IFormFil
 
         return false;
     }
-}
+        public void CreateHubStaff(HubstaffCreationsDto hubStaff)
+        {
+            if (hubStaff != null)
+            {
+                _hubStaffRepository.CreateHubStaff(hubStaff);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(hubStaff), "HubStaff cannot be null.");
+            }
+        }
+    }
 }

@@ -55,6 +55,17 @@ namespace SmartWaste.Repositories
         {
             _context.SaveChanges();
         }
+        public void CreateHubStaff(HubstaffCreationsDto hubStaff)
+        {
+            HubStaff newHubStaff = new HubStaff
+            {
+                FullName = hubStaff.FullName,
+                PasswordHash = BCrypt.Net.BCrypt.HashPassword(hubStaff.PasswordHash)    
+                
+            };
+            _context.HubStaffs.Add(newHubStaff);
+            SaveChanges();
+        }
 
 
 
