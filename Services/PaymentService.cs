@@ -39,7 +39,7 @@ namespace SmartWaste.Services
             if (request == null)
                 throw new KeyNotFoundException($"طلب التجميع رقم {requestId} غير موجود.");
 
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId); // تعديل الـ ID حسب الـ Identity الموحد
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId); // تعديل الـ ID حسب الـ Identity الموحد
             if (user == null)
                 throw new KeyNotFoundException($"المستخدم رقم {userId} غير موجود.");
 
@@ -95,7 +95,7 @@ namespace SmartWaste.Services
         /// </summary>
         public async Task<bool> TransferPointsToWalletAsync(int userId, string walletNumber, decimal pointsToRedeem)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == userId);
             if (user == null) throw new KeyNotFoundException("المستخدم غير موجود.");
 
             if ((user.WalletPoints ?? 0) < pointsToRedeem)
@@ -209,4 +209,4 @@ namespace SmartWaste.Services
             };
         }
     }
-}s
+}

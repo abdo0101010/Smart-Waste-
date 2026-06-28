@@ -59,7 +59,7 @@ namespace SmartWaste.Services
             await _context.SaveChangesAsync();
 
             // 🎯 خطوة 1: جلب اسم المواطن عشان نمنع الـ NULL في جدول الـ Notifications
-            var citizen = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+            var citizen = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
             string citizenName = citizen != null ? citizen.FullName : "مستخدم جديد";
 
             try
