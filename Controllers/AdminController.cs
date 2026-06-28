@@ -106,23 +106,22 @@ namespace SmartWaste.Controllers
             var totalearing = _pickupRequestService.TotalEaring();
             return Ok(totalearing);
         }
-        [HttpGet("/api/admin/recycler-details/{recyclerId}")]
+        [HttpGet("/api/admin/recyclers-details")]
         [SwaggerOperation(
-                       Summary = "Gets detailed information about a specific recycler",
+                       Summary = "Gets detailed information about  recyclers",
                         Description = "Requires admin privileges",
-                        OperationId = "GetRecyclerByIdWithDetails",
+                        OperationId = "GetRecyclersDetails",
            Tags = new[] { "Admin", "Recyclers" })]
-        [SwaggerResponse(200, Description = "Recycler details retrieved successfully", Type = typeof(ReyclerDetailsAdimDto))]
-        [SwaggerResponse(404, Description = "Recycler not found")]
+        [SwaggerResponse(200, Description = "Recycler details retrieved successfully", Type = typeof(List<ReyclerDetailsAdimDto>))]
         [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
-        public IActionResult GetRecyclerByIdWithDetails(int recyclerId)
+        public IActionResult GetAllRecyclersWithDetails()
         {
-            var recycler = _recyclerService.GetRecyclerByIdWithDetails(recyclerId);
-            if (recycler == null)
+            var recyclers = _recyclerService.GetAllRecyclersWithDetails();
+            if (recyclers == null || !recyclers.Any())
             {
-                return NotFound(new { message = $"Recycler with ID {recyclerId} not found." });
+                return Ok(new List<ReyclerDetailsAdimDto>());
             }
-            return Ok(recycler);
+            return Ok(recyclers);
         }
         [HttpGet("/api/admin/recycler-with-total-trip")]
         [SwaggerOperation(
