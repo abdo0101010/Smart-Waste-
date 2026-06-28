@@ -24,7 +24,8 @@ namespace SmartWaste.Repositories
 
 
 
-        public Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync();
+
+        public Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync();
 
 
     }

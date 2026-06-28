@@ -126,43 +126,54 @@ namespace SmartWaste.Repositories
         }
         public async Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId)
         {
-            // 🎯 الشرط السحري لتقليل التكلفة: الحد الأدنى لعدد الطلبات في المشوار الواحد
-            int minRequiredRequests = 5; // لازم السائق يلم 3 بيوت أو طلبات على الأقل في النزلة
+            // 🎯 الحد الأدنى لعدد الطلبات في المشوار الواحد
+            int minRequiredRequests = 1;
 
             if (requestIds == null || requestIds.Count < minRequiredRequests)
             {
                 throw new InvalidOperationException($"عذراً، لتقليل تكلفة الشحن، لا يمكنك النزول لطلب أو اثنين فقط. يجب أن تختار {minRequiredRequests} طلبات على الأقل معاً لتشكيل خط سير مجمع.");
             }
 
-            // جلب كل الطلبات المبعوثة من الداتابيز للتأكد إنها لسه "Open" وموجودة
+            // 🚀 جلب بيانات الدرايفر (السائق) عشان ناخد اسمه الحقيقي ونبعته في الإشعار
+            var driver = await _context.Recyclers.AsNoTracking().FirstOrDefaultAsync(r => r.RecyclerId == recyclerId);
+            string driverName = driver != null ? driver.FullName : "سائق EcoSnap";
+
+            // جلب كل الطلبات المبعوثة من الداتابيز وعمل Include للـ User
             var requests = await _context.PickupRequests
-                .Where(p => requestIds.Contains(p.RequestId) && p.Status == "Open")
+                .Include(p => p.User)
+                .Where(p => requestIds.Contains(p.RequestId) && p.Status == "Pending")
                 .ToListAsync();
 
-            // لو عدد الطلبات المتاحة فعلياً في الداتابيز أقل من اللي السواق اختارهم (لو حد خطف طلب منهم مثلاً)
             if (requests.Count < requestIds.Count)
             {
                 throw new Exception("بعض الطلبات التي اخترتها تم قبولها بالفعل من سائق آخر أو غير متاحة.");
             }
 
             // ----------------------------------------------------
-            // لو كله تمام والعدد مستوفي الشروط، بنحدثهم كلهم Loop واحدة 🚀
+            // تحديث الطلبات وحقن الإشعارات باسم السواق والمواطن 🚀
             // ----------------------------------------------------
             foreach (var request in requests)
             {
                 request.RecyclerId = recyclerId;
-                request.Status = "In Progress";
+                request.Status = "In Progress"; // بيتحول لـ In Progress يعني المشوار بدأ فعلياً
 
                 try
                 {
-                    // تسجيل إشعار في الداتابيز لكل مواطن ميكلبش في خط السير ده
+                    // تسجيل إشعار في الداتابيز لكل مواطن باسم الدرايفر اللي قَبِل طلبه
                     var notification = new Notification
                     {
                         Title = "Driver is on the way! 🚛",
-                        Message = $"A driver has accepted your request (ORD-{request.RequestId}) in a combined route.",
+                        // ✅ هنا الإشعار هيروح للمواطن باسم السواق صريح
+                        Message = $"A driver ({driverName}) has accepted your request (ORD-{request.RequestId}) in a combined route.",
                         Type = "Pickup",
                         CreatedAt = DateTime.UtcNow,
-                        UserId = request.UserId
+                        UserId = request.UserId,
+
+                        // الاسم بتاع المواطن (عشان الجدول ما يضربش NULL)
+                        UserName = request.User != null ? request.User.FullName : "مستخدم غير معروف",
+
+                        // ✅ لو جدول الـ Notifications فيه عمود لاسم السواق (مثلاً DriverName)، ابعت القيمة هنا:
+                        // DriverName = driverName 
                     };
                     _context.Notifications.Add(notification);
                 }
@@ -172,8 +183,8 @@ namespace SmartWaste.Repositories
             // حفظ كل الطلبات والإشعارات في خطوة واحدة قوية جوه الـ SQL Server
             await _context.SaveChangesAsync();
 
-            // ضخ إشعار عام للـ SignalR إن فيه طلبات اتجمعت واتقبلت
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Route Started", $"{requests.Count} requests have been batched into a new route.", "Pickup");
+            // ضخ إشعار عام للـ SignalR باسم السواق برضه لو تحب
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Route Started", $"Driver {driverName} has batched {requests.Count} requests into a new route.", "Pickup");
 
             return true;
         }
@@ -197,20 +208,22 @@ namespace SmartWaste.Repositories
                 .OrderByDescending(r => r.RequestDate) // الترتيب من أحدث طلب لأقدم طلب
                 .ToListAsync();
         }
-        public async Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync()
+        public async Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync()
         {
-            // سحب الطلبات المعلقة وعمل Join مع جدول المستخدمين لجلب الاسم
             var pendingRequests = await _context.PickupRequests
                 .Include(p => p.User)
-                .Where(p => p.Status == "Pending")
-                .OrderByDescending(p => p.RequestDate) // الأحدث يظهر فوق
+                .Include(p => p.Recycler) // 🚀 زود الـ Include دي عشان تقرا جدول السواقين
+                .Where(p => p.Status == "In Progress")
+                .OrderByDescending(p => p.RequestDate)
                 .Select(p => new PendingRequestFormDTO
                 {
                     RequestId = p.RequestId,
                     UserName = p.User != null ? p.User.FullName : "مستخدم غير معروف",
                     Status = p.Status,
-                    // تنسيق التاريخ والوقت ليظهر بشكل كلين للـ Hub Staff
-                    TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A"
+                    TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A",
+
+                    // ✅ لو السواق موجود اعرض اسمه، لو مش موجود (Null) اكتب لم يتم التعيين
+                    DriverName = p.Recycler != null ? p.Recycler.FullName : "No Driver Assigned"
                 })
                 .ToListAsync();
 

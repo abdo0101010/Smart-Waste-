@@ -73,7 +73,15 @@ namespace SmartWaste.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة خط السير المجمع", Details = ex.Message });
+                // 💡 السطر ده هيجيبلك الرسالة المستخبية جوه الـ SQL Server بالملي!
+                var sqlError = ex.InnerException != null ? ex.InnerException.Message : ex.Message;
+
+                return StatusCode(500, new
+                {
+                    message = "حدث خطأ أثناء معالجة خط السير المجمع",
+                    details = ex.Message,
+                    sqlError = sqlError // <--- هيطبعلك اسم العمود أو الـ Foreign Key المكسور هنا!
+                });
             }
         }
         [Authorize(Roles = "User")]
@@ -106,7 +114,7 @@ namespace SmartWaste.Controllers
         }
 
         //[Authorize(Roles = "HubStaff,Admin")]
-        [HttpGet("GetPendingRequests")]
+        [HttpGet("GetInProgressHubRequests")]
         [SwaggerOperation(
             Summary = "Fetches all pending pickup requests for hub staff or admim",
             Description = "Retrieves a list of all pending pickup requests that require attention from hub staff or admin.",
@@ -117,12 +125,11 @@ namespace SmartWaste.Controllers
                 [SwaggerResponse(204, Description = "No pending pickup requests found")]
         [SwaggerResponse(500, Description = "An error occurred while fetching pending pickup requests")]
         [SwaggerResponse(401, Description = "Unauthorized - HubStaff or Admin token required")]
-        public async Task<IActionResult> GetPendingRequests()
+        public async Task<IActionResult> GetInProgressRequests()
         {
             try
             {
-                var requests = await _pickupRequestService.GetPendingHubRequestsAsync();
-
+                var requests = await _pickupRequestService.GetInProgressHubRequestsAsync();
                 if (requests == null || !requests.Any())
                 {
                     return Ok(new { Message = "لا توجد طلبات معلقة حالياً. 📭" });

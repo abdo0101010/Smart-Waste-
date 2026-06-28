@@ -113,9 +113,9 @@ namespace SmartWaste.Services
                 CreatedAt = r.RequestDate.GetValueOrDefault(DateTime.Now)
             }).ToList();
         }
-        public async Task<IEnumerable<PendingRequestFormDTO>> GetPendingHubRequestsAsync()
+        public async Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync()
         {
-            return await _pickupRequestRepository.GetPendingHubRequestsAsync();
+            return await _pickupRequestRepository.GetInProgressHubRequestsAsync();
         }
 
         //public async Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId)
