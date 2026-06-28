@@ -27,8 +27,9 @@ namespace SmartWaste.Services
             _userRepository = userRepository;
             _webHostEnvironment = webHostEnvironment;
             _context = context;
-                        _hubContext = hubContext;
+            _hubContext = hubContext;
         }
+
         public async Task<int> ProcessUserUploadAsync(int userId, IFormFile file)
         {
             // 1. حفظ ملف اليوزر في wwwroot/uploads
@@ -56,20 +57,48 @@ namespace SmartWaste.Services
             };
             _context.PickupRequests.Add(newRequest);
             await _context.SaveChangesAsync();
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "New pickup request", "Citizen scheduled a glass pickup...", "Pickup");
 
-            // رجع الـ RequestId عشان الموبايل يحتفظ بيه كـ transaction_id
+            // 🎯 خطوة 1: جلب اسم المواطن عشان نمنع الـ NULL في جدول الـ Notifications
+            var citizen = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.Id == userId);
+            string citizenName = citizen != null ? citizen.FullName : "مستخدم جديد";
+
+            try
+            {
+                // 🎯 خطوة 2: زرع إشعار الـ Request الجديد في الـ History للـ Hub Staff والأدمن
+                var hubNotification = new Notification
+                {
+                    Title = "New Request Alert! 📦",
+                    Message = $"Citizen ({citizenName}) uploaded a new request (ORD-{newRequest.RequestId}) waiting for routing.",
+                    Type = "HubAlert",
+                    CreatedAt = DateTime.UtcNow,
+                    UserName = citizenName // 👈 قفلنا الـ NULL constraint هنا
+                };
+                _context.Notifications.Add(hubNotification);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception) { /* لضمان عدم كراش العملية الأساسية */ }
+
+            // ضخها لايف عبر الـ SignalR
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "New pickup request", $"{citizenName} scheduled a new plastic recycling pickup.", "Pickup");
+
             return newRequest.RequestId;
         }
 
         public async Task<int> VerifyHubShipmentAsync(int userId, int transactionId, IFormFile fileAfter)
         {
-            // 1. جلب الطلب بالـ ID لنسحب مسار صورة اليوزر (Before)
-            var pickupRequest = await _context.PickupRequests.FirstOrDefaultAsync(p => p.RequestId == transactionId);
+            // 1. جلب الطلب بالـ ID وعمل Include للـ User والـ Recycler عشان نقرأ الأسماء صح
+            var pickupRequest = await _context.PickupRequests
+                .Include(p => p.User)
+                .Include(p => p.Recycler)
+                .FirstOrDefaultAsync(p => p.RequestId == transactionId);
+
             if (pickupRequest == null)
             {
                 throw new KeyNotFoundException("رقم العملية (Transaction ID) هذا غير مسجل بالداتابيز.");
             }
+
+            string citizenName = pickupRequest.User != null ? pickupRequest.User.FullName : "مواطن EcoSnap";
+            string driverName = pickupRequest.Recycler != null ? pickupRequest.Recycler.FullName : "سائق EcoSnap";
 
             string userImagePath = pickupRequest.RequestImageUrl;
             if (string.IsNullOrEmpty(userImagePath))
@@ -95,19 +124,17 @@ namespace SmartWaste.Services
             }
             pickupRequest.VerificationImageUrl = "/uploads/" + uniqueFileNameAfter;
 
-            // 4. تجهيز الـ HttpClient وضخ الـ Payload الثلاثي للـ FastAPI كـ Bytes وبالمسميات الدقيقة
+            // 4. تجهيز الـ HttpClient وضخ الـ Payload الثلاثي للـ FastAPI
             using var httpClient = new HttpClient();
             string aiApiUrl = "https://badass-ecosystem-hazy.ngrok-free.dev/verify-shipment/";
 
             using var content = new MultipartFormDataContent();
 
-            // تحويل الـ file_before لـ ByteArrayContent لضمان قراءتها كاملة
             byte[] fileBeforeBytes = await File.ReadAllBytesAsync(fullUserImagePath);
             var contentBefore = new ByteArrayContent(fileBeforeBytes);
             contentBefore.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
             content.Add(contentBefore, "file_before", "user_image.jpg");
 
-            // تحويل الـ file_after لـ ByteArrayContent لمنع مشاكل الـ Stream Position
             using var streamAfter = fileAfter.OpenReadStream();
             using var memoryStreamAfter = new MemoryStream();
             await streamAfter.CopyToAsync(memoryStreamAfter);
@@ -117,10 +144,8 @@ namespace SmartWaste.Services
             contentAfter.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("image/jpeg");
             content.Add(contentAfter, "file_after", "hub_image.jpg");
 
-            // ضخ الـ transaction_id كـ StringContent بنفس المسمى المستهدف في البايثون
             content.Add(new StringContent(transactionId.ToString()), "transaction_id");
 
-            // 🚀 إرسال الطلب لايف وسيرفر الـ FastAPI هيرد بـ HTTP 200 في الحالتين
             var response = await httpClient.PostAsync(aiApiUrl, content);
 
             if (!response.IsSuccessStatusCode)
@@ -129,17 +154,17 @@ namespace SmartWaste.Services
                 throw new Exception($"AI Server HTTP Error. Status: {response.StatusCode}. Reason: {errorDetail}");
             }
 
-            // 5. قراءة الـ JSON وفحص الـ Logic الداخلي للموديل (مربط الفرس 🎯)
+            // 5. قراءة الـ JSON وفحص الـ Logic الداخلي للموديل
             var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>();
 
-            // 🚨 الحالة الأولى: التشيك على الـ status الداخلية لو الـ AI رجع FAILED
+            // 🚨 الحالة الأولى: لو الـ AI رجع FAILED
             if (jsonResult.TryGetProperty("status", out var statusElement) && statusElement.GetString() == "FAILED")
             {
                 string aiMessage = jsonResult.TryGetProperty("message", out var msgElement) ? msgElement.GetString() : "فشلت عملية المطابقة وعدم تطابق الكمية.";
 
                 try
                 {
-                    // 🎯 إرسال نوتفكيشن الفشل للمواطن قبل ما نرمي الـ Exception ونقفل
+                    // 🎯 إرسال نوتفكيشن الفشل للمواطن مع حقن الـ UserName لمنع الـ NULL error
                     var failNotification = new Notification
                     {
                         Title = "Verification Failed ❌",
@@ -147,58 +172,71 @@ namespace SmartWaste.Services
                         Type = "Pickup",
                         CreatedAt = DateTime.UtcNow,
                         IsRead = false,
-                        UserId = pickupRequest.UserId // موجه للمواطن صاحب الطلب
+                        UserId = pickupRequest.UserId,
+                        UserName = citizenName // ✅ حل أزمة الـ DB Constraint
                     };
                     _context.Notifications.Add(failNotification);
                     await _context.SaveChangesAsync();
 
-                    // ضخها لايف بالـ SignalR
                     await _hubContext.Clients.All.SendAsync("ReceiveNotification", failNotification.Title, failNotification.Message, failNotification.Type);
                 }
-                catch (Exception) { /* لضمان عدم كراش الميثود أثناء تسجيل الإشعار الفاشل */ }
-
-                // رمي إيرور صريح يوقف الـ Cycle ويمنع الـ النقاط
+                catch (Exception) { }
+                
                 throw new Exception(aiMessage);
             }
 
-            // ✅ الحالة الثانية: لو الـ Status مش FAILED (يعني الـ عملية نجحت ومطابقة للـ Before)
+            // ✅ الحالة الثانية: لو الـ عملية نجحت ومطابقة للـ Before
             if (jsonResult.TryGetProperty("count_after", out var countElement))
             {
                 int countAfter = countElement.GetInt32();
-                decimal pointsEarned = countAfter * 5; // حساب النقاط (كل زجاجة بـ 5 نقاط)
+                decimal pointsEarned = countAfter * 5;
 
-                // تحديث بيانات الـ Request في الـ Database بالقيم النهائية
                 pickupRequest.Status = "Verified";
                 pickupRequest.FinalBottlesCount = countAfter;
                 pickupRequest.FinalPoints = pointsEarned;
                 pickupRequest.VerificationDate = DateTime.UtcNow;
 
-                // تحديث إجمالي نقاط وبوتلز المستخدم الحقيقي المربوط بالعملية أوتوماتيكياً
                 await _userRepository.UpdateUserBottlesAndPointsAsync(pickupRequest.UserId, countAfter, pointsEarned);
 
                 try
                 {
-                    // 🎯 إرسال نوتفكيشن النجاح وإضافة النقاط للمواطن
+                    // 🎯 1. إرسال نوتفكيشن النجاح وإضافة النقاط للمواطن
                     var successNotification = new Notification
                     {
                         Title = "Shipment Verified! 🎉",
-                        Message = $"Congratulations! (ORD-{transactionId}) verified successfully. +{pointsEarned} points added to your wallet.",
+                        Message = $"Congratulations! Your request (ORD-{transactionId}) verified successfully. +{pointsEarned} points added to your wallet.",
                         Type = "Pickup",
                         CreatedAt = DateTime.UtcNow,
                         IsRead = false,
-                        UserId = pickupRequest.UserId
+                        UserId = pickupRequest.UserId,
+                        UserName = citizenName // ✅ قفلنا الـ NULL هنا برضه
                     };
                     _context.Notifications.Add(successNotification);
+
+                    // 🎯 2. إرسال نوتفكيشن شكر وتقفيل للسواق اللي وصل الشحنة
+                    if (pickupRequest.RecyclerId.HasValue)
+                    {
+                        var driverNotification = new Notification
+                        {
+                            Title = "Trip Closed 🏁",
+                            Message = $"Great job {driverName}! Request ORD-{transactionId} has been fully processed and points delivered to {citizenName}.",
+                            Type = "Logistics",
+                            CreatedAt = DateTime.UtcNow,
+                            IsRead = false,
+                            RecyclerId = pickupRequest.RecyclerId.Value,
+                            UserName = citizenName // أو "System"
+                        };
+                        _context.Notifications.Add(driverNotification);
+                    }
                 }
                 catch (Exception) { }
 
-                // حفظ كل شيء (تحديث الطلب + إضافة إشعار النجاح)
                 await _context.SaveChangesAsync();
 
                 try
                 {
-                    // 🚀 ضخ إشعار النجاح لايف فوراً للمواطن بالـ SignalR
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Shipment Verified! 🎉", $"Order (ORD-{transactionId}) has been fully verified.", "Pickup");
+                    // 🚀 ضخ إشعار النجاح لايف فوراً للمواطن والسائق بالـ SignalR
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Shipment Verified! 🎉", $"Order (ORD-{transactionId}) has been fully verified and closed.", "Pickup");
                 }
                 catch (Exception) { }
 
