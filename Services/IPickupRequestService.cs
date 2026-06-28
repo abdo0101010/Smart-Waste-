@@ -27,7 +27,9 @@ namespace SmartWaste.Services
         public  Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId);
         public Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync();
         public Task<IEnumerable<PickupRequest>> GetRequestsByRecyclerIdAsync(int recyclerId);
-        public  Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId);
+        public  Task<IEnumerable<PendingRequestFormDTO>> GetPendingRequestFormsAsync();
+
+        public Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId);
 
 
         void SaveChanges();

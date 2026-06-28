@@ -229,6 +229,23 @@ namespace SmartWaste.Repositories
 
             return pendingRequests;
         }
+        public async Task<IEnumerable<PendingRequestFormDTO>> GetPendingRequestFormsAsync()
+        {
+            var pendingRequests = await _context.PickupRequests
+                .Include(p => p.User)
+                .Where(p => p.Status == "Pending")
+                .OrderByDescending(p => p.RequestDate)
+                .Select(p => new PendingRequestFormDTO
+                {
+                    RequestId = p.RequestId,
+                    UserName = p.User != null ? p.User.FullName : "مستخدم غير معروف",
+                    Status = p.Status,
+                    TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A",
+                    DriverName = "No Driver Assigned" // الطلبات المعلقة لا يوجد لها سائق بعد
+                })
+                .ToListAsync();
+            return pendingRequests;
+        }
         public async Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId)
         {
             return await _context.PickupRequests
