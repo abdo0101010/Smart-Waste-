@@ -31,7 +31,7 @@ public partial class Recycler
     public DateTime? VerificationCodeExpiration { get; set; }
     public double? CurrentLatitude { get; set; }
     public double? CurrentLongitude { get; set; }
-    public string CurrentStatus { get; set; }     
+    public string ?CurrentStatus { get; set; }     
     public int? CurrentCapacity { get; set; }
 
     public virtual ICollection<PickupRequest> PickupRequests { get; set; } = new List<PickupRequest>();

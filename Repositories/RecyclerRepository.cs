@@ -128,7 +128,7 @@ namespace SmartWaste.Repositories
             var recycler = new Recycler
             {
                 FullName = recyclerCreationDTO.FullName,
-                PasswordHash = recyclerCreationDTO.PasswordHash,
+                PasswordHash  = BCrypt.Net.BCrypt.HashPassword(recyclerCreationDTO.PasswordHash),
                 Role= recyclerCreationDTO.Role,
                     Phone = recyclerCreationDTO.Phone
                     ,
