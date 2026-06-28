@@ -23,6 +23,7 @@ namespace SmartWaste.Repositories
         public Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId);
 
 
+        public Task<IEnumerable<PendingRequestFormDTO>> GetPendingRequestFormsAsync();
 
 
         public Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync();

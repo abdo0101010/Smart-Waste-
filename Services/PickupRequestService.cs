@@ -117,6 +117,10 @@ namespace SmartWaste.Services
         {
             return await _pickupRequestRepository.GetInProgressHubRequestsAsync();
         }
+        public async Task<IEnumerable<PendingRequestFormDTO>> GetPendingRequestFormsAsync()
+        {
+            return await _pickupRequestRepository.GetPendingRequestFormsAsync();
+        }
 
         //public async Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId)
         //{
