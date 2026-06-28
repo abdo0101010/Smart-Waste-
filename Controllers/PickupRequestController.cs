@@ -132,7 +132,7 @@ namespace SmartWaste.Controllers
                 var requests = await _pickupRequestService.GetInProgressHubRequestsAsync();
                 if (requests == null || !requests.Any())
                 {
-                    return Ok(new { Message = "لا توجد طلبات معلقة حالياً. 📭" });
+                    return Ok(new { Message = "لا توجد طلبات قيد التنفيذ حالياً. 📭" });
                 }
 
                 return Ok(requests);
@@ -177,6 +177,25 @@ namespace SmartWaste.Controllers
                 return NotFound(new { Message = "No history found for the specified recycler ID." });
             }
             return Ok(history);
+        }
+        [HttpGet("GetPendingRequestForms")]
+        [SwaggerOperation(
+            Summary = "Fetches all pending pickup request forms",
+            Description = "Retrieves a list of all pending pickup request forms that require attention.",
+            OperationId = "GetPendingRequestForms",
+            Tags = new[] { "Pickup Requests" }
+        )]
+        [SwaggerResponse(200, Description = "Pending pickup request forms retrieved successfully", Type = typeof(IEnumerable<PendingRequestFormDTO>))]
+        [SwaggerResponse(404, Description = "No pending pickup request forms found")]
+
+        public IActionResult GetPendingRequestForms()
+        {
+            var pendingRequests = _pickupRequestService.GetPendingRequestFormsAsync().Result;
+            if (pendingRequests == null || !pendingRequests.Any())
+            {
+                return NotFound(new { Message = "No pending pickup requests found." });
+            }
+            return Ok(pendingRequests);
         }
 
     }
