@@ -37,7 +37,8 @@ namespace SmartWaste.Services
             {
                 Id = n.Id,
                 UserId = n.UserId,
-                UserName = n.UserName ?? "System", // بيقرأ الـ UserName اللي متخزن في الـ Entity أو بيكتب System
+                RecyclerId = n.RecyclerId, // ✅ السطر ده كان ناقص وهيسبب كوارث في أباجيكت السواق!
+                UserName = n.UserName ?? "System",
                 Title = n.Title,
                 Message = n.Message,
                 Type = n.Type,
