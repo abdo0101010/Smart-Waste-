@@ -181,7 +181,7 @@ namespace SmartWaste.Services
                     await _hubContext.Clients.All.SendAsync("ReceiveNotification", failNotification.Title, failNotification.Message, failNotification.Type);
                 }
                 catch (Exception) { }
-                
+
                 throw new Exception(aiMessage);
             }
 

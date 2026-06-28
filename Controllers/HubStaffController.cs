@@ -39,15 +39,11 @@ namespace SmartWaste.Controllers
 
             try
             {
-                // باصي الـ hubStaffId الحقيقي بدل الـ 0
-                int count = await _ecoSnapService.VerifyHubShipmentAsync(hubStaffId, model.TransactionId, model.FileAfter);
+                // 🎯 1. استدعاء الـ Service واستقبال الأوبجكت المعدل
+                var verificationResult = await _ecoSnapService.VerifyHubShipmentAsync(hubStaffId, model.TransactionId, model.FileAfter);
 
-                return Ok(new
-                {
-                    Message = "تم التحقق من الشحنة ومطابقتها بنجاح عبر الـ AI! ✅🤖",
-                    FinalBottlesDetected = count,
-                    PointsAwarded = count * 5
-                });
+                // 🚀 2. إرجاع النتيجة مباشرة (سواء كانت نجاح أو فشل) بـ 200 OK نظيفة
+                return Ok(verificationResult);
             }
             catch (KeyNotFoundException ex)
             {
@@ -55,12 +51,6 @@ namespace SmartWaste.Controllers
             }
             catch (Exception ex)
             {
-                // لو الرسالة جاية من الـ AI بسبب عدم التطابق، رجعها 400 Bad Request بدل 500
-                if (ex.Message == "Quantity Mismatch Error!" || ex.Message.Contains("Mismatch"))
-                {
-                    return BadRequest(new { Message = "فشل التحقق من الشحنة", Details = ex.Message });
-                }
-
                 return StatusCode(500, new { Message = "حدث خطأ أثناء معالجة الصورة وفحص الـ AI", Details = ex.Message });
             }
         }

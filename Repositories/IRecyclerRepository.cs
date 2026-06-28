@@ -26,7 +26,7 @@ namespace SmartWaste.Repositories
         public decimal? GetAvgRatingRecyclers();
         public int GetTotalRecyclers();
         public int GetTotalRecyclingActive();
-        public ReyclerDetailsAdimDto GetRecyclerByIdWithDetails(int recyclerId);
+        public List<ReyclerDetailsAdimDto> GetAllRecyclersWithDetails();
         public List<RecyclerWithTotaltripDTO> GetSortingRecyclersByRating();
         public void UpdateRecyclerStatus(int recyclerId, string newStatus);
         public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO);
