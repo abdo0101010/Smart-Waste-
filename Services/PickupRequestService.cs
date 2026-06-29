@@ -97,22 +97,51 @@ namespace SmartWaste.Services
         }
         public async Task<IEnumerable<PickupRequestViewModelDTO>> GetUserHistoryAsync(int userId)
         {
+            // 1. سحب الطلبات بكامل بياناتها والعلاقات من الـ Repository أولاً لضمان وجود الداتا في الـ Memory
             var requests = await _pickupRequestRepository.GetRequestsByUserIdAsync(userId);
 
-            return requests.Select(r => new PickupRequestViewModelDTO
-            {
-                RequestId = r.RequestId,
-                CitizenName = r.User?.FullName ?? "N/A",
-                Status = r.Status ?? "Pending",
-                Priority = r.Priority ?? "Normal",
-                Zone = r.User?.Address ?? "N/A",
-                // حل مشكلة الـ decimal? لـ int صريح
-                PointsEarned = r.FinalPoints.HasValue ? Convert.ToInt32(r.FinalPoints.Value) : 0,
-                RequestImageUrl = r.RequestImageUrl ?? string.Empty,
-                // حل مشكلة الـ DateTime? لـ DateTime صريح
-                CreatedAt = r.RequestDate.GetValueOrDefault(DateTime.Now)
+            // تأمين الكوليكشن في الـ Memory لتجنب مشاكل ترجمة الـ LINQ لـ SQL
+            var requestsList = requests.ToList();
+
+            // 2. عمل الـ Mapping في الـ Memory (LINQ to Objects) حيث كل الدوال مدعومة 🎯
+            return requestsList.Select(r => {
+                // فحص مسبق للـ Feedbacks والتيكيتس لتسهيل القراءة والأداء
+                var hasFeedback = r.Feedbacks != null && r.Feedbacks.Any();
+                var matchingTicket = r.User?.SupportTickets?.FirstOrDefault(t =>
+                    t.DriverID == r.RecyclerId &&
+                    t.CreatedAt.Date == r.RequestDate.GetValueOrDefault(DateTime.Now).Date);
+
+                return new PickupRequestViewModelDTO
+                {
+                    RequestId = r.RequestId, // تم التأكيد على الحرف الصغير d حسب الـ Entity
+                    CitizenName = r.User?.FullName ?? "N/A",
+                    Status = r.Status ?? "Pending",
+                    Priority = r.Priority ?? "Normal",
+                    Zone = r.User?.Address ?? "N/A",
+
+                    // حل مشكلة تحويل الـ decimal? لـ int صريح
+                    PointsEarned = r.FinalPoints.HasValue ? Convert.ToInt32(r.FinalPoints.Value) : 0,
+                    RequestImageUrl = r.RequestImageUrl ?? string.Empty,
+                    ArrivalImageUrl = r.VerificationImageUrl,
+                    BottlesCount = r.FinalBottlesCount,
+                    CreatedAt = r.RequestDate.GetValueOrDefault(DateTime.Now),
+                    RequestDate = r.RequestDate,
+                    PickupDate = r.PickupDate,
+                    Address = r.User?.Address,
+                    DriverName = r.Recycler?.FullName,
+                    HubStaffName = r.HubStaff?.FullName,
+
+                    // 1. التقييم (Feedback)
+                    HasFeedback = hasFeedback,
+                    DriverRating = hasFeedback ? r.Feedbacks.FirstOrDefault().Rating : null,
+
+                    // 2. تيكت الدعم (Support Ticket) - تعمل بكفاءة الآن في الـ Memory 🚀
+                    HasTicket = matchingTicket != null,
+                    TicketStatus = matchingTicket != null ? matchingTicket.Status.ToString() : "No Ticket"
+                };
             }).ToList();
         }
+        
         public async Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync()
         {
             return await _pickupRequestRepository.GetInProgressHubRequestsAsync();

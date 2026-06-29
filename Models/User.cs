@@ -55,6 +55,7 @@ public partial class User
     public virtual ICollection<PickupRequest>? PickupRequests { get; set; } = new List<PickupRequest>();
 
     public virtual ICollection<UserRedemption> ?UserRedemptions { get; set; } = new List<UserRedemption>();
+    public virtual ICollection<SupportTickets> SupportTickets { get; set; } = new List<SupportTickets>();
 }
 
 
