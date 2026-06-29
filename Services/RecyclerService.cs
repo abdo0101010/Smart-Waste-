@@ -130,6 +130,15 @@ namespace SmartWaste.Services
                 return _RecyclerRepository.GetRecyclerByEmail(email);
             }
             return null;
-        }   
+        }
+        public async Task<bool> UpdateRecyclerAsync(int recyclerId, RecyclerUpdateDTO dto)
+        {
+            if (dto != null && recyclerId > 0)
+            {
+                
+                return await _RecyclerRepository.UpdateRecyclerAsync(recyclerId, dto);
+            }
+            return false;
+        }
     }
 }
