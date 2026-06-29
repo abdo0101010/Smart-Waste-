@@ -187,6 +187,14 @@ namespace SmartWaste.Services
                 throw new ArgumentException("Invalid request ID or rating. Rating must be between 1 and 5.");
             }
         }
+        public async Task<string?> UpdateUserProfilePictureAsync(int id, IFormFile file)
+        {
+            if (file != null && file.Length > 0 && id > 0)
+            {
+                return await _UserRepository.UpdateUserProfilePictureAsync(id, file);
+            }
+            return null;
+        }
         public async Task SaveChangesAsync()
         {
             await _UserRepository.SaveChangesAsync();

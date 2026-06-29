@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartWaste.DTO.RecuclerDTOS;
 using SmartWaste.DTO.TicketSDTOS;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
@@ -10,10 +11,12 @@ namespace SmartWaste.Controllers
         [Route("api/[controller]")]
     public class RecyclerController:ControllerBase
     {
-        ISupportTicketsServices _supportTicketsServices;
-        public RecyclerController(ISupportTicketsServices supportTicketsService)
+        private readonly ISupportTicketsServices _supportTicketsServices;
+        private readonly IRecyclerService _recyclerService;
+        public RecyclerController(ISupportTicketsServices supportTicketsService, IRecyclerService recyclerService)
         {
              _supportTicketsServices = supportTicketsService;
+              _recyclerService = recyclerService;
         }
         [HttpGet("tickets/{recyclerId}")]
         [SwaggerOperation(
@@ -36,6 +39,30 @@ namespace SmartWaste.Controllers
             }
 
             return Ok(tickets);
+        }
+
+        [HttpPut("update/{id:int}")]
+        [SwaggerOperation(
+            Summary = "Updates recycler profile information",
+            Description = "Allows recyclers to update their profile name, phone, and vehicle information.",
+            OperationId = "UpdateRecyclerProfile",
+            Tags = new[] { "Recycler" }
+        )]
+        [SwaggerResponse(200, "Profile updated successfully")]
+        [SwaggerResponse(400, "Invalid input data")]
+        [SwaggerResponse(404, "Recycler not found")]
+        public async Task<IActionResult> UpdateRecyclerAsync([FromRoute] int id, [FromBody] RecyclerUpdateDTO dto)
+        {
+            if (!ModelState.IsValid) return BadRequest(ModelState);
+
+            var result = await _recyclerService.UpdateRecyclerAsync(id, dto);
+
+            if (!result)
+            {
+                return NotFound(new { message = $"Recycler with ID {id} not found." });
+            }
+
+            return Ok(new { message = "Profile updated successfully." });
         }
 
     }

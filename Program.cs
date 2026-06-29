@@ -104,6 +104,16 @@ namespace SmartWaste
             {
                 options.AddPolicy("AllowAll", b => b.AllowAnyHeader().AllowAnyMethod().AllowAnyOrigin());
             });
+            // 🌟 الإضافة الجديدة هنا: زيادة حجم الملفات المسموح برفعها لـ 100 ميجا 🌟
+            builder.Services.Configure<Microsoft.AspNetCore.Http.Features.FormOptions>(options =>
+            {
+                options.MultipartBodyLengthLimit = 104857600; // 100 MB
+            });
+
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.Limits.MaxRequestBodySize = 104857600; // 100 MB
+            });
 
             var app = builder.Build();
 

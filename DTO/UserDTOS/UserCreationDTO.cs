@@ -25,6 +25,9 @@ namespace SmartWaste.DTO.UserDTOS
         public string Address { get; set; } = null!;
         
         public IFormFile ?ProfilePictureUrl { get; set; }
+        [Required(ErrorMessage = "Phone number is required")]
+        [RegularExpression(@"^01[0125][0-9]{8}$", ErrorMessage = "Invalid Egyptian phone number")]
+        public string Phone { get; set; } = null!;
     }
 }
 

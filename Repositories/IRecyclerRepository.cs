@@ -32,6 +32,7 @@ namespace SmartWaste.Repositories
         public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO);
         public void RegisterRecycler(dataforregister recyclerCreationDTO);
         public Recycler GetRecyclerByEmail(string email);
+        public Task<bool> UpdateRecyclerAsync(int recyclerId, RecyclerUpdateDTO dto);
 
 
     }

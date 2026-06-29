@@ -138,5 +138,16 @@ namespace SmartWaste.Repositories
             _context.Recyclers.Add(recycler);
             SaveChanges();
         }
+        public async Task<bool> UpdateRecyclerAsync(int recyclerId, RecyclerUpdateDTO dto)
+        {
+            var recycler = await _context.Recyclers.FirstOrDefaultAsync(r => r.RecyclerId == recyclerId);
+            if (recycler == null) return false;
+            recycler.FullName = dto.FullName;
+            recycler.Phone = dto.Phone;
+            recycler.VehicleInfo = dto.VehicleInfo;
+            _context.Recyclers.Update(recycler);
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
