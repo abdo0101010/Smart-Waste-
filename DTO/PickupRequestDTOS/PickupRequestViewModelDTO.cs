@@ -25,5 +25,10 @@ namespace SmartWaste.DTO.PickupRequestDTOS
         public DateTime? RequestDate { get; internal set; }
         public DateTime? PickupDate { get; internal set; }
         public List<string> Categories { get; internal set; }
+        public bool HasTicket { get; set; }          // هل العميل فتح تيكت دعم؟
+        public string? TicketStatus { get; set; }     // حالة التيكت لو موجودة (Open, Closed)
+        public bool HasFeedback { get; set; }        // هل العميل قيّم السواق وعمل Feedback؟
+        public int? DriverRating { get; set; }
+
     }
 }
