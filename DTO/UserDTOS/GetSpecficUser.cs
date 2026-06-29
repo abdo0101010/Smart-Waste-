@@ -19,5 +19,6 @@ namespace SmartWaste.DTO.UserDTOS
         public string Email { get; set; } = null!;
         [Range(0.0, double.MaxValue)]
         public decimal? WalletPoints { get; set; }
+        public string Phone { get; set; }
     }
 }

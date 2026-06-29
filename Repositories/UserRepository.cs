@@ -201,7 +201,8 @@ namespace SmartWaste.Repositories
                 Email = userCreationDTO.Email,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(userCreationDTO.Password),
                 Address = userCreationDTO.Address,
-                ProfilePictureUrl = imagePath
+                ProfilePictureUrl = imagePath,
+                Phone = userCreationDTO.Phone
             };
 
             _context.Users.Add(user);
@@ -210,12 +211,18 @@ namespace SmartWaste.Repositories
         public GetSpecficUser GetUserByIdWithDetails(int userId)
         {
             var user= _context.Users.FirstOrDefault(u => u.UserId == userId);
-            GetSpecficUser NUesr = new GetSpecficUser
+            if (user == null)
+            {
+                return null;
+            }
+                GetSpecficUser NUesr = new GetSpecficUser
             {
                 UserId = user.UserId,
                 FullName = user.FullName,
                 Email = user.Email,
-                WalletPoints = user.WalletPoints
+                WalletPoints = user.WalletPoints,
+                Phone = user.Phone
+
             };
 
             return NUesr;
