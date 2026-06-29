@@ -406,6 +406,31 @@ namespace SmartWaste.Repositories
         {
             await _context.SaveChangesAsync();
         }
+        public async Task<string> UpdateUserProfilePictureAsync(int id, IFormFile file)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.UserId == id);
+            if (user == null) throw new KeyNotFoundException("User not found");
+            // 1. تجهيز مسار الـ wwwroot/images/users
+            var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            string uploadsFolder = Path.Combine(rootPath, "images", "users");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+            // 2. عمل اسم فريد للصورة ومنع التكرار
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            // 3. حفظ الملف على السيرفر
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+            // 4. تحديث المسار جوه الداتابيز والحفظ
+            string dbImagePath = "/images/users/" + uniqueFileName;
+            user.ProfilePictureUrl = dbImagePath;
+
+            await _context.SaveChangesAsync();
+
+            return dbImagePath; // بنرجع المسار الجديد عشان لو الفرونت إند حابب يعرضه فوراً
+        }
 
     }
 }

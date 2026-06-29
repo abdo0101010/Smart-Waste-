@@ -178,9 +178,6 @@ namespace SmartWaste.Controllers
             )]
         [SwaggerResponse(200, "Password reset successfully")]
         [SwaggerResponse(404, "User not found")]
-
-
-
         public IActionResult ForgetPassWord(string ?email, string newPassword, string confirmPassword, string role, string? Phone)
         {
             try
@@ -282,6 +279,38 @@ namespace SmartWaste.Controllers
             catch (Exception ex)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError, new { error = $"خطأ داخلي بالسيرفر: {ex.Message}" });
+            }
+        }
+
+        [HttpPut("/api/User/UpdateProfilePicture/{id:int}")]
+        [Consumes("multipart/form-data")]
+        [SwaggerOperation(Summary = "Upload or update citizen profile picture", Tags = new[] { "User" })]
+        [SwaggerResponse(200, "Profile picture updated successfully")]
+        [SwaggerResponse(400, "Invalid image file")]
+        [SwaggerResponse(404, "User not found")]
+        public async Task<IActionResult> UpdateProfilePicture([FromRoute] int id, [FromForm] UserPhotoUploadDTO model)
+        {
+            if (model == null || model.ProfilePicture == null || model.ProfilePicture.Length == 0)
+                return BadRequest(new { message = "برجاء اختيار صورة صالحة." });
+
+            try
+            {
+                var newPath = await _userService.UpdateUserProfilePictureAsync(id, model.ProfilePicture);
+
+                if (string.IsNullOrEmpty(newPath))
+                {
+                    return NotFound(new { message = "User not found" });
+                }
+
+                return Ok(new { message = "تم تحديث الصورة الشخصية بنجاح! 🎉", profilePictureUrl = newPath });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "حدث خطأ أثناء رفع الصورة", details = ex.Message });
             }
         }
     }

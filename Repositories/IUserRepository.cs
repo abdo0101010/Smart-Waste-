@@ -43,13 +43,7 @@ namespace SmartWaste.Repositories
         public List<UserDetailsForAdminDTo> GetAllUsersWithDetailsForAdmin();
         public Task feedbackRating(int requestId, int rating, string comment);
         public Task SaveChangesAsync();
-
-
-
-
-
-
-
+        Task<string> UpdateUserProfilePictureAsync(int id, IFormFile file);
 
 
     }
