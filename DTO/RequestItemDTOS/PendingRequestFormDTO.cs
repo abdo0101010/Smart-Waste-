@@ -8,5 +8,6 @@
         public string DriverName { get; set; }  // اسم سائق ديفولت أو مربوط بالـ Cycle
         public string TimeAgo { get; set; } // هيعرض الوقت (مثلاً: "منذ ساعتين" أو التاريخ الصريح)
         public string Status { get; set; }
+        public string UserAddress { get; set; } = null!;
     }
 }
