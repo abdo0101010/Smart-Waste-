@@ -1,5 +1,6 @@
 ﻿using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.DTO.RequestItemDTOS;
+using SmartWaste.DTO.UserRedemptionDTOS;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
 
@@ -95,6 +96,11 @@ namespace SmartWaste.Services
         {
             return await _pickupRequestRepository.AcceptBulkPickupRequestsAsync(requestIds, recyclerId);
         }
+         public async Task<IEnumerable<UserRedemptionDTO>> GetAllRedeemUserAsync(int userId)
+        {
+            return await _pickupRequestRepository.GetAllRedeemUserAsync(userId);
+        }
+
         public async Task<IEnumerable<PickupRequestViewModelDTO>> GetUserHistoryAsync(int userId)
         {
             // 1. سحب الطلبات بكامل بياناتها والعلاقات من الـ Repository أولاً لضمان وجود الداتا في الـ Memory

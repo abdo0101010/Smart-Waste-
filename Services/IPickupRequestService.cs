@@ -1,5 +1,6 @@
 ﻿using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.DTO.RequestItemDTOS;
+using SmartWaste.DTO.UserRedemptionDTOS;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
 
@@ -28,6 +29,7 @@ namespace SmartWaste.Services
         public Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync();
         public Task<IEnumerable<PickupRequest>> GetRequestsByRecyclerIdAsync(int recyclerId);
         public  Task<IEnumerable<PendingRequestFormDTO>> GetPendingRequestFormsAsync();
+        public  Task<IEnumerable<UserRedemptionDTO>> GetAllRedeemUserAsync(int userId);
 
         public Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId);
 

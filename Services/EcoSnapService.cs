@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.Hubs;
 using SmartWaste.Models;
 using SmartWaste.Repositories;
@@ -84,7 +85,7 @@ namespace SmartWaste.Services
             return newRequest.RequestId;
         }
 
-        public async Task<int> VerifyHubShipmentAsync(int userId, int transactionId, IFormFile fileAfter)
+        public async Task<pickupverifyDto> VerifyHubShipmentAsync(int userId, int transactionId, IFormFile fileAfter)
         {
             // 1. جلب الطلب بالـ ID وعمل Include للـ User والـ Recycler عشان نقرأ الأسماء صح
             var pickupRequest = await _context.PickupRequests
@@ -190,11 +191,17 @@ namespace SmartWaste.Services
             {
                 int countAfter = countElement.GetInt32();
                 decimal pointsEarned = countAfter * 5;
-
                 pickupRequest.Status = "Verified";
                 pickupRequest.FinalBottlesCount = countAfter;
                 pickupRequest.FinalPoints = pointsEarned;
                 pickupRequest.VerificationDate = DateTime.UtcNow;
+                pickupverifyDto pick = new pickupverifyDto
+                {
+                    Status= pickupRequest.Status,
+                    FinalBottlesCount =(int) pickupRequest.FinalBottlesCount,
+                    FinalPoints= (int) pickupRequest.FinalPoints
+
+                };
 
                 await _userRepository.UpdateUserBottlesAndPointsAsync(pickupRequest.UserId, countAfter, pointsEarned);
 
@@ -240,10 +247,12 @@ namespace SmartWaste.Services
                 }
                 catch (Exception) { }
 
-                return countAfter;
+                return pick;
+
+                
             }
 
-            return 0;
+            return null;
         }
     }
 }

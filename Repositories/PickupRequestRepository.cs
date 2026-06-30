@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.DTO.RequestItemDTOS;
+using SmartWaste.DTO.UserRedemptionDTOS;
 using SmartWaste.Hubs;
 using SmartWaste.Models;
 
@@ -87,7 +88,7 @@ namespace SmartWaste.Repositories
 
         }
 
-        public List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority ,string? zone, string? material)
+        public List<PickupRequest> GetRecyclerRequestsWithFilters(string? search, string? status, string? priority, string? zone, string? material)
         {
             var query = _context.PickupRequests
                            .Include(p => p.User)        //  بيانات المواطن عشان اسمه وعنوانه
@@ -103,7 +104,7 @@ namespace SmartWaste.Repositories
             }
             if (!string.IsNullOrEmpty(priority) && priority != "all")
             {
-                query = query.Where(p => p.Priority == priority); 
+                query = query.Where(p => p.Priority == priority);
             }
             if (!string.IsNullOrEmpty(zone) && zone != "all")
             {
@@ -118,9 +119,9 @@ namespace SmartWaste.Repositories
                 query = query.Where(p => p.RequestId.ToString().Contains(search) ||
                                          p.Status.Contains(search) ||
                                          p.Priority.Contains(search) ||
-                                        p.RequestItems.Any(ri => ri.Category.CategoryName.Contains(search))||
+                                        p.RequestItems.Any(ri => ri.Category.CategoryName.Contains(search)) ||
                                         p.User.FullName.Contains(search) ||
-                                         p.User.Address.Contains(search));   
+                                         p.User.Address.Contains(search));
             }
             return query.ToList();
         }
@@ -267,6 +268,37 @@ namespace SmartWaste.Repositories
                 })
                 .ToListAsync();
         }
+        public async Task<IEnumerable<UserRedemptionDTO>> GetAllRedeemUserAsync(int userId)
+        {
+            // 1. جلب عمليات الكاش (Wallet Redemptions) فقط من الداتابيز
+            var walletRedemptions = await _context.WalletRedemptions
+                .Where(w => w.UserId == userId)
+                .ToListAsync();
+
+            // 2. إنشاء القائمة الموحدة لعمليات الكاش فقط
+            var unifiedHistory = new List<UserRedemptionDTO>();
+
+            foreach (var w in walletRedemptions)
+            {
+                unifiedHistory.Add(new UserRedemptionDTO
+                {
+                    RedemptionId = w.RedemptionId,
+                    UserId = w.UserId,
+                    TransactionType = "Cash-Out",
+                    Points = w.PointsRedeemed,
+                    AmountEgp = Convert.ToDouble(w.AmountEgp),
+                    TransactionDate = w.CreatedAt.GetValueOrDefault(DateTime.Now),
+                    Status = w.Status ?? "Pending",
+                    Details = $"Transferred to Wallet: {w.WalletNumber}"
+                });
+            }
+
+            // 3. الترتيب من الأحدث للأقدم
+            return unifiedHistory.OrderByDescending(h => h.TransactionDate).ToList();
+        }
+            // 4. ترتيب كشف الحساب من الأحدث للأقدم لراحة عين المستخدم في الـ Flutter
+          
+
         public void SaveChanges()
         {
             _context.SaveChanges();

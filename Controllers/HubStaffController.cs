@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.HubStaffDTOS;
+using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.Models;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
@@ -26,6 +27,7 @@ namespace SmartWaste.Controllers
         //[Authorize(Roles = "HubStaff,Admin")] // تأمين الـ Endpoint لليوزر الصح
         [HttpPost("VerifyRequestShipment")]
         [Consumes("multipart/form-data")]
+        [SwaggerResponse(200 , "completed verfiy ",typeof(pickupverifyDto))]
         public async Task<IActionResult> VerifyShipment([FromForm] HubStaffVerifyDTO model)
         {
             if (model == null || model.FileAfter == null || model.TransactionId <= 0)
