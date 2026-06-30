@@ -220,6 +220,7 @@ namespace SmartWaste.Repositories
                 {
                     RequestId = p.RequestId,
                     UserName = p.User != null ? p.User.FullName : "مستخدم غير معروف",
+                    UserAddress = p.User != null ? p.User.Address : "لا يوجد عنوان مسجل",
                     Status = p.Status,
                     TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A",
 
@@ -240,6 +241,7 @@ namespace SmartWaste.Repositories
                 {
                     RequestId = p.RequestId,
                     UserName = p.User != null ? p.User.FullName : "مستخدم غير معروف",
+                    UserAddress = p.User != null ? p.User.Address : "لا يوجد عنوان مسجل",
                     Status = p.Status,
                     TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A",
                     DriverName = "No Driver Assigned" // الطلبات المعلقة لا يوجد لها سائق بعد
