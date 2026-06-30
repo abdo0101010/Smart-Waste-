@@ -104,7 +104,11 @@ namespace SmartWaste.Services
             string userImagePath = pickupRequest.RequestImageUrl;
             if (string.IsNullOrEmpty(userImagePath))
             {
-                throw new Exception("هذا الطلب لا يحتوي على صورة مرفوعة من المستخدم.");
+                return new pickupverifyDto
+                {
+                    Status = "FAILED",
+                    Message = "هذا الطلب لا يحتوي على صورة مرفوعة من المستخدم."
+                };
             }
 
             // 2. تحويل مسار السيرفر لـ مسار فيزيائي حقيقي للوصول للملف
@@ -112,7 +116,11 @@ namespace SmartWaste.Services
             string fullUserImagePath = Path.Combine(rootPath, userImagePath.TrimStart('/'));
             if (!File.Exists(fullUserImagePath))
             {
-                throw new FileNotFoundException("صورة المستخدم الأصلية لم تعد موجودة على السيرفر.");
+                return new pickupverifyDto
+                {
+                    Status = "FAILED",
+                    Message = "صورة المستخدم الأصلية لم تعد موجودة على السيرفر."
+                };
             }
 
             // 3. حفظ صورة الهاب ستاف (After) الجديدة في الـ uploads للتوثيق
@@ -125,7 +133,7 @@ namespace SmartWaste.Services
             }
             pickupRequest.VerificationImageUrl = "/uploads/" + uniqueFileNameAfter;
 
-            // 4. تجهيز الـ HttpClient وضخ الـ Payload الثلاثي للـ FastAPI
+            // 4. تجهيز الـ HttpClient وضخ الـ Payload للـ FastAPI
             using var httpClient = new HttpClient();
             string aiApiUrl = "https://badass-ecosystem-hazy.ngrok-free.dev/verify-shipment/";
 
@@ -158,49 +166,73 @@ namespace SmartWaste.Services
             // 5. قراءة الـ JSON وفحص الـ Logic الداخلي للموديل
             var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>();
 
-            // 🚨 الحالة الأولى: لو الـ AI رجع FAILED
+            // 🚨 الحالة الأولى: لو الـ AI رجع FAILED بشكل صريح (عدم تطابق الكمية)
             if (jsonResult.TryGetProperty("status", out var statusElement) && statusElement.GetString() == "FAILED")
             {
-                string aiMessage = jsonResult.TryGetProperty("message", out var msgElement) ? msgElement.GetString() : "فشلت عملية المطابقة وعدم تطابق الكمية.";
+                string aiMessage = jsonResult.TryGetProperty("message", out var msgElement) ? msgElement.GetString() : "Quantity Mismatch Error!";
+                int countBefore = jsonResult.TryGetProperty("count_before", out var cb) ? cb.GetInt32() : 0;
+                int countAfter = jsonResult.TryGetProperty("count_after", out var ca) ? ca.GetInt32() : 0;
+                double score = jsonResult.TryGetProperty("similarity_score", out var ss) ? ss.GetDouble() : 0.0;
 
                 try
                 {
-                    // 🎯 إرسال نوتفكيشن الفشل للمواطن مع حقن الـ UserName لمنع الـ NULL error
+                    // إرسال نوتفكيشن الفشل للمواطن
                     var failNotification = new Notification
                     {
                         Title = "Verification Failed ❌",
-                        Message = $"Your request (ORD-{transactionId}) was rejected. Reason: Quantity Mismatch!",
+                        Message = $"Your request (ORD-{transactionId}) was rejected. Reason: {aiMessage}",
                         Type = "Pickup",
                         CreatedAt = DateTime.UtcNow,
                         IsRead = false,
                         UserId = pickupRequest.UserId,
-                        UserName = citizenName // ✅ حل أزمة الـ DB Constraint
+                        UserName = citizenName
                     };
                     _context.Notifications.Add(failNotification);
+
+                    // تحديث حالة الطلب في الداتابيز
+                    pickupRequest.Status = "Failed";
                     await _context.SaveChangesAsync();
 
                     await _hubContext.Clients.All.SendAsync("ReceiveNotification", failNotification.Title, failNotification.Message, failNotification.Type);
                 }
                 catch (Exception) { }
 
-                throw new Exception(aiMessage);
+                // ✅ إرجاع نفس البيانات تماماً للفرونت إند لمنع الـ Crash 500
+                return new pickupverifyDto
+                {
+                    Status = "FAILED",
+                    FinalBottlesCount = 0,
+                    FinalPoints = 0,
+                    Message = aiMessage,
+                    CountBefore = countBefore,
+                    CountAfter = countAfter,
+                    SimilarityScore = score
+                };
             }
 
             // ✅ الحالة الثانية: لو الـ عملية نجحت ومطابقة للـ Before
             if (jsonResult.TryGetProperty("count_after", out var countElement))
             {
                 int countAfter = countElement.GetInt32();
+                int countBefore = jsonResult.TryGetProperty("count_before", out var cb) ? cb.GetInt32() : countAfter;
+                double score = jsonResult.TryGetProperty("similarity_score", out var ss) ? ss.GetDouble() : 1.0;
+
                 decimal pointsEarned = countAfter * 5;
+
                 pickupRequest.Status = "Verified";
                 pickupRequest.FinalBottlesCount = countAfter;
                 pickupRequest.FinalPoints = pointsEarned;
                 pickupRequest.VerificationDate = DateTime.UtcNow;
-                pickupverifyDto pick = new pickupverifyDto
-                {
-                    Status= pickupRequest.Status,
-                    FinalBottlesCount =(int) pickupRequest.FinalBottlesCount,
-                    FinalPoints= (int) pickupRequest.FinalPoints
 
+                var pick = new pickupverifyDto
+                {
+                    Status = "Verified",
+                    FinalBottlesCount = countAfter,
+                    FinalPoints = (int)pointsEarned,
+                    CountBefore = countBefore,
+                    CountAfter = countAfter,
+                    SimilarityScore = score,
+                    Message = "Shipment verified successfully!"
                 };
 
                 await _userRepository.UpdateUserBottlesAndPointsAsync(pickupRequest.UserId, countAfter, pointsEarned);
@@ -216,22 +248,22 @@ namespace SmartWaste.Services
                         CreatedAt = DateTime.UtcNow,
                         IsRead = false,
                         UserId = pickupRequest.UserId,
-                        UserName = citizenName // ✅ قفلنا الـ NULL هنا برضه
+                        UserName = citizenName
                     };
                     _context.Notifications.Add(successNotification);
 
-                    // 🎯 2. إرسال نوتفكيشن شكر وتقفيل للسواق اللي وصل الشحنة
+                    // 🎯 2. إرسال نوتفكيشن شكر للسواق
                     if (pickupRequest.RecyclerId.HasValue)
                     {
                         var driverNotification = new Notification
                         {
                             Title = "Trip Closed 🏁",
-                            Message = $"Great job {driverName}! Request ORD-{transactionId} has been fully processed and points delivered to {citizenName}.",
+                            Message = $"Great job {driverName}! Request ORD-{transactionId} has been fully processed.",
                             Type = "Logistics",
                             CreatedAt = DateTime.UtcNow,
                             IsRead = false,
                             RecyclerId = pickupRequest.RecyclerId.Value,
-                            UserName = citizenName // أو "System"
+                            UserName = citizenName
                         };
                         _context.Notifications.Add(driverNotification);
                     }
@@ -242,14 +274,11 @@ namespace SmartWaste.Services
 
                 try
                 {
-                    // 🚀 ضخ إشعار النجاح لايف فوراً للمواطن والسائق بالـ SignalR
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Shipment Verified! 🎉", $"Order (ORD-{transactionId}) has been fully verified and closed.", "Pickup");
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Shipment Verified! 🎉", $"Order (ORD-{transactionId}) has been fully verified.", "Pickup");
                 }
                 catch (Exception) { }
 
                 return pick;
-
-                
             }
 
             return null;
