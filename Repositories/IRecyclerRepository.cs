@@ -21,7 +21,7 @@ namespace SmartWaste.Repositories
       
         public void SaveChanges();
         public Recycler GetRecyclerByName(string Name);
-
+        public ReyclerDetailsAdimDto GetRecyclerDetailsById(int recyclerId);
 
         public decimal? GetAvgRatingRecyclers();
         public int GetTotalRecyclers();

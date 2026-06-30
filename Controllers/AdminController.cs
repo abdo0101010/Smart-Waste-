@@ -123,6 +123,22 @@ namespace SmartWaste.Controllers
             }
             return Ok(recyclers);
         }
+        [HttpGet("/api/admin/recycler/{id}")]
+        [SwaggerOperation(
+            Summary = "Gets detailed information about a specific recycler",
+            Description = "Requires admin privileges",
+            OperationId = "GetRecyclerById",
+            Tags = new[] { "Admin", "Recyclers" })]
+        [SwaggerResponse(200, "Recycler details retrieved successfully", Type = typeof(ReyclerDetailsAdimDto) )]
+        public IActionResult GetRecyclerbyID(int id)
+        {
+            var recycler = _recyclerService.GetRecyclerDetailsById(id);
+            if (recycler == null)
+            {
+                return NotFound();
+            }
+            return Ok(recycler);
+        }
         [HttpGet("/api/admin/recycler-with-total-trip")]
         [SwaggerOperation(
                             Summary = "Gets recyclers sorted by rating with total trips",
