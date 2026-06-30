@@ -64,6 +64,38 @@ namespace SmartWaste.Controllers
 
             return Ok(new { message = "Profile updated successfully." });
         }
+        [HttpPut("/api/recycler/update-profile-picture/{id:int}")]
+        [SwaggerOperation(
+         Summary = "Updates the profile picture for a recycler",
+         Description = "Uploads a new picture, deletes the old one from server, and updates database path",
+         Tags = new[] { "Recyclers" })]
+        [SwaggerResponse(StatusCodes.Status200OK, "Profile picture updated successfully")]
+        [SwaggerResponse(StatusCodes.Status404NotFound, "Recycler not found")]
+        public async Task<IActionResult> UpdateRecyclerProfilePicture([FromRoute] int id, [FromForm] UploadProfilePictureDTO dto)
+        {
+            if (dto == null || dto.File == null || dto.File.Length == 0)
+            {
+                return BadRequest(new { message = "Please provide a valid image file." });
+            }
 
+            try
+            {
+                string newImagePath = await _recyclerService.UpdateRecyclerProfilePictureAsync(id, dto.File);
+
+                return Ok(new
+                {
+                    message = "Profile picture updated successfully! ",
+                    profilePictureUrl = newImagePath
+                });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = "An error occurred while uploading the profile picture.", error = ex.Message });
+            }      
+        }
     }
 }

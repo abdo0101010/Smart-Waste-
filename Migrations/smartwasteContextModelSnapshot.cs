@@ -319,6 +319,9 @@ namespace SmartWaste.Migrations
                         .HasMaxLength(20)
                         .HasColumnType("nvarchar(20)");
 
+                    b.Property<string>("ProfilePictureUrl")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<decimal?>("Rating")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("decimal(3, 2)")

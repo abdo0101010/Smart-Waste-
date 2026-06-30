@@ -33,6 +33,6 @@ public partial class Recycler
     public double? CurrentLongitude { get; set; }
     public string ?CurrentStatus { get; set; }     
     public int? CurrentCapacity { get; set; }
-
+    public string? ProfilePictureUrl { get; set; }
     public virtual ICollection<PickupRequest> PickupRequests { get; set; } = new List<PickupRequest>();
 }
