@@ -2,9 +2,11 @@
 using Microsoft.AspNetCore.Mvc;
 using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.DTO.RequestItemDTOS;
+using SmartWaste.DTO.UserRedemptionDTOS;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace SmartWaste.Controllers
 {
@@ -197,6 +199,29 @@ namespace SmartWaste.Controllers
             }
             return Ok(pendingRequests);
         }
+        [HttpGet("GetHistoryOfRedemption/{userId:int}")]
+        [SwaggerOperation(
+    Summary = "Fetches the redemption history for a specific user",
+    Description = "Retrieves a list of all redemption transactions made by the user with the given ID.",
+    OperationId = "GetHistoryOfRedemption",
+    Tags = new[] { "User", "Redemption" }
+)]
+        [SwaggerResponse(200, Description = "Redemption history retrieved successfully", Type = typeof(IEnumerable<UserRedemptionDTO>))]
+        [SwaggerResponse(404, Description = "No redemption history found for the specified user ID")]
+        public async Task<IActionResult> GetHistoryOfRedemption(int userId)
+        {
+            // 1. استدعاء السيرفيس بـ await صريحة
+            var redemptionHistory = await _pickupRequestService.GetAllRedeemUserAsync(userId);
 
+            // 2. فحص لو القائمة فارغة أو فارغة تماماً
+            if (redemptionHistory == null || !redemptionHistory.Any())
+            {
+                // الأفضل نرجع قائمة فاضية كود 200 عشان الـ Flutter ListView ما يضربش إيرور
+                return Ok(new List<UserRedemptionDTO>());
+            }
+
+            // 3. إرجاع الداتا بنجاح
+            return Ok(redemptionHistory);
+        }
     }
 }

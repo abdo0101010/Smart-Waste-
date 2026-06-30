@@ -96,14 +96,14 @@ namespace SmartWaste.Repositories
                         PickupDate = p.PickupDate,
                         Status = p.Status
                     }).ToList(),
-                    UserRedemptions = user.UserRedemptions.Select(r => new UserRedemptionDTO
-                    {
-                        RedemptionId = r.RedemptionId,
-                        UserId = r.UserId,
-                        RewardId = r.RewardId,
-                        RedeemedAt = r.RedeemedAt,
-                        VoucherCode = r.VoucherCode
-                    }).ToList()
+                    //UserRedemptions = user.UserRedemptions.Select(r => new UserRedemptionDTO
+                    //{
+                    //    RedemptionId = r.RedemptionId,
+                    //    UserId = r.UserId,
+                    //    RewardId = r.RewardId,
+                    //    RedeemedAt = r.RedeemedAt,
+                    //    VoucherCode = r.VoucherCode
+                    //}).ToList()
                 };  
               
                 userDtos.Add(userDto);

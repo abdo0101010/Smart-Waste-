@@ -1,5 +1,6 @@
 ﻿using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.DTO.RequestItemDTOS;
+using SmartWaste.DTO.UserRedemptionDTOS;
 using SmartWaste.Models;
 
 namespace SmartWaste.Repositories
@@ -24,6 +25,8 @@ namespace SmartWaste.Repositories
 
 
         public Task<IEnumerable<PendingRequestFormDTO>> GetPendingRequestFormsAsync();
+        public  Task<IEnumerable<UserRedemptionDTO>> GetAllRedeemUserAsync(int userId);
+
 
 
         public Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync();

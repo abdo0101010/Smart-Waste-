@@ -313,5 +313,6 @@ namespace SmartWaste.Controllers
                 return StatusCode(500, new { message = "حدث خطأ أثناء رفع الصورة", details = ex.Message });
             }
         }
+        
     }
 }
