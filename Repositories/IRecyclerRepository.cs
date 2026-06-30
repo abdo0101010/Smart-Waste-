@@ -29,11 +29,10 @@ namespace SmartWaste.Repositories
         public List<ReyclerDetailsAdimDto> GetAllRecyclersWithDetails();
         public List<RecyclerWithTotaltripDTO> GetSortingRecyclersByRating();
         public void UpdateRecyclerStatus(int recyclerId, string newStatus);
-        public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO);
+        public Task CreateRecycler(RecyclerCreationDTO recyclerCreationDTO);
         public void RegisterRecycler(dataforregister recyclerCreationDTO);
         public Recycler GetRecyclerByEmail(string email);
         public Task<bool> UpdateRecyclerAsync(int recyclerId, RecyclerUpdateDTO dto);
-
-
+        public Task<string> UpdateRecyclerProfilePictureAsync(int id, IFormFile file);
     }
 }

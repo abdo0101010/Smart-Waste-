@@ -29,7 +29,7 @@ namespace SmartWaste.DTO.Register
         public string Role { get; set; }
         [RegularExpression(@"^01[0125]\d{8}$")]
         public string? Phone { get; set; } = null!;
-
+        public IFormFile? ProfilePictureUrl { get; set; }
 
     }
 }
