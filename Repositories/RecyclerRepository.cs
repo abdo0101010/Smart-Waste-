@@ -69,6 +69,27 @@ namespace SmartWaste.Repositories
         {
             return _context.Recyclers.Count(r => r.Status == "Active");
         }
+        public ReyclerDetailsAdimDto GetRecyclerDetailsById(int recyclerId)
+        {
+            var recycler = _context.Recyclers.Include(r => r.PickupRequests)
+                .FirstOrDefault(r => r.RecyclerId == recyclerId);
+            if (recycler == null)
+            {
+                return null;
+            }
+            var totalTripsCompleted = _context.PickupRequests
+                .Count(p => p.RecyclerId == recyclerId && p.Status == "Completed");
+            return new ReyclerDetailsAdimDto
+            {
+                RecyclerID = recycler.RecyclerId,
+                FullName = recycler.FullName,
+                Phone = recycler.Phone,
+                VehicleInfo = recycler.VehicleInfo,
+                Status = recycler.Status,
+                Rating = recycler.Rating,
+                TotalTripsCompleted = totalTripsCompleted
+            };
+        }
 
         public List <ReyclerDetailsAdimDto> GetAllRecyclersWithDetails()
         {
