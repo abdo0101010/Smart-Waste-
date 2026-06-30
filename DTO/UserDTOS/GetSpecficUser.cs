@@ -20,5 +20,7 @@ namespace SmartWaste.DTO.UserDTOS
         [Range(0.0, double.MaxValue)]
         public decimal? WalletPoints { get; set; }
         public string Phone { get; set; }
+        public string? Address { get; set; }
+        public string? ProfilePictureUrl { get; set; }
     }
 }

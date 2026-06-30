@@ -221,7 +221,9 @@ namespace SmartWaste.Repositories
                 FullName = user.FullName,
                 Email = user.Email,
                 WalletPoints = user.WalletPoints,
-                Phone = user.Phone
+                Phone = user.Phone,
+                Address = user.Address,
+                ProfilePictureUrl= user.ProfilePictureUrl
 
             };
 
