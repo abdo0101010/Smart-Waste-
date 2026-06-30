@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SmartWaste.DTO.AccountDTOS;
+using SmartWaste.DTO.RecuclerDTOS;
 using SmartWaste.DTO.Register;
 using SmartWaste.Models;
 using SmartWaste.Services;
@@ -77,6 +78,7 @@ namespace SmartWaste.Controllers
         }
 
         [HttpPost("Register")]
+        [Consumes("multipart/form-data")]
         [SwaggerOperation(
             Summary = "Register endpoint for user and driver registration",
             Description = "Registers a new user or driver based on the provided role",
@@ -84,8 +86,12 @@ namespace SmartWaste.Controllers
             Tags = new[] { "Account", "Registration" })]
         [SwaggerResponse(StatusCodes.Status200OK, "Returns a success message upon successful registration", typeof(string))]
         [SwaggerResponse(StatusCodes.Status400BadRequest, "Returns if the registration fails due to invalid role or data")]
-        public IActionResult Register(dataforregister userCreationDTO)
+        public async Task<IActionResult> Register([FromForm] dataforregister userCreationDTO)
         {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
             if (userCreationDTO.Role == "User")
             {
                 _userService.RegisterUser(userCreationDTO);
@@ -93,7 +99,15 @@ namespace SmartWaste.Controllers
             }
             else if (userCreationDTO.Role == "Recycler")
             {
-                _recyclerService.RegisterRecycler(userCreationDTO);
+                var recyclerDto = new RecyclerCreationDTO
+                {
+                    FullName = userCreationDTO.FullName,
+                    Email = userCreationDTO.Email,
+                    Phone = userCreationDTO.Phone,
+                    PasswordHash = userCreationDTO.PasswordHash,
+                    ProfilePictureUrl = userCreationDTO.ProfilePictureUrl
+                };
+                await _recyclerService.CreateRecycler(recyclerDto);
                 return Ok("Driver registered successfully");
             }
             else

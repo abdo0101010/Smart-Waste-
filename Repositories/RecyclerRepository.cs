@@ -1,17 +1,21 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.EntityFrameworkCore;
 using SmartWaste.DTO.RecuclerDTOS;
 using SmartWaste.DTO.Register;
 using SmartWaste.DTO.UserDTOS;
 using SmartWaste.Models;
+using System.Threading.Tasks;
 
 namespace SmartWaste.Repositories
 {
     public class RecyclerRepository : IRecyclerRepository
     {
         smartwasteContext _context;
-        public RecyclerRepository(smartwasteContext context)
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        public RecyclerRepository(smartwasteContext context , IWebHostEnvironment webHostEnvironment)
         {
             _context = context;
+            _webHostEnvironment = webHostEnvironment;
         }
 
         public void AddRecycler(Recycler recycler)
@@ -128,19 +132,43 @@ namespace SmartWaste.Repositories
                 SaveChanges();
             }
         }
-        public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO)
+        public async Task CreateRecycler(RecyclerCreationDTO recyclerCreationDTO)
         {
+            string? imagePath = null;
+
+            if (recyclerCreationDTO.ProfilePictureUrl != null && recyclerCreationDTO.ProfilePictureUrl.Length > 0)
+            {
+                // ✅ التعديل هنا: لو الـ WebRootPath بـ null، بنستخدم مسار المشروع الحالي
+                var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+
+                string uploadsFolder = Path.Combine(rootPath, "images", "recyclers");
+
+                // التأكد إن الفولدرات موجودة (بيكريت السلسلة كلها لو مش موجودة)
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+
+                string uniqueFileName = Guid.NewGuid().ToString() + "_" + recyclerCreationDTO.ProfilePictureUrl.FileName;
+                string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+
+                using (var fileStream = new FileStream(filePath, FileMode.Create))
+                {
+                    await recyclerCreationDTO.ProfilePictureUrl.CopyToAsync(fileStream);
+                }
+
+                imagePath = "/images/recyclers/" + uniqueFileName;
+            }
             var recycler = new Recycler
             {
                 FullName = recyclerCreationDTO.FullName,
                 Phone = recyclerCreationDTO.Phone,
                 PasswordHash = BCrypt.Net.BCrypt.HashPassword(recyclerCreationDTO.PasswordHash)
                 ,
-                Email = recyclerCreationDTO.Email
+                Email = recyclerCreationDTO.Email,
+                ProfilePictureUrl = imagePath
 
             };
-            _context.Recyclers.Add(recycler);
-            SaveChanges();
+            await _context.Recyclers.AddAsync(recycler);
+            await _context.SaveChangesAsync();
         }
         public void RegisterRecycler(dataforregister recyclerCreationDTO)
         {
@@ -169,6 +197,40 @@ namespace SmartWaste.Repositories
             _context.Recyclers.Update(recycler);
             await _context.SaveChangesAsync();
             return true;
+        }
+        public async Task<string> UpdateRecyclerProfilePictureAsync(int id, IFormFile file)
+        {
+            var recycler = await _context.Recyclers.FirstOrDefaultAsync(r => r.RecyclerId == id);
+            if (recycler == null) throw new KeyNotFoundException("Recycler not found");
+            // 1. تجهيز الفولدر الخاص بصور السائقين
+            var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            string uploadsFolder = Path.Combine(rootPath, "images", "recyclers");
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
+
+            // 2. عمل اسم فريد للصورة لمنع التكرار
+            string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
+            string filePath = Path.Combine(uploadsFolder, uniqueFileName);
+            // 3. حفظ الملف على السيرفر
+            using (var fileStream = new FileStream(filePath, FileMode.Create))
+            {
+                await file.CopyToAsync(fileStream);
+            }
+
+            // 4. مسح الصورة القديمة لو موجودة عشان نوفر مساحة على السيرفر (حركة هندسية ذكية)
+            if (!string.IsNullOrEmpty(recycler.ProfilePictureUrl))
+            {
+                string oldFilePath = Path.Combine(rootPath, recycler.ProfilePictureUrl.TrimStart('/'));
+                if (File.Exists(oldFilePath)) File.Delete(oldFilePath);
+            }
+
+            // 5. تحديث المسار جوه الداتابيز والحفظ
+            string dbImagePath = "/images/recyclers/" + uniqueFileName;
+            recycler.ProfilePictureUrl = dbImagePath;
+
+            await _context.SaveChangesAsync();
+
+            return dbImagePath; // بنرجع المسار الجديد للفرونت إند عشان يعرضه فوراً
         }
     }
 }

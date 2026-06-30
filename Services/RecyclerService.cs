@@ -104,7 +104,7 @@ namespace SmartWaste.Services
             }
             return null;
         }
-        public void CreateRecycler(RecyclerCreationDTO recyclerCreationDTO)
+        public async Task CreateRecycler(RecyclerCreationDTO recyclerCreationDTO)
         {
             if (recyclerCreationDTO != null)
             {
@@ -143,6 +143,13 @@ namespace SmartWaste.Services
                 return await _RecyclerRepository.UpdateRecyclerAsync(recyclerId, dto);
             }
             return false;
+        }
+        public async Task<string> UpdateRecyclerProfilePictureAsync(int id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                throw new ArgumentException("File cannot be empty");
+
+            return await _RecyclerRepository.UpdateRecyclerProfilePictureAsync(id, file);
         }
     }
 }
