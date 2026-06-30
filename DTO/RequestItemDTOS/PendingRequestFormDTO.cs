@@ -9,5 +9,6 @@
         public string TimeAgo { get; set; } // هيعرض الوقت (مثلاً: "منذ ساعتين" أو التاريخ الصريح)
         public string Status { get; set; }
         public string UserAddress { get; set; } = null!;
+        public string? UserPhone { get; set; }
     }
 }

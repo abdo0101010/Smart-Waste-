@@ -11,5 +11,6 @@
         public string CitizenName { get; set; }
         public string DriverName { get; set; }
         public int? Rating { get; set; }
+        public string? CitizenPhone { get; set; }
     }
 }

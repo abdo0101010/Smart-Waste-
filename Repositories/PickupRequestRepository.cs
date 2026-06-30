@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using NuGet.Protocol;
 using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.DTO.RequestItemDTOS;
 using SmartWaste.DTO.UserRedemptionDTOS;
@@ -221,10 +222,11 @@ namespace SmartWaste.Repositories
                     RequestId = p.RequestId,
                     UserName = p.User != null ? p.User.FullName : "مستخدم غير معروف",
                     UserAddress = p.User != null ? p.User.Address : "لا يوجد عنوان مسجل",
+                    UserPhone = p.User != null ? p.User.Phone : "N/A",
                     Status = p.Status,
                     TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A",
 
-                    // ✅ لو السواق موجود اعرض اسمه، لو مش موجود (Null) اكتب لم يتم التعيين
+                    // لو السواق موجود اعرض اسمه، لو مش موجود (Null) اكتب لم يتم التعيين
                     DriverName = p.Recycler != null ? p.Recycler.FullName : "No Driver Assigned"
                 })
                 .ToListAsync();
@@ -242,6 +244,7 @@ namespace SmartWaste.Repositories
                     RequestId = p.RequestId,
                     UserName = p.User != null ? p.User.FullName : "مستخدم غير معروف",
                     UserAddress = p.User != null ? p.User.Address : "لا يوجد عنوان مسجل",
+                    UserPhone = p.User != null ? p.User.Phone : "N/A",
                     Status = p.Status,
                     TimeAgo = p.RequestDate.HasValue ? p.RequestDate.Value.ToString("yyyy-MM-dd hh:mm tt") : "N/A",
                     DriverName = "No Driver Assigned" // الطلبات المعلقة لا يوجد لها سائق بعد

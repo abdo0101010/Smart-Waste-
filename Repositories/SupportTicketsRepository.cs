@@ -34,6 +34,7 @@ namespace SmartWaste.Repositories
                 Priority = t.Priority.ToString(),
                 CreatedAt = t.CreatedAt,
                 CitizenName = t.Citizen.FullName,
+                CitizenPhone= t.Citizen.Phone,
                 DriverName = t.Driver != null ? t.Driver.FullName : "No Driver Assigned",
                 Rating = t.Rating
             }).ToList();
