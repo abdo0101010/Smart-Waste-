@@ -80,6 +80,7 @@ namespace SmartWaste.Services
         public ReyclerDetailsAdimDto GetRecyclerDetailsById(int id)
         {
             return _RecyclerRepository.GetRecyclerDetailsById(id);
+<<<<<<< HEAD
         }
 
         public List<ReyclerDetailsAdimDto> GetAllRecyclersWithDetails()
@@ -146,3 +147,78 @@ namespace SmartWaste.Services
         }
     }
 }
+=======
+        }
+
+        public List<ReyclerDetailsAdimDto> GetAllRecyclersWithDetails()
+
+        {
+            return _RecyclerRepository.GetAllRecyclersWithDetails();
+        }
+
+        public List<RecyclerWithTotaltripDTO> GetSortingRecyclersByRating()
+        {
+            return _RecyclerRepository.GetSortingRecyclersByRating();
+        }
+        public void UpdateRecyclerStatus(int recyclerId, string newStatus)
+        {
+            _RecyclerRepository.UpdateRecyclerStatus(recyclerId, newStatus);
+        }
+        public Recycler GetRecyclerByName(string Name)
+        {
+            if (!string.IsNullOrEmpty(Name))
+            {
+                return _RecyclerRepository.GetRecyclerByName(Name);
+            }
+            return null;
+        }
+        public async Task CreateRecycler(RecyclerCreationDTO recyclerCreationDTO)
+        {
+            if (recyclerCreationDTO != null)
+            {
+
+                _RecyclerRepository.CreateRecycler(recyclerCreationDTO);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(recyclerCreationDTO), "RecyclerCreationDTO cannot be null.");
+            }
+        }
+        public void RegisterRecycler(dataforregister recyclerCreationDTO)
+        {
+            if (recyclerCreationDTO != null)
+            {
+                _RecyclerRepository.RegisterRecycler(recyclerCreationDTO);
+            }
+            else
+            {
+                throw new ArgumentNullException(nameof(recyclerCreationDTO), "dataforregister cannot be null.");
+            }
+        }
+        public Recycler GetRecyclerByEmail(string email)
+        {
+            if (!string.IsNullOrEmpty(email))
+            {
+                return _RecyclerRepository.GetRecyclerByEmail(email);
+            }
+            return null;
+        }
+        public async Task<bool> UpdateRecyclerAsync(int recyclerId, RecyclerUpdateDTO dto)
+        {
+            if (dto != null && recyclerId > 0)
+            {
+                
+                return await _RecyclerRepository.UpdateRecyclerAsync(recyclerId, dto);
+            }
+            return false;
+        }
+        public async Task<string> UpdateRecyclerProfilePictureAsync(int id, IFormFile file)
+        {
+            if (file == null || file.Length == 0)
+                throw new ArgumentException("File cannot be empty");
+
+            return await _RecyclerRepository.UpdateRecyclerProfilePictureAsync(id, file);
+        }
+    }
+}
+>>>>>>> d1ff5eeef27fa8a5ff2252e9dff40bbe1d51fd1e
