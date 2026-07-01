@@ -66,7 +66,14 @@ namespace SmartWaste.Repositories
             _context.HubStaffs.Add(newHubStaff);
             SaveChanges();
         }
-
+        public List<PickupRequest> GetHistoryofHubstaff(int id)
+        {
+            // هنا بنجيب كل الطلبات اللي ارتبطت بموظف الفرز ده وتأكدت حالتها بنجاح
+            return _context.PickupRequests
+                .Where(p => p.HubStaffId == id && p.Status == "Verified")
+                .OrderByDescending(p => p.VerificationDate) // ترتيب من الأحدث للأقدم
+                .ToList();
+        }
 
 
 

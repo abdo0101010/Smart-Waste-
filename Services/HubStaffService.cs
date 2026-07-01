@@ -129,5 +129,35 @@ public async Task<bool> VerifyShipmentWithAIAsync(IFormFile fileBefore, IFormFil
                 throw new ArgumentNullException(nameof(hubStaff), "HubStaff cannot be null.");
             }
         }
+        public HubStaffPickupRequestDto GetHubStaffHistory(int id)
+        {
+            // 1. جلب الطلبات الخام من الـ Repository
+            var requests = _hubStaffRepository.GetHistoryofHubstaff(id);
+
+            // 2. عمل الحسابات والإحصائيات وتعبئة الـ DTO
+            var historyDto = new HubStaffPickupRequestDto
+            {
+                TotalVerifiedRequests = requests.Count,
+                TotalBottlesVerified = requests.Sum(p => p.FinalBottlesCount ?? 0),
+                VerifiedRequests = requests.Select(p => new HubStaffPickupRequestDto
+                {
+                    RequestID = p.RequestId,
+                    RequestDate = p.RequestDate,
+                    VerificationDate = p.VerificationDate,
+                    Status = p.Status,
+                    FinalPoints = p.FinalPoints,
+                    FinalBottlesCount = p.FinalBottlesCount,
+                    VerificationImageUrl = p.VerificationImageUrl
+                }).ToList()
+            };
+
+            return historyDto;
+        }
+
+        public List<PickupRequest> GetHistoryofHubstaff(int id)
+        {
+                        return _hubStaffRepository.GetHistoryofHubstaff(id);
+            
+        }
     }
 }

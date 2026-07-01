@@ -1,4 +1,5 @@
-﻿using SmartWaste.Models;
+﻿using SmartWaste.DTO.HubStaffDTOS;
+using SmartWaste.Models;
 using SmartWaste.Repositories;
 
 namespace SmartWaste.Services
@@ -7,6 +8,7 @@ namespace SmartWaste.Services
     {
         public  Task<bool> VerifyShipmentWithAIAsync(IFormFile fileBefore, IFormFile fileAfter, int transactionId);
 
+        public HubStaffPickupRequestDto GetHubStaffHistory(int id);
 
     }
 }

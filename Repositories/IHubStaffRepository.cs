@@ -14,5 +14,7 @@ namespace SmartWaste.Repositories
         public HubStaff GetHubStaffByName(string Name);
         public void SaveChanges();
         public void CreateHubStaff(HubstaffCreationsDto hubStaff);
+        public List<PickupRequest> GetHistoryofHubstaff(int id);
+
     }
 }

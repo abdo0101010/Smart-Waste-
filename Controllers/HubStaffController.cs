@@ -69,6 +69,18 @@ namespace SmartWaste.Controllers
             }
             return Ok(hubStaff);
         }
+        [HttpGet("{id}/history")]
+        public IActionResult GetHistory([FromRoute] int id)
+        {
+            var history = _hubStaffService.GetHubStaffHistory(id);
+
+            if (history == null)
+            {
+                return NotFound(new { message = "History not found or invalid HubStaff ID." });
+            }
+
+            return Ok(history);
+        }
     }
         
         
