@@ -193,12 +193,15 @@ namespace SmartWaste.Repositories
         public async Task<IEnumerable<PickupRequest>> GetRequestsByUserIdAsync(int userId)
         {
             return await _context.PickupRequests
-                .Where(r => r.UserId == userId)
-                .Include(r => r.User) // عشان نقدر نجيب اسم المواطن وعنوانه (Zone)
-                .Include(r => r.RequestItems)
-                    .ThenInclude(ri => ri.Category) // عشان نقدر نجيب الـ CategoryName للمخلفات
-                .OrderByDescending(r => r.RequestDate) // الترتيب من أحدث طلب لأقدم طلب
-                .ToListAsync();
+          .Where(r => r.UserId == userId) 
+          .Include(r => r.User)
+              .ThenInclude(u => u.SupportTickets) // يسحب التيكيتات من اليوزر
+          .Include(r => r.Recycler)              // يسحب بيانات السواق
+          .Include(r => r.RequestItems) 
+              .ThenInclude(ri => ri.Category)    // يسحب الفئة من تفاصيل الطلب
+          .Include(r => r.Feedbacks)            //  ضيفي الـ Include دي بالمرة عشان السيرفيس محتاجاها للتقييم!
+          .OrderByDescending(r => r.RequestDate)
+          .ToListAsync();
         }
         public async Task<IEnumerable<PickupRequest>> GetRequestsByRecyclerIdAsync(int recyclerId)
         {
