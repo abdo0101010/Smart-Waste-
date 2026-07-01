@@ -189,8 +189,9 @@ namespace SmartWaste.Services
                     };
                     _context.Notifications.Add(failNotification);
 
-                    // تحديث حالة الطلب في الداتابيز
+                    // تحديث حالة الطلب في الداتابيز وإسناد الموظف المسؤول
                     pickupRequest.Status = "Failed";
+                    pickupRequest.HubStaffId = userId; // 👈 تم إضافة تسجيل الـ ID هنا عند الفشل
                     await _context.SaveChangesAsync();
 
                     await _hubContext.Clients.All.SendAsync("ReceiveNotification", failNotification.Title, failNotification.Message, failNotification.Type);
@@ -219,7 +220,9 @@ namespace SmartWaste.Services
 
                 decimal pointsEarned = countAfter * 5;
 
+                // تحديث بيانات العملية وحفظ الـ ID لموظف الفرز
                 pickupRequest.Status = "Verified";
+                pickupRequest.HubStaffId = userId; // 👈 تم إضافة تسجيل الـ ID هنا عند النجاح
                 pickupRequest.FinalBottlesCount = countAfter;
                 pickupRequest.FinalPoints = pointsEarned;
                 pickupRequest.VerificationDate = DateTime.UtcNow;
