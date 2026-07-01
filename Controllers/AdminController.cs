@@ -472,5 +472,18 @@ Tags = new[] { "Admin", "Users" })]
            }
            return BadRequest(new { Message = "Failed to create hub staff" });
         }
+        [HttpGet("/api/admin/list-tickets-for-admin")]
+        [SwaggerOperation(
+            Summary = "Gets a list of support tickets for admin",
+            Description = "Requires admin privileges",
+            OperationId = "GetAllTicketsForAdmin",
+            Tags = new[] { "Admin", "Support Tickets" })]
+        [SwaggerResponse(200, Description = "List of support tickets retrieved successfully", Type = typeof(List<TicketDTO>))]
+        [SwaggerResponse(401, Description = "Unauthorized access - admin privileges required")]
+        public IActionResult GetAllTicketsForAdmin()
+        {
+            var tickets = _supportTicketsServices.GetAllTickets();
+            return Ok(tickets);
+        }
     }
 }

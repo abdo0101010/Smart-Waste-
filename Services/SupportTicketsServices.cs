@@ -24,5 +24,9 @@ namespace SmartWaste.Services
         {
             _repository.CreateTicket(dto);
         }
+        public List<TicketDTO> GetAllTickets()
+        {
+            return _repository.GetAllTickets();
+        }
     }
 }

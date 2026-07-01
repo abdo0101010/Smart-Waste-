@@ -63,7 +63,7 @@ namespace SmartWaste.Repositories
                 Rating = t.Rating
             }).ToList();
         }
-       
+
         public void CreateTicket(CreateUserTicketDto dto)
         {
             var newTicket = new SupportTickets
@@ -76,9 +76,30 @@ namespace SmartWaste.Repositories
                 Priority = TicketPriority.Low,
                 CreatedAt = DateTime.Now
             };
-
             _context.SupportTickets.Add(newTicket);
             _context.SaveChanges();
         }
+            public List<TicketDTO> GetAllTickets()
+        {
+            var tickets = _context.SupportTickets
+                .Include(t => t.Citizen)
+                .Include(t => t.Driver)
+                .Select(t => new TicketDTO
+                {
+                    TicketID = t.TicketID,
+                    Subject = t.Subject,
+                    Description = t.Description,
+                    Status = t.Status.ToString(),
+                    Priority = t.Priority.ToString(),
+                    CreatedAt = t.CreatedAt,
+                    CitizenName = t.Citizen.FullName,
+                    DriverName = t.Driver != null ? t.Driver.FullName : "No Driver Assigned",
+                    Rating = t.Rating
+                })
+                .ToList();
+            return tickets;
+        }
+        
+        
     }
 }
