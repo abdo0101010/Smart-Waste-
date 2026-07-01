@@ -5,12 +5,9 @@ namespace SmartWaste.DTO.PickupRequestDTOS
     {
         public int RequestId { get; set; }
         public string Status { get; set; } = string.Empty;
-
-        // الحقول اللي كانت ناقصة وسببت الـ CS0117 Error:
         public string Zone { get; set; } = string.Empty;
-        public double TotalWeight { get; set; } // أو decimal حسب الكود عندك
+        public double TotalWeight { get; set; } 
         public string CategoryName { get; set; } = string.Empty;
-
         public DateTime CreatedAt { get; set; }
         public string Priority { get; set; } = string.Empty;
         public string RequestImageUrl { get; set; } = string.Empty;
@@ -29,6 +26,8 @@ namespace SmartWaste.DTO.PickupRequestDTOS
         public string? TicketStatus { get; set; }     // حالة التيكت لو موجودة (Open, Closed)
         public bool HasFeedback { get; set; }        // هل العميل قيّم السواق وعمل Feedback؟
         public int? DriverRating { get; set; }
+        public int? DriverId { get; set; }
+        public string? DriverProfilePictureUrl { get; set; }
 
     }
 }
