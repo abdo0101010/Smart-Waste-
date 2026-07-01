@@ -9,7 +9,7 @@ namespace SmartWaste.Repositories
         public HubStaff GetHubStaffById(int id);
         public void UpdateHubStaff(HubStaff hubStaff);
         public void DeleteHubStaff(int id);
-        public IEnumerable<HubStaff> GetAllHubStaff();
+        public IEnumerable<ListHubStaffDTO> GetAllHubStaff();
         public List<HubStaff> GetAllHubStaffWithPickupRequests();
         public HubStaff GetHubStaffByName(string Name);
         public void SaveChanges();

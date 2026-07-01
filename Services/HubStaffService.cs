@@ -43,7 +43,7 @@ public HubStaff GetHubStaffByName(string name)
             }
         }
 
-        public IEnumerable<HubStaff> GetAllHubStaff()
+        public IEnumerable<ListHubStaffDTO> GetAllHubStaff()
         {
             return _hubStaffRepository.GetAllHubStaff();
         }
