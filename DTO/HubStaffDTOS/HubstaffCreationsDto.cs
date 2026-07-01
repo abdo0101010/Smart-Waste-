@@ -14,7 +14,7 @@ namespace SmartWaste.DTO.HubStaffDTOS
         [RegularExpression(@"^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$", ErrorMessage = "Password must be at least 8 characters long and include at least one uppercase letter, one lowercas")]
 
 
-        public string PasswordHash { get; set; } = null!;
+        public string ?PasswordHash { get; set; } 
 
     }
 }

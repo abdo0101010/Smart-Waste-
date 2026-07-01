@@ -39,9 +39,15 @@ namespace SmartWaste.Repositories
                 SaveChanges();
             }
         }
-        public IEnumerable<HubStaff> GetAllHubStaff()
+        public IEnumerable<ListHubStaffDTO> GetAllHubStaff()
         {
-            return _context.HubStaffs.ToList();
+                var hubStaffs = _context.HubStaffs.Select(h => new ListHubStaffDTO
+                {
+                    HubStaffId = h.StaffId,
+                    Name = h.FullName
+                }).ToList();
+
+            return hubStaffs;
         }
         public List<HubStaff> GetAllHubStaffWithPickupRequests()
         {

@@ -59,7 +59,7 @@ namespace SmartWaste.Controllers
             )]
         [SwaggerResponse(200, "Successfully retrieved Hub Staff", typeof(HubStaff))]
         [SwaggerResponse(404, "Hub Staff not found")]
-        
+
         public IActionResult GetHubStaffById(int id)
         {
             var hubStaff = _hubStaffService.GetHubStaffById(id);
@@ -80,6 +80,24 @@ namespace SmartWaste.Controllers
             }
 
             return Ok(history);
+        }
+        [HttpGet("allHubStaff")]
+        [SwaggerOperation(
+            Summary = "Get All Hub Staff",
+            Description = "Retrieve a list of all Hub Staff members.",
+            OperationId = "GetAllHubStaff",
+            Tags = new[] { "HubStaff" }
+        )]
+        [SwaggerResponse(200, "Successfully retrieved list of Hub Staff", typeof(IEnumerable<ListHubStaffDTO>))]
+        [SwaggerResponse(404, "No Hub Staff found")]
+        public IActionResult GetAllHubStaff()
+        {
+            var hubStaffList = _hubStaffService.GetAllHubStaff();
+            if (hubStaffList == null || !hubStaffList.Any())
+            {
+                return NotFound(new { message = "No Hub Staff found" });
+            }
+            return Ok(hubStaffList);
         }
     }
         
