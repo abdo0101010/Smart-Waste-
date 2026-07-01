@@ -6,7 +6,7 @@ using SmartWaste.Repositories;
 
 namespace SmartWaste.Services
 {
-    public class PickupRequestService: IPickupRequestService
+    public class PickupRequestService : IPickupRequestService
     {
         IPickupRequestRepository _pickupRequestRepository;
         public PickupRequestService(IPickupRequestRepository pickupRequestRepository)
@@ -16,14 +16,14 @@ namespace SmartWaste.Services
 
         public void AddPickupRequest(PickupRequest pickupRequest)
         {
-            if(pickupRequest != null)
+            if (pickupRequest != null)
             {
                 _pickupRequestRepository.AddPickupRequest(pickupRequest);
             }
         }
         public PickupRequest GetPickupRequestById(int id)
         {
-            if(id > 0)
+            if (id > 0)
             {
                 return _pickupRequestRepository.GetPickupRequestById(id);
             }
@@ -31,14 +31,14 @@ namespace SmartWaste.Services
         }
         public void UpdatePickupRequest(PickupRequest pickupRequest)
         {
-            if(pickupRequest != null)
+            if (pickupRequest != null)
             {
                 _pickupRequestRepository.UpdatePickupRequest(pickupRequest);
             }
         }
         public void DeletePickupRequest(int id)
         {
-            if(id > 0)
+            if (id > 0)
             {
                 _pickupRequestRepository.DeletePickupRequest(id);
             }
@@ -54,7 +54,7 @@ namespace SmartWaste.Services
             return _pickupRequestRepository.GetAllPickupRequestsWithRecyclersAndHubStaff();
         }
 
-         public int GetTotalPickupRequests()
+        public int GetTotalPickupRequests()
         {
             return _pickupRequestRepository.GetTotalPickupRequests();
         }
@@ -92,11 +92,11 @@ namespace SmartWaste.Services
             return dtoList;
         }
 
-      public async Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId)
+        public async Task<bool> AcceptBulkPickupRequestsAsync(List<int> requestIds, int recyclerId)
         {
             return await _pickupRequestRepository.AcceptBulkPickupRequestsAsync(requestIds, recyclerId);
         }
-         public async Task<IEnumerable<UserRedemptionDTO>> GetAllRedeemUserAsync(int userId)
+        public async Task<IEnumerable<UserRedemptionDTO>> GetAllRedeemUserAsync(int userId)
         {
             return await _pickupRequestRepository.GetAllRedeemUserAsync(userId);
         }
@@ -144,7 +144,7 @@ namespace SmartWaste.Services
                     HasTicket = matchingTicket != null,
                     TicketStatus = matchingTicket != null ? matchingTicket.Status.ToString() : "No Ticket"
                 };
-            }).ToList(); 
+            }).ToList();
         }
         public async Task<IEnumerable<PendingRequestFormDTO>> GetInProgressHubRequestsAsync()
         {
@@ -182,7 +182,11 @@ namespace SmartWaste.Services
         public void SaveChanges()
         {
             _pickupRequestRepository.SaveChanges();
-        }       
-      
+        }
+        public int gettotalpickuprequestbystatus(string status)
+        {
+            return _pickupRequestRepository.gettotalpickuprequestbystatus(status);
+        }
+
     }
 }

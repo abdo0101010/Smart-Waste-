@@ -26,6 +26,7 @@ namespace SmartWaste.Repositories
 
         public Task<IEnumerable<PendingRequestFormDTO>> GetPendingRequestFormsAsync();
         public  Task<IEnumerable<UserRedemptionDTO>> GetAllRedeemUserAsync(int userId);
+        public int gettotalpickuprequestbystatus(string status);
 
 
 

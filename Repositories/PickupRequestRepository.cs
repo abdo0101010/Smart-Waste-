@@ -306,7 +306,11 @@ namespace SmartWaste.Repositories
         }
             // 4. ترتيب كشف الحساب من الأحدث للأقدم لراحة عين المستخدم في الـ Flutter
           
-
+        public int gettotalpickuprequestbystatus(string status)
+        {
+            int numpickup=_context.PickupRequests.Count(p => p.Status == status);
+            return numpickup;
+        }
         public void SaveChanges()
         {
             _context.SaveChanges();

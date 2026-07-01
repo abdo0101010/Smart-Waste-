@@ -32,6 +32,7 @@ namespace SmartWaste.Services
         public  Task<IEnumerable<UserRedemptionDTO>> GetAllRedeemUserAsync(int userId);
 
         public Task<IEnumerable<PickupRequestViewModelDTO>> GetRecyclerHistoryAsync(int recyclerId);
+        public int gettotalpickuprequestbystatus(string status);
 
 
         void SaveChanges();

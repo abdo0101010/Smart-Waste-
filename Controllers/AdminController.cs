@@ -485,5 +485,21 @@ Tags = new[] { "Admin", "Users" })]
             var tickets = _supportTicketsServices.GetAllTickets();
             return Ok(tickets);
         }
+        [HttpGet("GetTotalPickupRequestByStatus")]
+        [SwaggerOperation(
+            Summary=" Gets the total number of pickup requests by status",
+            Description = "Requires admin privileges"
+            ,
+            OperationId ="Get pickup request by status",
+            Tags = new[] { "Admin", "Pickup Requests" }
+
+            )]
+        [SwaggerResponse(200, Description = "Total number of pickup requests by status retrieved successfully", Type = typeof(int))]
+        [SwaggerResponse(401,Description = "Unauthorized access - admin privileges required")]
+     public IActionResult GetTotalPickupRequestByStatus(string status)
+        {
+            var totalpickup = _pickupRequestService.gettotalpickuprequestbystatus(status);
+            return Ok(totalpickup);
+        }
     }
 }
