@@ -24,7 +24,7 @@ namespace SmartWaste.Controllers
             _hubStaffService = hubStaffService;
         }
 
-        //[Authorize(Roles = "HubStaff,Admin")] // تأمين الـ Endpoint لليوزر الصح
+        [Authorize(Roles = "HubStaff,Admin")] // تأمين الـ Endpoint لليوزر الصح
         [HttpPost("VerifyRequestShipment")]
         [Consumes("multipart/form-data")]
         [SwaggerResponse(200, "completed verfiy ", typeof(pickupverifyDto))]
