@@ -27,12 +27,22 @@ namespace SmartWaste.Controllers
         [Authorize(Roles = "HubStaff,Admin")] // تأمين الـ Endpoint لليوزر الصح
         [HttpPost("VerifyRequestShipment")]
         [Consumes("multipart/form-data")]
-        [SwaggerResponse(200, "completed verfiy ", typeof(pickupverifyDto))]
+        [SwaggerResponse(200, "completed verify", typeof(pickupverifyDto))]
         public async Task<IActionResult> VerifyRequestShipment(int transactionId, IFormFile fileAfter)
         {
-            int userId = 1;
             try
             {
+                // 🎯 السطر السحري: سحب الـ ID الحقيقي لموظف الهاب ستاف لايف من الـ JWT Claims
+                var userIdClaim = User.FindFirst(System.Security.Claims.ClaimTypes.NameIdentifier)?.Value;
+
+                if (string.IsNullOrEmpty(userIdClaim))
+                {
+                    return Unauthorized(new { message = "فشلت قراءة هوية الموظف من التوكن النشط." });
+                }
+
+                int userId = int.Parse(userIdClaim);
+
+                // تمرير الـ ID الحقيقي واللايف للسيرفيس
                 var result = await _ecoSnapService.VerifyHubShipmentAsync(userId, transactionId, fileAfter);
 
                 if (result == null) return BadRequest(new { message = "فشلت العملية" });
