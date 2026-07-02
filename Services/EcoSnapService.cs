@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.EntityFrameworkCore;
+using SmartWaste.DTO.AccountDTOS; // تأكد من مطابقة مسميات الـ DTOs حسب مشروعك
 using SmartWaste.DTO.PickupRequestDTOS;
 using SmartWaste.Hubs;
 using SmartWaste.Models;
@@ -21,9 +22,13 @@ namespace SmartWaste.Services
         private readonly IUserRepository _userRepository;
         private readonly IWebHostEnvironment _webHostEnvironment;
         private readonly smartwasteContext _context;
-        private readonly IHubContext<NotificationHub> _hubContext;
+        private readonly IHubContext<NotificationHub> _hubContext; // تأكد من اسم الـ Hub عندك
 
-        public EcoSnapService(IUserRepository userRepository, IWebHostEnvironment webHostEnvironment, smartwasteContext context, IHubContext<NotificationHub> hubContext)
+        public EcoSnapService(
+            IUserRepository userRepository,
+            IWebHostEnvironment webHostEnvironment,
+            smartwasteContext context,
+            IHubContext<NotificationHub> hubContext)
         {
             _userRepository = userRepository;
             _webHostEnvironment = webHostEnvironment;
@@ -31,12 +36,17 @@ namespace SmartWaste.Services
             _hubContext = hubContext;
         }
 
+        /// <summary>
+        /// 1️⃣ خطوة: رفع طلب تجميع جديد بواسطة المواطن (Waiting Room Pattern)
+        /// </summary>
         public async Task<int> ProcessUserUploadAsync(int userId, IFormFile file)
         {
-            // 1. حفظ ملف اليوزر في wwwroot/uploads
+            // حفظ ملف اليوزر في wwwroot/uploads
             var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
             string uploadsFolder = Path.Combine(rootPath, "uploads");
-            if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
+
+            if (!Directory.Exists(uploadsFolder))
+                Directory.CreateDirectory(uploadsFolder);
 
             string uniqueFileName = Guid.NewGuid().ToString() + "_" + file.FileName;
             string filePath = Path.Combine(uploadsFolder, uniqueFileName);
@@ -48,7 +58,7 @@ namespace SmartWaste.Services
 
             string relativeImagePath = "/uploads/" + uniqueFileName;
 
-            // 2. كارييت طلب جديد في الداتابيز وحفظ المسار (Waiting Room Pattern)
+            // كارييت طلب جديد في الداتابيز وحفظ المسار
             var newRequest = new PickupRequest
             {
                 UserId = userId,
@@ -56,38 +66,23 @@ namespace SmartWaste.Services
                 Status = "Pending",
                 RequestDate = DateTime.UtcNow
             };
+
             _context.PickupRequests.Add(newRequest);
             await _context.SaveChangesAsync();
 
-            // 🎯 خطوة 1: جلب اسم المواطن عشان نمنع الـ NULL في جدول الـ Notifications
-            var citizen = await _context.Users.AsNoTracking().FirstOrDefaultAsync(u => u.UserId == userId);
-            string citizenName = citizen != null ? citizen.FullName : "مستخدم جديد";
+            // ضخ إشعار فوري لحظي عبر الـ SignalR
+            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "New pickup request", "Citizen scheduled a glass pickup...", "Pickup");
 
-            try
-            {
-                // 🎯 خطوة 2: زرع إشعار الـ Request الجديد في الـ History للـ Hub Staff والأدمن
-                var hubNotification = new Notification
-                {
-                    Title = "New Request Alert! 📦",
-                    Message = $"Citizen ({citizenName}) uploaded a new request (ORD-{newRequest.RequestId}) waiting for routing.",
-                    Type = "HubAlert",
-                    CreatedAt = DateTime.UtcNow,
-                    UserName = citizenName // 👈 قفلنا الـ NULL constraint هنا
-                };
-                _context.Notifications.Add(hubNotification);
-                await _context.SaveChangesAsync();
-            }
-            catch (Exception) { /* لضمان عدم كراش العملية الأساسية */ }
-
-            // ضخها لايف عبر الـ SignalR
-            await _hubContext.Clients.All.SendAsync("ReceiveNotification", "New pickup request", $"{citizenName} scheduled a new plastic recycling pickup.", "Pickup");
-
+            // رجع الـ RequestId عشان الموبايل يحتفظ بيه كـ transaction_id
             return newRequest.RequestId;
         }
 
+        /// <summary>
+        /// 2️⃣ خطوة: فحص ومطابقة الشحنة بالـ AI واعتماد النقاط (موظف الهاب ستاف)
+        /// </summary>
         public async Task<pickupverifyDto> VerifyHubShipmentAsync(int userId, int transactionId, IFormFile fileAfter)
         {
-            // 1. جلب الطلب بالـ ID وعمل Include للـ User والـ Recycler عشان نقرأ الأسماء صح
+            // جلب الطلب بالـ ID وعمل Include للـ User والـ Recycler عشان نقرأ الأسماء صح
             var pickupRequest = await _context.PickupRequests
                 .Include(p => p.User)
                 .Include(p => p.Recycler)
@@ -111,9 +106,10 @@ namespace SmartWaste.Services
                 };
             }
 
-            // 2. تحويل مسار السيرفر لـ مسار فيزيائي حقيقي للوصول للملف
+            // تحويل مسار السيرفر لـ مسار فيزيائي حقيقي للوصول للملف
             var rootPath = _webHostEnvironment.WebRootPath ?? Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
             string fullUserImagePath = Path.Combine(rootPath, userImagePath.TrimStart('/'));
+
             if (!File.Exists(fullUserImagePath))
             {
                 return new pickupverifyDto
@@ -123,7 +119,7 @@ namespace SmartWaste.Services
                 };
             }
 
-            // 3. حفظ صورة الهاب ستاف (After) الجديدة في الـ uploads للتوثيق
+            // حفظ صورة الهاب ستاف (After) الجديدة في الـ uploads للتوثيق الجنائي والمالي
             string uniqueFileNameAfter = Guid.NewGuid().ToString() + "_" + fileAfter.FileName;
             string filePathAfter = Path.Combine(rootPath, "uploads", uniqueFileNameAfter);
 
@@ -133,7 +129,7 @@ namespace SmartWaste.Services
             }
             pickupRequest.VerificationImageUrl = "/uploads/" + uniqueFileNameAfter;
 
-            // 4. تجهيز الـ HttpClient وضخ الـ Payload للـ FastAPI
+            // تجهيز الـ HttpClient وضخ الـ Payload للـ FastAPI
             using var httpClient = new HttpClient();
             string aiApiUrl = "https://badass-ecosystem-hazy.ngrok-free.dev/verify-shipment/";
 
@@ -163,7 +159,7 @@ namespace SmartWaste.Services
                 throw new Exception($"AI Server HTTP Error. Status: {response.StatusCode}. Reason: {errorDetail}");
             }
 
-            // 5. قراءة الـ JSON وفحص الـ Logic الداخلي للموديل
+            // قراءة الـ JSON وفحص الـ Logic الداخلي للموديل
             var jsonResult = await response.Content.ReadFromJsonAsync<JsonElement>();
 
             // 🚨 الحالة الأولى: لو الـ AI رجع FAILED بشكل صريح (عدم تطابق الكمية)
@@ -173,6 +169,10 @@ namespace SmartWaste.Services
                 int countBefore = jsonResult.TryGetProperty("count_before", out var cb) ? cb.GetInt32() : 0;
                 int countAfter = jsonResult.TryGetProperty("count_after", out var ca) ? ca.GetInt32() : 0;
                 double score = jsonResult.TryGetProperty("similarity_score", out var ss) ? ss.GetDouble() : 0.0;
+
+                // تحديث حالة الطلب في الداتابيز وإسناد الموظف المسؤول فوراً لمنع كراش الـ Tracking
+                pickupRequest.Status = "Failed";
+                pickupRequest.HubStaffId = userId; // 👈 حفظ معرف موظف الفرز الحالي
 
                 try
                 {
@@ -188,17 +188,18 @@ namespace SmartWaste.Services
                         UserName = citizenName
                     };
                     _context.Notifications.Add(failNotification);
-
-                    // تحديث حالة الطلب في الداتابيز وإسناد الموظف المسؤول
-                    pickupRequest.Status = "Failed";
-                    pickupRequest.HubStaffId = userId; // 👈 تم إضافة تسجيل الـ ID هنا عند الفشل
-                    await _context.SaveChangesAsync();
-
-                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", failNotification.Title, failNotification.Message, failNotification.Type);
                 }
                 catch (Exception) { }
 
-                // ✅ إرجاع نفس البيانات تماماً للفرونت إند لمنع الـ Crash 500
+                // الحفظ الآمن في الداتابيز
+                await _context.SaveChangesAsync();
+
+                try
+                {
+                    await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Verification Failed ❌", $"Request (ORD-{transactionId}) was rejected.", "Pickup");
+                }
+                catch (Exception) { }
+
                 return new pickupverifyDto
                 {
                     Status = "FAILED",
@@ -220,9 +221,9 @@ namespace SmartWaste.Services
 
                 decimal pointsEarned = countAfter * 5;
 
-                // تحديث بيانات العملية وحفظ الـ ID لموظف الفرز
+                // 1️⃣ تحديث بيانات العملية وحفظ الـ ID لموظف الفرز الحالي فوراً
                 pickupRequest.Status = "Verified";
-                pickupRequest.HubStaffId = userId; // 👈 تم إضافة تسجيل الـ ID هنا عند النجاح
+                pickupRequest.HubStaffId = userId; // 👈 تم التثبيت هنا قبل أي SaveChanges خارجية
                 pickupRequest.FinalBottlesCount = countAfter;
                 pickupRequest.FinalPoints = pointsEarned;
                 pickupRequest.VerificationDate = DateTime.UtcNow;
@@ -238,11 +239,10 @@ namespace SmartWaste.Services
                     Message = "Shipment verified successfully!"
                 };
 
-                await _userRepository.UpdateUserBottlesAndPointsAsync(pickupRequest.UserId, countAfter, pointsEarned);
-
+                // 2️⃣ إضافة إشعارات النجاح والشكر للـ Context
                 try
                 {
-                    // 🎯 1. إرسال نوتفكيشن النجاح وإضافة النقاط للمواطن
+                    // 🎯 إرسال نوتفكيشن النجاح وإضافة النقاط للمواطن
                     var successNotification = new Notification
                     {
                         Title = "Shipment Verified! 🎉",
@@ -255,7 +255,7 @@ namespace SmartWaste.Services
                     };
                     _context.Notifications.Add(successNotification);
 
-                    // 🎯 2. إرسال نوتفكيشن شكر للسواق
+                    // 🎯 إرسال نوتفكيشن شكر للسواق
                     if (pickupRequest.RecyclerId.HasValue)
                     {
                         var driverNotification = new Notification
@@ -273,8 +273,17 @@ namespace SmartWaste.Services
                 }
                 catch (Exception) { }
 
+                // 3️⃣ الحفظ الرسمي والنهائي للطلب والإشعارات معاً داخل الـ SQL Server 
                 await _context.SaveChangesAsync();
 
+                // 4️⃣ الـ Repo الخارجي يشتغل لتحديث المحفظة بعد الاطمئنان على حفظ الـ HubStaffId
+                try
+                {
+                    await _userRepository.UpdateUserBottlesAndPointsAsync(pickupRequest.UserId, countAfter, pointsEarned);
+                }
+                catch (Exception) { }
+
+                // 5️⃣ بث الـ SignalR لايف
                 try
                 {
                     await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Shipment Verified! 🎉", $"Order (ORD-{transactionId}) has been fully verified.", "Pickup");
