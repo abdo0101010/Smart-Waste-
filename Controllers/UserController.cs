@@ -1,9 +1,11 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using SmartWaste.DTO.EcoSnapUploadDTOS;
 using SmartWaste.DTO.TicketSDTOS;
 using SmartWaste.DTO.UserDTO;
 using SmartWaste.DTO.UserDTOS;
+using SmartWaste.Hubs;
 using SmartWaste.Models;
 using SmartWaste.Services;
 using Swashbuckle.AspNetCore.Annotations;
@@ -22,11 +24,13 @@ namespace SmartWaste.Controllers
         IUserService _userService;
         private readonly IEcoSnapService _ecoSnapService;
         ISupportTicketsServices _supportTicketsServices;
-        public UserController(IUserService userService, IEcoSnapService ecoSnapService,ISupportTicketsServices supportTicketsServices)
+        IHubContext<ChatHub> hubContext;
+        public UserController(IUserService userService, IEcoSnapService ecoSnapService,ISupportTicketsServices supportTicketsServices,IHubContext<ChatHub> hubContext)
         {
             _userService = userService;
             _ecoSnapService = ecoSnapService;
             _supportTicketsServices = supportTicketsServices;
+            this.hubContext = hubContext;
         }
         //[HttpGet]
         //public IActionResult GetAllUsers()
@@ -313,6 +317,7 @@ namespace SmartWaste.Controllers
                 return StatusCode(500, new { message = "حدث خطأ أثناء رفع الصورة", details = ex.Message });
             }
         }
-        
+     
+
     }
 }

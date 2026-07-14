@@ -140,6 +140,7 @@ namespace SmartWaste
             app.MapControllers();
             app.MapHub<SmartWaste.Hubs.NotificationHub>("/notificationHub");
             app.MapHub<SmartWaste.Repositories.LocationHubRepository>("/locationHub");
+            app.MapHub<SmartWaste.Hubs.ChatHub>("/chatHub");
 
             app.Run();
         }
