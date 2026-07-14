@@ -40,6 +40,9 @@ public partial class smartwasteContext : DbContext
     public DbSet<Payment> Payment { get; set; }
 
  public DbSet<Notification> Notifications { get; set; }
+    public DbSet<UserConnection> UserConnections { get; set; }
+       public DbSet<groups> groups { get; set; }
+    public DbSet<UserinGroups> UserinGroups { get; set; }
 
 
 

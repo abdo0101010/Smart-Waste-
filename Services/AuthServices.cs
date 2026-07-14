@@ -34,7 +34,7 @@ namespace SmartWaste.Services
         {
             // 1. الأدمن
             var admin = _adminRepository.GetAdminByName(data.Name);
-            if (admin != null && admin.Password == data.Password)
+            if (admin != null && BCrypt.Net.BCrypt.Verify(data.Password, admin.Password))
             {
                 return new AuthResult { UserId = admin.Id, Role = "Admin" };
             }

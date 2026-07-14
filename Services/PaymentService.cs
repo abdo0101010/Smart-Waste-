@@ -132,7 +132,7 @@ namespace SmartWaste.Services
 
             try
             {
-                // 🎯 3. زرع إشعار تحويل النقاط لكاش في محفظة فودافون كاش أو غيرها
+                //  3. زرع إشعار تحويل النقاط لكاش في محفظة فودافون كاش أو غيرها
                 var cashNotification = new Notification
                 {
                     Title = "Points Redeemed to Cash! 💰",
@@ -151,7 +151,7 @@ namespace SmartWaste.Services
 
             try
             {
-                // 🚀 4. ضخ إشعار الكاش لايف بالـ SignalR
+                //  4. ضخ إشعار الكاش لايف بالـ SignalR
                 await _hubContext.Clients.All.SendAsync("ReceiveNotification", "Cash Out Successful! 💰", $"{pointsToRedeem} points converted to cash.", "Wallet");
             }
             catch (Exception) { }
